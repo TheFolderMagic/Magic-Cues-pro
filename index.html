@@ -82,43 +82,41 @@ details[open] summary::after{transform:rotate(180deg)}
 <body class="unlocked show-progress">
 
 <header>
-    <h1 onclick="openProjects()"><span id="header-title-text">Magic Cues</span> <span class="material-symbols-rounded" style="font-size:28px">expand_more</span></h1>
+    <h1 onclick="haptic(15); openProjects()"><span id="header-title-text">Magic Cues</span> <span class="material-symbols-rounded" style="font-size:28px">expand_more</span></h1>
     <div class="header-actions">
-        <button class="icon-btn" onclick="openModal('app-settings')"><span class="material-symbols-rounded">settings</span></button>
-        <button class="icon-btn" onclick="toggleLock()"><span class="material-symbols-rounded" id="lock-icon">lock_open</span></button>
+        <button class="icon-btn" onclick="haptic(15); openModal('app-settings')"><span class="material-symbols-rounded">settings</span></button>
+        <button class="icon-btn" onclick="haptic(15); toggleLock()"><span class="material-symbols-rounded" id="lock-icon">lock_open</span></button>
     </div>
 </header>
 
 <div class="master-grid">
     <button id="master-play" onclick="playNextCue()"><span class="material-symbols-rounded">play_arrow</span><span id="play-text">Next Cue</span></button>
-    <button id="mic-btn" onclick="toggleMic()"><span class="material-symbols-rounded" id="mic-icon">mic_off</span></button>
-    <button id="pause-btn" onclick="toggleGlobalPause()"><span class="material-symbols-rounded" id="pause-icon">pause</span></button>
+    <button id="mic-btn" onclick="haptic(15); toggleMic()"><span class="material-symbols-rounded" id="mic-icon">mic_off</span></button>
+    <button id="pause-btn" onclick="haptic(15); toggleGlobalPause()"><span class="material-symbols-rounded" id="pause-icon">pause</span></button>
 </div>
 
 <div id="speech-debug">Heard: <span id="speech-text" style="color:var(--text-main);font-weight:600">...</span></div>
 
 <div class="action-row">
-    <button class="action-btn" onclick="$('file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button>
-    <button class="action-btn" onclick="triggerReset()"><span class="material-symbols-rounded">restart_alt</span> Reset</button>
+    <button class="action-btn" onclick="haptic(15); $('file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button>
+    <button class="action-btn" onclick="haptic([15, 30, 15]); triggerReset()"><span class="material-symbols-rounded">restart_alt</span> Reset</button>
 </div>
 <input type="file" id="file-input" accept="audio/*" multiple onchange="handleFiles(this)">
 <div id="queue-container"><h2 id="queue-label">Main Queue</h2><div id="track-list"></div></div>
 <h2>Instant Cues</h2><div id="instant-grid"></div>
 
-<datalist id="tickmarks"><option value="100" label="Default"></option></datalist>
-
 <dialog id="projects-modal">
-    <div class="modal-header"><span class="modal-title">My Shows</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="closeModal('projects-modal')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
+    <div class="modal-header"><span class="modal-title">My Shows</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10); closeModal('projects-modal')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
     <div id="projects-list-container" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px;"></div>
-    <button class="action-btn" style="width:100%" onclick="closeModal('projects-modal'); openModal('new-show-modal')"><span class="material-symbols-rounded">add</span> New Show</button>
+    <button class="action-btn" style="width:100%" onclick="haptic(15); closeModal('projects-modal'); openModal('new-show-modal')"><span class="material-symbols-rounded">add</span> New Show</button>
 </dialog>
 
 <dialog id="new-show-modal">
     <div class="modal-header"><span class="modal-title">Create Show</span></div>
     <input type="text" id="new-show-name" placeholder="Enter show name..." autocomplete="off">
     <div style="display:flex;gap:12px;">
-        <button class="action-btn" style="margin:0;border:none" onclick="closeModal('new-show-modal')">Cancel</button>
-        <button class="action-btn" style="margin:0;flex:1;background:var(--accent);color:#fff;border:none" onclick="createNewProject()">Create</button>
+        <button class="action-btn" style="margin:0;border:none" onclick="haptic(10); closeModal('new-show-modal')">Cancel</button>
+        <button class="action-btn" style="margin:0;flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15); createNewProject()">Create</button>
     </div>
 </dialog>
 
@@ -126,41 +124,41 @@ details[open] summary::after{transform:rotate(180deg)}
     <div class="modal-header"><span class="modal-title">Edit Show</span></div>
     <input type="text" id="edit-show-name" autocomplete="off">
     <div style="display:flex;gap:12px;margin-bottom:12px">
-        <button class="action-btn" style="margin:0;border:none" onclick="closeModal('edit-show-modal')">Cancel</button>
-        <button class="action-btn" style="margin:0;flex:1;background:var(--accent);color:#fff;border:none" onclick="saveShowEdit()">Save</button>
+        <button class="action-btn" style="margin:0;border:none" onclick="haptic(10); closeModal('edit-show-modal')">Cancel</button>
+        <button class="action-btn" style="margin:0;flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15); saveShowEdit()">Save</button>
     </div>
-    <button class="btn-delete" onclick="deleteShow()">Delete Show</button>
+    <button class="btn-delete" onclick="haptic([30, 50, 30]); deleteShow()">Delete Show</button>
 </dialog>
 
 <dialog id="app-settings">
-    <div class="modal-header"><span class="modal-title">App Settings</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="closeModal('app-settings')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
+    <div class="modal-header"><span class="modal-title">App Settings</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10); closeModal('app-settings')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
     <div class="setting-row" style="flex-direction:column;align-items:flex-start"><label style="margin-bottom:5px">Speech Language</label>
         <div class="segmented-control" id="lang-controls">
-            <button id="lang-en" class="active" onclick="setLang('en-US')">English</button>
-            <button id="lang-de" onclick="setLang('de-DE')">Deutsch</button>
+            <button id="lang-en" class="active" onclick="haptic(10); setLang('en-US')">English</button>
+            <button id="lang-de" onclick="haptic(10); setLang('de-DE')">Deutsch</button>
         </div>
     </div>
     <div class="setting-row" style="flex-direction:column;align-items:flex-start"><label style="margin-bottom:5px">Theme</label>
-        <div class="segmented-control" id="theme-controls"><button id="btn-dark" class="active" onclick="setTheme('dark')">Dark</button><button id="btn-light" onclick="setTheme('light')">Light</button><button id="btn-vis" onclick="setTheme('high-vis')">High-Vis</button></div>
+        <div class="segmented-control" id="theme-controls"><button id="btn-dark" class="active" onclick="haptic(10); setTheme('dark')">Dark</button><button id="btn-light" onclick="haptic(10); setTheme('light')">Light</button><button id="btn-vis" onclick="haptic(10); setTheme('high-vis')">High-Vis</button></div>
     </div>
-    <div class="setting-row"><label>Show Progress Fill</label><input type="checkbox" id="progress-toggle" onchange="toggleProgress(this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
-    <div class="setting-row"><label>Confirm Reset</label><input type="checkbox" id="confirm-reset-toggle" onchange="updConfRes(this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
-    <div class="setting-row"><label>Auto-Pause Mic During Audio</label><input type="checkbox" id="auto-pause-mic-toggle" onchange="updAutoPauseMic(this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
-    <div class="setting-row" style="border-top:1px solid var(--glass-border); margin-top:10px; padding-top:20px;"><label>UI Size</label><input type="range" min="50" max="150" value="100" list="tickmarks" id="ui-size-slider" oninput="updUISize(this.value)" style="width:120px"></div>
+    <div class="setting-row"><label>Show Progress Fill</label><input type="checkbox" id="progress-toggle" onchange="haptic(10); toggleProgress(this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
+    <div class="setting-row"><label>Confirm Reset</label><input type="checkbox" id="confirm-reset-toggle" onchange="haptic(10); updConfRes(this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
+    <div class="setting-row"><label>Auto-Pause Mic During Audio</label><input type="checkbox" id="auto-pause-mic-toggle" onchange="haptic(10); updAutoPauseMic(this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
+    <div class="setting-row" style="border-top:1px solid var(--glass-border); margin-top:10px; padding-top:20px;"><label>UI Size</label><input type="range" min="50" max="150" step="25" value="100" id="ui-size-slider" onchange="haptic(15); updUISize(this.value)" style="width:120px"></div>
 </dialog>
 
 <dialog id="settings-modal">
-    <div class="modal-header"><span class="modal-title">Cue Settings</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="closeModal('settings-modal')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
+    <div class="modal-header"><span class="modal-title">Cue Settings</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10); closeModal('settings-modal')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
     <div id="modal-content"></div>
-    <div class="danger-zone"><button class="btn-delete" onclick="deleteTrack()">Delete Cue</button></div>
+    <div class="danger-zone"><button class="btn-delete" onclick="haptic([30, 50, 30]); deleteTrack()">Delete Cue</button></div>
 </dialog>
 
 <dialog id="reset-modal">
     <div class="modal-header"><span class="modal-title">Reset Show?</span></div>
     <p style="color:var(--text-muted);margin:0 0 25px 0;font-size:15px;line-height:1.5;">Are you sure you want to stop all audio and reset the queue?</p>
     <div style="display:flex;gap:12px;">
-        <button class="action-btn" style="margin:0;border:none" onclick="closeModal('reset-modal')">Cancel</button>
-        <button class="btn-delete" style="margin:0;flex:1" onclick="executeReset()">Reset Show</button>
+        <button class="action-btn" style="margin:0;border:none" onclick="haptic(10); closeModal('reset-modal')">Cancel</button>
+        <button class="btn-delete" style="margin:0;flex:1" onclick="haptic([50, 50, 50]); executeReset()">Reset Show</button>
     </div>
 </dialog>
 
@@ -169,6 +167,9 @@ const $ = id => document.getElementById(id);
 let tracks=[], curIdx=0, locked=!1, activeId=null, activeCues=new Map(), activePads=new Map(), paused=!1;
 let db, projectsList=[], curProjId='default', editProjId=null;
 let settings = JSON.parse(localStorage.getItem('mc_settings')) || {showProgress: true, theme: 'dark', lang: 'en-US', uiSize: 100, confirmReset: true, autoPauseMic: true};
+
+// HAPTIC ENGINE
+const haptic = (pattern = 15) => { if (navigator.vibrate) navigator.vibrate(pattern); };
 
 const openModal = id => { document.body.classList.add('modal-open'); $(id).showModal(); };
 const closeModal = id => { $(id).close(); document.body.classList.remove('modal-open'); };
@@ -207,21 +208,21 @@ const render = () => {
             let el=document.createElement('div'); el.className=`tile ${i===curIdx?'is-current':''} ${activeCues.has(t.id)?'is-playing':''}`; el.id=`tile-${t.id}`;
             let micIndicator = t.triggerPhrase ? `<span class="material-symbols-rounded" style="color:var(--text-muted);font-size:16px;vertical-align:middle;margin-left:8px">mic</span>` : '';
             if(t.globalVoice) micIndicator += `<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;vertical-align:middle;margin-left:2px">public</span>`;
-            el.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><div class="tile-content"><span class="material-symbols-rounded drag-handle">drag_indicator</span><div class="tile-info" style="cursor:pointer" onclick="if(!locked)playCue('${t.id}')"><span class="tile-name-text">${qIdx++}. ${t.name}${micIndicator}</span></div><button class="icon-btn edit-trigger" style="width:40px;height:40px" onclick="openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:20px">settings</span></button></div>`;
+            el.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><div class="tile-content"><span class="material-symbols-rounded drag-handle">drag_indicator</span><div class="tile-info" style="cursor:pointer" onclick="if(!locked)playCue('${t.id}')"><span class="tile-name-text">${qIdx++}. ${t.name}${micIndicator}</span></div><button class="icon-btn edit-trigger" style="width:40px;height:40px" onclick="haptic(10); openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:20px">settings</span></button></div>`;
             $('track-list').appendChild(el);
         }else{
-            let el=document.createElement('div'); el.className=`cue-pad ${activePads.has(t.id)?'is-playing':''}`; el.id=`tile-${t.id}`; el.onclick=()=>playPad(t);
+            let el=document.createElement('div'); el.className=`cue-pad ${activePads.has(t.id)?'is-playing':''}`; el.id=`tile-${t.id}`; el.onclick=()=>{ haptic(20); playPad(t); };
             let micIndicator = t.triggerPhrase ? `<span class="material-symbols-rounded" style="color:var(--text-muted);font-size:14px;vertical-align:middle;margin-left:4px">mic</span>` : '';
-            el.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><span>${t.name}${micIndicator}</span><div class="pad-settings-trigger edit-trigger" onclick="event.stopPropagation();openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:18px">settings</span></div>`;
+            el.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><span>${t.name}${micIndicator}</span><div class="pad-settings-trigger edit-trigger" onclick="event.stopPropagation(); haptic(10); openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:18px">settings</span></div>`;
             $('instant-grid').appendChild(el);
         }
     });
 };
 
 let pressTm, didLongPress = false;
-const startPress = id => { didLongPress = false; pressTm = setTimeout(() => { didLongPress = true; editProjId=id; $('edit-show-name').value=projectsList.find(x=>x.id===id).name; openModal('edit-show-modal'); }, 600); };
+const startPress = id => { didLongPress = false; pressTm = setTimeout(() => { haptic(30); didLongPress = true; editProjId=id; $('edit-show-name').value=projectsList.find(x=>x.id===id).name; openModal('edit-show-modal'); }, 600); };
 const cancelPress = () => clearTimeout(pressTm);
-const handleProjClick = id => { cancelPress(); if(!didLongPress) switchProject(id); };
+const handleProjClick = id => { cancelPress(); if(!didLongPress) { haptic(15); switchProject(id); } };
 
 const openProjects = () => { $('projects-list-container').innerHTML = projectsList.map(p => `<div class="project-item ${p.id===curProjId?'active':''}" onpointerdown="startPress('${p.id}')" onpointerup="cancelPress()" onpointerleave="cancelPress()" onclick="handleProjClick('${p.id}')"><span style="font-weight:700">${p.name}</span> ${p.id===curProjId?'<span class="material-symbols-rounded">check_circle</span>':''}</div>`).join(''); openModal('projects-modal'); };
 const createNewProject = () => { let n=$('new-show-name').value.trim(); if(!n) return; let nId='proj_'+Date.now(); projectsList.push({id: nId, name: n}); db.transaction('store','readwrite').objectStore('store').put(projectsList, 'projectList'); closeModal('new-show-modal'); $('new-show-name').value=''; switchProject(nId); };
@@ -236,25 +237,27 @@ const handleFiles = inp => { Array.from(inp.files).forEach(f=>tracks.push({id:'i
 const openSet = id => {
     activeId=id; let t=tracks.find(x=>x.id===id); let isQ = t.type === 'queue';
     $('modal-content').innerHTML=`
-    <div class="setting-row" style="flex-direction:column;align-items:flex-start;padding-bottom:20px"><label>Cue Type</label><div class="segmented-control"><button class="${isQ?'active':''}" onclick="updTrk('type','queue')">Main</button><button class="${t.type==='pad'?'active':''}" onclick="updTrk('type','pad')">Instant</button></div></div>
+    <div class="setting-row" style="flex-direction:column;align-items:flex-start;padding-bottom:20px"><label>Cue Type</label><div class="segmented-control"><button class="${isQ?'active':''}" onclick="haptic(10); updTrk('type','queue')">Main</button><button class="${t.type==='pad'?'active':''}" onclick="haptic(10); updTrk('type','pad')">Instant</button></div></div>
     <div class="setting-row"><label>Volume</label><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="updTrk('volume',this.value)"></div>
     
-    <details open><summary>Voice Triggers</summary><div class="details-content">
-        <div class="mini-row"><label>Trigger Phrase</label><input type="text" style="width:auto;margin:0;padding:8px 12px;font-size:14px" placeholder="e.g. action" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div>
-        <div class="mini-row"><label style="font-size:13px;max-width:70%">Global Trigger (Listen anytime)</label><input type="checkbox" ${t.globalVoice?'checked':''} onchange="updTrk('globalVoice',this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
+    <details><summary onclick="haptic(10)">Voice Triggers</summary><div class="details-content">
+        <p style="margin: 0 0 10px 0; font-size: 13px; color: var(--text-muted);">Trigger this cue by speaking a specific phrase.</p>
+        <div class="mini-row"><label>Trigger Phrase</label><input type="text" style="width:140px;margin:0;padding:8px 12px;font-size:14px;text-align:right;" placeholder="e.g. action" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div>
+        <div style="border-top:1px solid var(--glass-border);margin:10px 0"></div>
+        <div class="mini-row"><label style="max-width:75%; line-height: 1.4;">Global Trigger <br><span style="font-size:11px;color:var(--text-muted);font-weight:400">Listen for this phrase even when it's not the next cue</span></label><input type="checkbox" ${t.globalVoice?'checked':''} onchange="haptic(10); updTrk('globalVoice',this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
     </div></details>
 
-    <details><summary>Advanced Audio Settings</summary><div class="details-content">
-        <div class="mini-row"><label>Manual Pre-Delay (s)</label><input type="number" step="0.5" value="${t.delay||0}" onchange="updTrk('delay',this.value)"></div>
-        <div class="mini-row"><label>Fade In (s)</label><input type="number" step="0.5" value="${t.fadeIn||0}" onchange="updTrk('fadeIn',this.value)"></div>
-        <div class="mini-row"><label>Fade Out (s)</label><input type="number" step="0.5" value="${t.fadeOut||0}" onchange="updTrk('fadeOut',this.value)"></div>
+    <details><summary onclick="haptic(10)">Advanced Audio Settings</summary><div class="details-content">
+        <div class="mini-row"><label>Manual Pre-Delay (s)</label><input type="number" step="0.5" value="${t.delay||0}" onchange="haptic(10); updTrk('delay',this.value)"></div>
+        <div class="mini-row"><label>Fade In (s)</label><input type="number" step="0.5" value="${t.fadeIn||0}" onchange="haptic(10); updTrk('fadeIn',this.value)"></div>
+        <div class="mini-row"><label>Fade Out (s)</label><input type="number" step="0.5" value="${t.fadeOut||0}" onchange="haptic(10); updTrk('fadeOut',this.value)"></div>
         <div style="border-top:1px solid var(--glass-border);margin:5px 0"></div>
-        <div class="mini-row"><label>Trim Start (s)</label><input type="number" step="0.5" value="${t.trimStart||0}" onchange="updTrk('trimStart',this.value)"></div>
-        <div class="mini-row"><label>Trim End (s)</label><input type="number" step="0.5" value="${t.trimEnd||0}" onchange="updTrk('trimEnd',this.value)"></div>
+        <div class="mini-row"><label>Trim Start (s)</label><input type="number" step="0.5" value="${t.trimStart||0}" onchange="haptic(10); updTrk('trimStart',this.value)"></div>
+        <div class="mini-row"><label>Trim End (s)</label><input type="number" step="0.5" value="${t.trimEnd||0}" onchange="haptic(10); updTrk('trimEnd',this.value)"></div>
         ${isQ ? `<div style="border-top:1px solid var(--glass-border);margin:5px 0"></div>
-        <div class="mini-row"><label style="color:var(--accent);font-weight:700">Auto-Follow Next</label><input type="checkbox" ${t.autoFollow?'checked':''} onchange="updTrk('autoFollow',this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
-        <div class="mini-row"><label>Overlap (s)</label><input type="number" step="0.5" value="${t.overlap||0}" onchange="updTrk('overlap',this.value)"></div>
-        <div class="mini-row"><label>Post-Delay (s)</label><input type="number" step="0.5" value="${t.postDelay||0}" onchange="updTrk('postDelay',this.value)"></div>` : ''}
+        <div class="mini-row"><label style="color:var(--accent);font-weight:700">Auto-Follow Next</label><input type="checkbox" ${t.autoFollow?'checked':''} onchange="haptic(10); updTrk('autoFollow',this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
+        <div class="mini-row"><label>Overlap (s)</label><input type="number" step="0.5" value="${t.overlap||0}" onchange="haptic(10); updTrk('overlap',this.value)"></div>
+        <div class="mini-row"><label>Post-Delay (s)</label><input type="number" step="0.5" value="${t.postDelay||0}" onchange="haptic(10); updTrk('postDelay',this.value)"></div>` : ''}
     </div></details>`;
     openModal('settings-modal');
 };
@@ -262,8 +265,8 @@ const openSet = id => {
 const updTrk = (k,v) => { let t=tracks.find(x=>x.id===activeId); if(t){ let val = (k==='type'||k==='autoFollow'||k==='triggerPhrase'||k==='globalVoice') ? v : parseFloat(v); t[k] = val; if(k==='volume'){ if(activeCues.has(activeId)) activeCues.get(activeId).volume = val; if(activePads.has(activeId)) activePads.get(activeId).volume = val; } if(k==='type') closeModal('settings-modal'); render(); saveData(); } };
 const deleteTrack = () => { let t=tracks.find(x=>x.id===activeId); if(t&&t.blobUrl)URL.revokeObjectURL(t.blobUrl); tracks=tracks.filter(x=>x.id!==activeId); closeModal('settings-modal'); render(); saveData(); };
 
-const playCue = id => { if(locked)return; let q=tracks.filter(x=>x.type==='queue'), idx=q.findIndex(x=>x.id===id); if(idx>-1){curIdx=idx; triggerSequence(q[curIdx++]);} };
-const playNextCue = (isLayered=false) => { let q=tracks.filter(x=>x.type==='queue'); if(curIdx>=q.length)return; triggerSequence(q[curIdx++], isLayered); };
+const playCue = id => { if(locked)return; haptic(20); let q=tracks.filter(x=>x.type==='queue'), idx=q.findIndex(x=>x.id===id); if(idx>-1){curIdx=idx; triggerSequence(q[curIdx++]);} };
+const playNextCue = (isLayered=false) => { let q=tracks.filter(x=>x.type==='queue'); if(curIdx>=q.length)return; if(!isLayered) haptic(25); triggerSequence(q[curIdx++], isLayered); };
 
 const triggerSequence = (t, isLayered) => {
     if(t.delay>0 && !isLayered){ $('play-text').innerText=`Wait ${t.delay}s...`; setTimeout(()=>runAud(t, isLayered), t.delay*1000); }
@@ -293,7 +296,7 @@ const runAud = (t, isLayered) => {
     };
 
     a.play(); $('pause-icon').innerText='pause'; $('play-text').innerText=t.name; 
-    manageSmartMic(); // Turn off mic if needed
+    manageSmartMic(); 
     
     a.onended = () => { 
         if(t.autoFollow && !afTriggered) {
@@ -302,7 +305,7 @@ const runAud = (t, isLayered) => {
             else { playNextCue(false); }
         }
         activeCues.delete(t.id); if(activeCues.size === 0) { $('play-text').innerText='Next Cue'; } 
-        render(); manageSmartMic(); // Turn mic back on if audio is done
+        render(); manageSmartMic(); 
     }; 
     render(); 
 };
@@ -329,7 +332,7 @@ const toggleLock = () => { locked=!locked; document.body.className=locked?'locke
 
 // --- SPEECH RECOGNITION (WITH SMART MIC MANAGEMENT) ---
 let recognition; let isListening = false; let speechErrorOccurred = false; let processedTranscriptLength = 0;
-let userWantsMicOn = false; // Tracks if the user actually pressed the button
+let userWantsMicOn = false;
 
 const initSpeech = () => {
     window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -354,7 +357,7 @@ const initSpeech = () => {
             let nextCue = q[curIdx];
             if(nextCue && nextCue.triggerPhrase && !nextCue.globalVoice) {
                 let cleanTrigger = nextCue.triggerPhrase.toLowerCase().replace(/[.,!?]/g, '').trim();
-                if(cleanTrigger && searchSpace.includes(cleanTrigger)) { playNextCue(); triggered = true; }
+                if(cleanTrigger && searchSpace.includes(cleanTrigger)) { haptic(30); playNextCue(); triggered = true; }
             }
         }
         if(!triggered) {
@@ -363,6 +366,7 @@ const initSpeech = () => {
                 if(t.globalVoice && t.triggerPhrase) {
                     let cleanTrigger = t.triggerPhrase.toLowerCase().replace(/[.,!?]/g, '').trim();
                     if(cleanTrigger && searchSpace.includes(cleanTrigger)) {
+                        haptic(30);
                         if(t.type === 'queue') playCue(t.id); else playPad(t);
                         triggered = true; break;
                     }
@@ -386,7 +390,6 @@ const manageSmartMic = () => {
     if(!userWantsMicOn || !recognition) return;
     
     if(settings.autoPauseMic && audioIsPlaying()) {
-        // Audio is playing, pause the mic
         isListening = false;
         try { recognition.stop(); } catch(e) {}
         $('mic-btn').classList.remove('mic-active');
@@ -394,7 +397,6 @@ const manageSmartMic = () => {
         $('mic-icon').innerText = 'mic_off';
         $('speech-text').innerText = 'Mic paused during playback...';
     } else {
-        // Audio stopped, resume the mic
         if(!isListening) {
             isListening = true;
             try { recognition.start(); } catch(e) {}
@@ -422,6 +424,7 @@ const toggleMic = () => {
 new Sortable($('track-list'),{
     handle:'.drag-handle', animation:250,
     onEnd: () => {
+        haptic(10);
         let ids = Array.from($('track-list').children).map(e=>e.id.replace('tile-',''));
         let q = tracks.filter(t=>t.type==='queue'); let p = tracks.filter(t=>t.type==='pad');
         q.sort((a,b)=>ids.indexOf(a.id)-ids.indexOf(b.id)); tracks = [...q,...p]; saveData(); render();
