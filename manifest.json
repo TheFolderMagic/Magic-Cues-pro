@@ -1,16 +1,16 @@
 {
   "name": "Magic Cues Pro",
-  "short_name": "MagicCues",
-  "start_url": "index.html",
+  "short_name": "Magic Cues",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#09090b",
-  "theme_color": "#007AFF",
-  "orientation": "portrait",
+  "theme_color": "#1c1c1e",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/3659/3659798.png",
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='112' fill='%2318181b'/><path d='M256 120L286.5 225.5L392 256L286.5 286.5L256 392L225.5 286.5L120 256L225.5 225.5L256 120Z' fill='%23007AFF'/><circle cx='256' cy='256' r='24' fill='white'/></svg>",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }
