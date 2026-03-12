@@ -70,7 +70,7 @@ summary::after{content:'expand_more';font-family:'Material Symbols Rounded';font
 details[open] summary::after{transform:rotate(180deg)}
 .details-content{padding:0 16px 16px 16px;display:flex;flex-direction:column;gap:12px}
 .mini-row{display:flex;justify-content:space-between;align-items:center}
-.mini-row label{font-size:14px;font-weight:500;color:var(--text-muted)}
+.mini-row label{font-size:14px;font-weight:500;color:var(--text-main)}
 .danger-zone{margin-top:20px;border-top:1px solid var(--glass-border);padding-top:20px}
 .btn-delete{width:100%;padding:18px;border-radius:16px;background:rgba(255,69,58,.15);color:var(--danger);font-weight:700;font-size:16px;border:1px solid var(--danger)}
 #file-input{display:none}
@@ -144,7 +144,7 @@ details[open] summary::after{transform:rotate(180deg)}
     <div class="setting-row"><label>Show Progress Fill</label><input type="checkbox" id="progress-toggle" onchange="haptic(10); toggleProgress(this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
     <div class="setting-row"><label>Confirm Reset</label><input type="checkbox" id="confirm-reset-toggle" onchange="haptic(10); updConfRes(this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
     <div class="setting-row"><label>Auto-Pause Mic During Audio</label><input type="checkbox" id="auto-pause-mic-toggle" onchange="haptic(10); updAutoPauseMic(this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
-    <div class="setting-row" style="border-top:1px solid var(--glass-border); margin-top:10px; padding-top:20px;"><label>UI Size</label><input type="range" min="50" max="150" step="25" value="100" id="ui-size-slider" onchange="haptic(15); updUISize(this.value)" style="width:120px"></div>
+    <div class="setting-row" style="border-top:1px solid var(--glass-border); margin-top:10px; padding-top:20px;"><label>UI Size</label><input type="range" min="50" max="150" step="25" value="100" id="ui-size-slider" oninput="haptic(10)" onchange="updUISize(this.value)" style="width:120px"></div>
 </dialog>
 
 <dialog id="settings-modal">
@@ -238,13 +238,12 @@ const openSet = id => {
     activeId=id; let t=tracks.find(x=>x.id===id); let isQ = t.type === 'queue';
     $('modal-content').innerHTML=`
     <div class="setting-row" style="flex-direction:column;align-items:flex-start;padding-bottom:20px"><label>Cue Type</label><div class="segmented-control"><button class="${isQ?'active':''}" onclick="haptic(10); updTrk('type','queue')">Main</button><button class="${t.type==='pad'?'active':''}" onclick="haptic(10); updTrk('type','pad')">Instant</button></div></div>
-    <div class="setting-row"><label>Volume</label><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="updTrk('volume',this.value)"></div>
+    <div class="setting-row"><label>Volume</label><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="haptic(5); updTrk('volume',this.value)"></div>
     
     <details><summary onclick="haptic(10)">Voice Triggers</summary><div class="details-content">
-        <p style="margin: 0 0 10px 0; font-size: 13px; color: var(--text-muted);">Trigger this cue by speaking a specific phrase.</p>
         <div class="mini-row"><label>Trigger Phrase</label><input type="text" style="width:140px;margin:0;padding:8px 12px;font-size:14px;text-align:right;" placeholder="e.g. action" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div>
-        <div style="border-top:1px solid var(--glass-border);margin:10px 0"></div>
-        <div class="mini-row"><label style="max-width:75%; line-height: 1.4;">Global Trigger <br><span style="font-size:11px;color:var(--text-muted);font-weight:400">Listen for this phrase even when it's not the next cue</span></label><input type="checkbox" ${t.globalVoice?'checked':''} onchange="haptic(10); updTrk('globalVoice',this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
+        <div style="border-top:1px solid var(--glass-border);margin:5px 0"></div>
+        <div class="mini-row"><label>Global Trigger</label><input type="checkbox" ${t.globalVoice?'checked':''} onchange="haptic(10); updTrk('globalVoice',this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
     </div></details>
 
     <details><summary onclick="haptic(10)">Advanced Audio Settings</summary><div class="details-content">
