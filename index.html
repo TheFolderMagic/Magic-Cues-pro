@@ -140,7 +140,9 @@ details[open] summary::after{transform:rotate(180deg)}
     <div class="setting-row" style="flex-direction:column;align-items:flex-start"><label style="margin-bottom:5px">Theme</label>
         <div class="segmented-control" id="theme-controls"><button id="btn-dark" class="active" onclick="setTheme('dark')">Dark</button><button id="btn-light" onclick="setTheme('light')">Light</button><button id="btn-vis" onclick="setTheme('high-vis')">High-Vis</button></div>
     </div>
-    <div class="setting-row"><label>Show Progress Fill</label><input type="checkbox" id="progress-toggle" checked onchange="toggleProgress(this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
+    <div class="setting-row"><label>Show Progress Fill</label><input type="checkbox" id="progress-toggle" onchange="toggleProgress(this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
+    <div class="setting-row"><label>UI Size</label><input type="range" min="50" max="150" value="100" id="ui-size-slider" oninput="updUISize(this.value)" style="width:120px"></div>
+    <div class="setting-row"><label>Confirm Delete</label><input type="checkbox" id="confirm-del-toggle" onchange="updConfDel(this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
 </dialog>
 
 <dialog id="settings-modal">
@@ -162,25 +164,22 @@ details[open] summary::after{transform:rotate(180deg)}
 const $ = id => document.getElementById(id);
 let tracks=[], curIdx=0, locked=!1, activeId=null, activeCues=new Map(), activePads=new Map(), paused=!1;
 let db, projectsList=[], curProjId='default', editProjId=null;
-let settings = JSON.parse(localStorage.getItem('mc_settings')) || {showProgress: true, theme: 'dark', lang: 'en-US'};
+let settings = JSON.parse(localStorage.getItem('mc_settings')) || {showProgress: true, theme: 'dark', lang: 'en-US', uiSize: 100, confirmDelete: true};
 
 const openModal = id => { document.body.classList.add('modal-open'); $(id).showModal(); };
 const closeModal = id => { $(id).close(); document.body.classList.remove('modal-open'); };
 
-const setLang = (l) => {
-    settings.lang = l; localStorage.setItem('mc_settings', JSON.stringify(settings));
-    document.querySelectorAll('#lang-controls button').forEach(b => b.classList.remove('active'));
-    $(l === 'en-US' ? 'lang-en' : 'lang-de').classList.add('active');
-    if (recognition) recognition.lang = l;
-};
-
-const applySettings = () => { setTheme(settings.theme); setLang(settings.lang); $('progress-toggle').checked=settings.showProgress; toggleProgress(settings.showProgress); };
+const setLang = (l) => { settings.lang = l; saveSettings(); document.querySelectorAll('#lang-controls button').forEach(b => b.classList.remove('active')); $(l === 'en-US' ? 'lang-en' : 'lang-de').classList.add('active'); if (recognition) recognition.lang = l; };
+const applySettings = () => { setTheme(settings.theme); setLang(settings.lang); $('progress-toggle').checked=settings.showProgress; toggleProgress(settings.showProgress); $('ui-size-slider').value = settings.uiSize || 100; $('confirm-del-toggle').checked = settings.confirmDelete !== false; applyUISize(); };
 const saveSettings = () => { localStorage.setItem('mc_settings', JSON.stringify(settings)); };
 const setTheme = t => { document.documentElement.setAttribute('data-theme',t); document.querySelectorAll('#theme-controls button').forEach(b=>b.classList.remove('active')); $(`btn-${t==='high-vis'?'vis':t}`).classList.add('active'); settings.theme=t; saveSettings(); };
 const toggleProgress = v => { document.body.classList.toggle('show-progress', v); settings.showProgress=v; saveSettings(); };
+const updUISize = v => { settings.uiSize=v; saveSettings(); applyUISize(); };
+const applyUISize = () => { document.body.style.zoom = (settings.uiSize || 100) + '%'; };
+const updConfDel = v => { settings.confirmDelete=v; saveSettings(); };
 
 const initDB = () => {
-    let req = indexedDB.open('MagicCuesProDB', 3);
+    let req = indexedDB.open('MagicCuesProDB', 4);
     req.onupgradeneeded = e => { if(!e.target.result.objectStoreNames.contains('store')) e.target.result.createObjectStore('store'); };
     req.onsuccess = e => {
         db = e.target.result;
@@ -194,7 +193,7 @@ const initDB = () => {
         };
     };
 };
-const saveData = () => { if(!db) return; db.transaction('store','readwrite').objectStore('store').put(tracks.map(t => ({id:t.id, name:t.name, type:t.type, delay:t.delay, fadeIn:t.fadeIn, fadeOut:t.fadeOut, volume:t.volume, trimStart:t.trimStart, trimEnd:t.trimEnd, autoFollow:t.autoFollow, overlap:t.overlap, postDelay:t.postDelay, triggerPhrase:t.triggerPhrase||'', file:t.file})), 'proj_'+curProjId); };
+const saveData = () => { if(!db) return; db.transaction('store','readwrite').objectStore('store').put(tracks.map(t => ({id:t.id, name:t.name, type:t.type, delay:t.delay, fadeIn:t.fadeIn, fadeOut:t.fadeOut, volume:t.volume, trimStart:t.trimStart, trimEnd:t.trimEnd, autoFollow:t.autoFollow, overlap:t.overlap, postDelay:t.postDelay, triggerPhrase:t.triggerPhrase||'', globalVoice:t.globalVoice||false, file:t.file})), 'proj_'+curProjId); };
 
 const render = () => {
     $('track-list').innerHTML=''; $('instant-grid').innerHTML=''; let qIdx=1;
@@ -202,17 +201,18 @@ const render = () => {
         if(t.type==='queue'){
             let el=document.createElement('div'); el.className=`tile ${i===curIdx?'is-current':''} ${activeCues.has(t.id)?'is-playing':''}`; el.id=`tile-${t.id}`;
             let micIndicator = t.triggerPhrase ? `<span class="material-symbols-rounded" style="color:var(--danger);font-size:16px;vertical-align:middle;margin-left:8px">mic</span>` : '';
+            if(t.globalVoice) micIndicator += `<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;vertical-align:middle;margin-left:2px">public</span>`;
             el.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><div class="tile-content"><span class="material-symbols-rounded drag-handle">drag_indicator</span><div class="tile-info" style="cursor:pointer" onclick="if(!locked)playCue('${t.id}')"><span class="tile-name-text">${qIdx++}. ${t.name}${micIndicator}</span></div><button class="icon-btn edit-trigger" style="width:40px;height:40px" onclick="openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:20px">settings</span></button></div>`;
             $('track-list').appendChild(el);
         }else{
             let el=document.createElement('div'); el.className=`cue-pad ${activePads.has(t.id)?'is-playing':''}`; el.id=`tile-${t.id}`; el.onclick=()=>playPad(t);
-            el.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><span>${t.name}</span><div class="pad-settings-trigger edit-trigger" onclick="event.stopPropagation();openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:18px">settings</span></div>`;
+            let micIndicator = t.triggerPhrase ? `<span class="material-symbols-rounded" style="color:var(--danger);font-size:14px;vertical-align:middle;margin-left:4px">mic</span>` : '';
+            el.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><span>${t.name}${micIndicator}</span><div class="pad-settings-trigger edit-trigger" onclick="event.stopPropagation();openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:18px">settings</span></div>`;
             $('instant-grid').appendChild(el);
         }
     });
 };
 
-// Shows logic
 let pressTm, didLongPress = false;
 const startPress = id => { didLongPress = false; pressTm = setTimeout(() => { didLongPress = true; editProjId=id; $('edit-show-name').value=projectsList.find(x=>x.id===id).name; openModal('edit-show-modal'); }, 600); };
 const cancelPress = () => clearTimeout(pressTm);
@@ -226,31 +226,39 @@ const switchProject = id => { if(curProjId===id) return; executeReset(); tracks.
 
 const confirmReset = () => openModal('reset-modal');
 const executeReset = () => { closeModal('reset-modal'); curIdx=0; activeCues.forEach(a=>{if(a.fadeInt)clearInterval(a.fadeInt); a.pause();}); activeCues.clear(); activePads.forEach(a=>{if(a.fadeInt)clearInterval(a.fadeInt); a.pause();}); activePads.clear(); paused=!1; $('play-text').innerText='Next Cue'; render(); };
-const handleFiles = inp => { Array.from(inp.files).forEach(f=>tracks.push({id:'id'+Date.now()+Math.random().toString(36).substr(2,5),name:f.name.replace(/\.[^/.]+$/,""),blobUrl:URL.createObjectURL(f),type:'queue',delay:0,fadeIn:0,fadeOut:0,volume:1,trimStart:0,trimEnd:0,autoFollow:false,overlap:0,postDelay:0,triggerPhrase:'',file:f})); render(); saveData(); inp.value=''; };
+const handleFiles = inp => { Array.from(inp.files).forEach(f=>tracks.push({id:'id'+Date.now()+Math.random().toString(36).substr(2,5),name:f.name.replace(/\.[^/.]+$/,""),blobUrl:URL.createObjectURL(f),type:'queue',delay:0,fadeIn:0,fadeOut:0,volume:1,trimStart:0,trimEnd:0,autoFollow:false,overlap:0,postDelay:0,triggerPhrase:'',globalVoice:false,file:f})); render(); saveData(); inp.value=''; };
 
 const openSet = id => {
     activeId=id; let t=tracks.find(x=>x.id===id); let isQ = t.type === 'queue';
     $('modal-content').innerHTML=`
     <div class="setting-row" style="flex-direction:column;align-items:flex-start;padding-bottom:20px"><label>Cue Type</label><div class="segmented-control"><button class="${isQ?'active':''}" onclick="updTrk('type','queue')">Main</button><button class="${t.type==='pad'?'active':''}" onclick="updTrk('type','pad')">Instant</button></div></div>
     <div class="setting-row"><label>Volume</label><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="updTrk('volume',this.value)"></div>
-    <details><summary>Advanced Settings</summary><div class="details-content">
-        ${isQ ? `<div class="mini-row"><label style="color:var(--danger)">Voice Trigger Phrase</label><input type="text" style="width:auto;margin:0;padding:8px 12px;font-size:14px;color:var(--danger)" placeholder="e.g. action" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div><div style="border-top:1px solid var(--glass-border);margin:5px 0"></div>` : ''}
+    
+    <details open><summary>Voice Triggers</summary><div class="details-content">
+        <div class="mini-row"><label style="color:var(--danger)">Trigger Phrase</label><input type="text" style="width:auto;margin:0;padding:8px 12px;font-size:14px;color:var(--danger)" placeholder="e.g. action" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div>
+        <div class="mini-row"><label style="color:var(--danger);font-size:13px;max-width:70%">Global Trigger (Listen anytime)</label><input type="checkbox" ${t.globalVoice?'checked':''} onchange="updTrk('globalVoice',this.checked)" style="width:20px;height:20px;accent-color:var(--danger)"></div>
+    </div></details>
+
+    <details><summary>Advanced Audio Settings</summary><div class="details-content">
         <div class="mini-row"><label>Manual Pre-Delay (s)</label><input type="number" step="0.5" value="${t.delay||0}" onchange="updTrk('delay',this.value)"></div>
         <div class="mini-row"><label>Fade In (s)</label><input type="number" step="0.5" value="${t.fadeIn||0}" onchange="updTrk('fadeIn',this.value)"></div>
         <div class="mini-row"><label>Fade Out (s)</label><input type="number" step="0.5" value="${t.fadeOut||0}" onchange="updTrk('fadeOut',this.value)"></div>
         <div style="border-top:1px solid var(--glass-border);margin:5px 0"></div>
         <div class="mini-row"><label>Trim Start (s)</label><input type="number" step="0.5" value="${t.trimStart||0}" onchange="updTrk('trimStart',this.value)"></div>
         <div class="mini-row"><label>Trim End (s)</label><input type="number" step="0.5" value="${t.trimEnd||0}" onchange="updTrk('trimEnd',this.value)"></div>
-        <div style="border-top:1px solid var(--glass-border);margin:5px 0"></div>
+        ${isQ ? `<div style="border-top:1px solid var(--glass-border);margin:5px 0"></div>
         <div class="mini-row"><label style="color:var(--accent);font-weight:700">Auto-Follow Next Cue</label><input type="checkbox" ${t.autoFollow?'checked':''} onchange="updTrk('autoFollow',this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
         <div class="mini-row"><label>Overlap (s) [Starts Early]</label><input type="number" step="0.5" value="${t.overlap||0}" onchange="updTrk('overlap',this.value)"></div>
-        <div class="mini-row"><label>Post-Delay (s) [Starts Late]</label><input type="number" step="0.5" value="${t.postDelay||0}" onchange="updTrk('postDelay',this.value)"></div>
+        <div class="mini-row"><label>Post-Delay (s) [Starts Late]</label><input type="number" step="0.5" value="${t.postDelay||0}" onchange="updTrk('postDelay',this.value)"></div>` : ''}
     </div></details>`;
     openModal('settings-modal');
 };
 
-const updTrk = (k,v) => { let t=tracks.find(x=>x.id===activeId); if(t){ let val = (k==='type'||k==='autoFollow'||k==='triggerPhrase') ? v : parseFloat(v); t[k] = val; if(k==='volume'){ if(activeCues.has(activeId)) activeCues.get(activeId).volume = val; if(activePads.has(activeId)) activePads.get(activeId).volume = val; } if(k==='type') closeModal('settings-modal'); render(); saveData(); } };
-const deleteTrack = () => { let t=tracks.find(x=>x.id===activeId); if(t&&t.blobUrl)URL.revokeObjectURL(t.blobUrl); tracks=tracks.filter(x=>x.id!==activeId); closeModal('settings-modal'); render(); saveData(); };
+const updTrk = (k,v) => { let t=tracks.find(x=>x.id===activeId); if(t){ let val = (k==='type'||k==='autoFollow'||k==='triggerPhrase'||k==='globalVoice') ? v : parseFloat(v); t[k] = val; if(k==='volume'){ if(activeCues.has(activeId)) activeCues.get(activeId).volume = val; if(activePads.has(activeId)) activePads.get(activeId).volume = val; } if(k==='type') closeModal('settings-modal'); render(); saveData(); } };
+const deleteTrack = () => { 
+    if(settings.confirmDelete !== false && !confirm("Are you sure you want to delete this cue?")) return;
+    let t=tracks.find(x=>x.id===activeId); if(t&&t.blobUrl)URL.revokeObjectURL(t.blobUrl); tracks=tracks.filter(x=>x.id!==activeId); closeModal('settings-modal'); render(); saveData(); 
+};
 
 const playCue = id => { if(locked)return; let q=tracks.filter(x=>x.type==='queue'), idx=q.findIndex(x=>x.id===id); if(idx>-1){curIdx=idx; triggerSequence(q[curIdx++]);} };
 const playNextCue = (isLayered=false) => { let q=tracks.filter(x=>x.type==='queue'); if(curIdx>=q.length)return; triggerSequence(q[curIdx++], isLayered); };
@@ -313,34 +321,67 @@ const toggleGlobalPause = () => {
 };
 const toggleLock = () => { locked=!locked; document.body.className=locked?'locked show-progress':'unlocked show-progress'; $('lock-icon').innerText=locked?'lock':'lock_open'; render(); };
 
-// --- SPEECH RECOGNITION (GERMAN ENABLED) ---
-let recognition; let isListening = false; let speechErrorOccurred = false;
+// --- SPEECH RECOGNITION (GERMAN ENABLED, BUG FIXED) ---
+let recognition; let isListening = false; let speechErrorOccurred = false; 
+let processedTranscriptLength = 0; // Fixes the stutter loop!
 
 const initSpeech = () => {
     window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if(!window.SpeechRecognition) return;
     recognition = new window.SpeechRecognition(); recognition.continuous = true; recognition.interimResults = true;
     recognition.lang = settings.lang;
+    
+    recognition.onstart = () => { processedTranscriptLength = 0; };
 
     recognition.onresult = (event) => {
-        let transcript = '';
-        for (let i = event.resultIndex; i < event.results.length; ++i) transcript += event.results[i][0].transcript;
-        $('speech-text').innerText = transcript;
-        let cleanTranscript = transcript.toLowerCase().replace(/[.,!?]/g, '').trim();
+        let fullTranscript = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) { fullTranscript += event.results[i][0].transcript; }
+        $('speech-text').innerText = fullTranscript;
+        
+        // Only search the NEW audio words to prevent stuttering
+        let newAudioText = fullTranscript.substring(processedTranscriptLength);
+        let searchSpace = newAudioText.toLowerCase().replace(/[.,!?]/g, '').trim();
+        if(!searchSpace) return;
+
+        let triggered = false;
+
+        // 1. Check "Next Cue" in Main Queue
         let q = tracks.filter(x=>x.type==='queue');
         if(curIdx < q.length) {
             let nextCue = q[curIdx];
-            if(nextCue.triggerPhrase) {
+            if(nextCue && nextCue.triggerPhrase && !nextCue.globalVoice) {
                 let cleanTrigger = nextCue.triggerPhrase.toLowerCase().replace(/[.,!?]/g, '').trim();
-                if(cleanTranscript.includes(cleanTrigger) && cleanTrigger !== '') {
-                    nextCue.triggerPhrase = ''; $('speech-text').innerText = "..."; playNextCue();
+                if(cleanTrigger && searchSpace.includes(cleanTrigger)) {
+                    playNextCue();
+                    triggered = true;
                 }
             }
+        }
+
+        // 2. Check all "Global" Voice Triggers (Main and Instant Cues)
+        if(!triggered) {
+            for(let i=0; i<tracks.length; i++) {
+                let t = tracks[i];
+                if(t.globalVoice && t.triggerPhrase) {
+                    let cleanTrigger = t.triggerPhrase.toLowerCase().replace(/[.,!?]/g, '').trim();
+                    if(cleanTrigger && searchSpace.includes(cleanTrigger)) {
+                        if(t.type === 'queue') playCue(t.id);
+                        else playPad(t);
+                        triggered = true;
+                        break; // Stop after first match
+                    }
+                }
+            }
+        }
+
+        if(triggered) {
+            // "Consume" the transcript so it doesn't trigger again
+            processedTranscriptLength = fullTranscript.length;
         }
     };
     
     recognition.onerror = (event) => { speechErrorOccurred = true; turnMicOffUI(); };
-    recognition.onend = () => { if(isListening && !speechErrorOccurred) try { recognition.start(); } catch(e){} speechErrorOccurred = false; };
+    recognition.onend = () => { processedTranscriptLength = 0; if(isListening && !speechErrorOccurred) try { recognition.start(); } catch(e){} speechErrorOccurred = false; };
 };
 
 const turnMicOffUI = () => { isListening = false; $('mic-btn').classList.remove('mic-active'); $('mic-icon').innerText = 'mic_off'; }
@@ -348,7 +389,7 @@ const turnMicOffUI = () => { isListening = false; $('mic-btn').classList.remove(
 const toggleMic = () => {
     isListening = !isListening; let btn = $('mic-btn');
     if(isListening) {
-        speechErrorOccurred = false;
+        speechErrorOccurred = false; processedTranscriptLength = 0;
         try { recognition.start(); btn.classList.add('mic-active'); $('mic-icon').innerText = 'mic'; $('speech-debug').style.display = 'block'; $('speech-text').innerText = 'Listening...'; } 
         catch(e) {}
     } else { recognition.stop(); turnMicOffUI(); $('speech-debug').style.display = 'none'; $('speech-text').innerText = '...'; }
