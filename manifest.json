@@ -1,0 +1,16 @@
+{
+  "name": "Magic Cues Pro",
+  "short_name": "MagicCues",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#007AFF",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3659/3659798.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
