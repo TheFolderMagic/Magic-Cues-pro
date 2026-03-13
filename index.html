@@ -228,6 +228,7 @@ const render = () => {
 
 // --- START OF UPDATED EXPORT / IMPORT ENGINE ---
 const fileToBase64 = file => new Promise((resolve, reject) => { let reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error); });
+const base64ToFile = (dataurl, filename) => { let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1], bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n); while(n--){ u8arr[n] = bstr.charCodeAt(n); } return new File([u8arr], filename, {type:mime}); };
 
 const exportShow = async () => {
     let p = projectsList.find(x=>x.id===editProjId); if(!p) return;
@@ -261,20 +262,21 @@ const importShow = async (inp) => {
         
         let importedTracks = [];
         for(let t of data.tracks) {
-            let res = await fetch(t.file);
-            let blob = await res.blob();
-            importedTracks.push({...t, file: blob}); 
+            let restoredFile = base64ToFile(t.file, t.name + ".mp3"); 
+            importedTracks.push({...t, file: restoredFile}); 
         }
         
         projectsList.push({id: nId, name: data.name || "Imported Show"});
         let tx = db.transaction('store','readwrite');
         tx.objectStore('store').put(projectsList, 'projectList');
-        tx.objectStore('store').put(importedTracks, nId);
+        // The fix: Added 'proj_' so it saves in the exact place the app looks for it
+        tx.objectStore('store').put(importedTracks, 'proj_'+nId); 
         tx.oncomplete = () => { inp.value = ''; switchProject(nId); };
-    } catch(err) { alert("Import failed. Make sure it's a valid .magic file."); }
+    } catch(err) { alert("Import failed. Make sure it's a valid .magic file."); console.error(err); }
     inp.value = '';
 };
 // --- END OF UPDATED EXPORT / IMPORT ENGINE ---
+
 
 let pressTm, didLongPress = false;
 const startPress = id => { didLongPress = false; pressTm = setTimeout(() => { haptic(30); didLongPress = true; editProjId=id; $('edit-show-name').value=projectsList.find(x=>x.id===id).name; openModal('edit-show-modal'); }, 600); };
