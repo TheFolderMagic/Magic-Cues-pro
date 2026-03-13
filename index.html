@@ -36,6 +36,7 @@ html[data-theme="high-vis"] #master-play{color:#000}
 .action-btn{flex:1;background:var(--glass);color:var(--text-main);padding:16px;border-radius:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;border:1px solid var(--glass-border)}
 #track-list{display:flex;flex-direction:column;gap:12px}
 .tile, .cue-pad{background:var(--glass);border-radius:20px;position:relative;overflow:hidden;border:1px solid var(--glass-border);backdrop-filter:blur(10px);transition:all .3s}
+.sortable-ghost{opacity:0.4;background:var(--accent-glow);border-color:var(--accent)}
 .is-playing{border:1px solid var(--accent)!important;box-shadow:0 0 20px var(--accent-glow)}
 html[data-theme="high-vis"] .is-playing{border-color:#ff0!important}
 .tile-content, .cue-pad span, .pad-settings-trigger{position:relative;z-index:2}
@@ -102,13 +103,18 @@ details[open] summary::after{transform:rotate(180deg)}
     <button class="action-btn" onclick="haptic([15, 30, 15]); triggerReset()"><span class="material-symbols-rounded">restart_alt</span> Reset</button>
 </div>
 <input type="file" id="file-input" accept="audio/*" multiple onchange="handleFiles(this)">
+<input type="file" id="import-file-input" accept=".magic" style="display:none" onchange="importShow(this)">
+
 <div id="queue-container"><h2 id="queue-label">Main Queue</h2><div id="track-list"></div></div>
 <h2>Instant Cues</h2><div id="instant-grid"></div>
 
 <dialog id="projects-modal">
     <div class="modal-header"><span class="modal-title">My Shows</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10); closeModal('projects-modal')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
     <div id="projects-list-container" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px;"></div>
-    <button class="action-btn" style="width:100%" onclick="haptic(15); closeModal('projects-modal'); openModal('new-show-modal')"><span class="material-symbols-rounded">add</span> New Show</button>
+    <div style="display:flex;gap:12px;">
+        <button class="action-btn" style="margin:0;flex:1" onclick="haptic(15); $('import-file-input').click()"><span class="material-symbols-rounded">upload</span> Import</button>
+        <button class="action-btn" style="margin:0;flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15); closeModal('projects-modal'); openModal('new-show-modal')"><span class="material-symbols-rounded">add</span> New Show</button>
+    </div>
 </dialog>
 
 <dialog id="new-show-modal">
@@ -121,8 +127,10 @@ details[open] summary::after{transform:rotate(180deg)}
 </dialog>
 
 <dialog id="edit-show-modal">
+    <button style="position:absolute;width:0;height:0;opacity:0;pointer-events:none;" autofocus></button>
     <div class="modal-header"><span class="modal-title">Edit Show</span></div>
     <input type="text" id="edit-show-name" autocomplete="off">
+    <button id="export-btn" class="action-btn" style="width:100%; margin-bottom: 20px;" onclick="haptic(15); exportShow()"><span class="material-symbols-rounded">download</span> Export to File</button>
     <div style="display:flex;gap:12px;margin-bottom:12px">
         <button class="action-btn" style="margin:0;border:none" onclick="haptic(10); closeModal('edit-show-modal')">Cancel</button>
         <button class="action-btn" style="margin:0;flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15); saveShowEdit()">Save</button>
@@ -168,7 +176,6 @@ let tracks=[], curIdx=0, locked=!1, activeId=null, activeCues=new Map(), activeP
 let db, projectsList=[], curProjId='default', editProjId=null;
 let settings = JSON.parse(localStorage.getItem('mc_settings')) || {showProgress: true, theme: 'dark', lang: 'en-US', uiSize: 100, confirmReset: true, autoPauseMic: true};
 
-// HAPTIC ENGINE
 const haptic = (pattern = 15) => { if (navigator.vibrate) navigator.vibrate(pattern); };
 
 const openModal = id => { document.body.classList.add('modal-open'); $(id).showModal(); };
@@ -219,6 +226,49 @@ const render = () => {
     });
 };
 
+// --- DATA EXPORT / IMPORT ENGINE ---
+const fileToBase64 = file => new Promise((resolve, reject) => { let reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error); });
+const base64ToFile = (dataurl, filename) => { let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1], bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n); while(n--){ u8arr[n] = bstr.charCodeAt(n); } return new File([u8arr], filename, {type:mime}); };
+
+const exportShow = async () => {
+    let p = projectsList.find(x=>x.id===editProjId); if(!p) return;
+    let btn = $('export-btn'); let ogHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="material-symbols-rounded">hourglass_empty</span> Packaging...'; btn.style.pointerEvents = 'none'; btn.style.opacity = '0.7';
+
+    db.transaction('store').objectStore('store').get('proj_'+editProjId).onsuccess = async r => {
+        let showTracks = r.target.result || [];
+        let exportData = { name: p.name, tracks: [] };
+        for(let t of showTracks) { let b64 = await fileToBase64(t.file); exportData.tracks.push({ ...t, file: b64, blobUrl: null }); }
+        
+        let blob = new Blob([JSON.stringify(exportData)], {type: "application/json"});
+        let url = URL.createObjectURL(blob); let a = document.createElement('a');
+        a.href = url; a.download = `${p.name.replace(/[^a-z0-9]/gi, '_')}.magic`; a.click(); URL.revokeObjectURL(url);
+        
+        btn.innerHTML = ogHtml; btn.style.pointerEvents = 'auto'; btn.style.opacity = '1'; closeModal('edit-show-modal');
+    };
+};
+
+const importShow = async (inp) => {
+    if(!inp.files.length) return;
+    let file = inp.files[0]; let reader = new FileReader();
+    reader.onload = e => {
+        try {
+            let data = JSON.parse(e.target.result);
+            let nId = 'proj_'+Date.now();
+            projectsList.push({id: nId, name: data.name || "Imported Show"});
+            
+            let importedTracks = [];
+            for(let t of data.tracks) { let restoredFile = base64ToFile(t.file, t.name + ".mp3"); importedTracks.push({...t, file: restoredFile}); }
+            
+            let tx = db.transaction('store','readwrite');
+            tx.objectStore('store').put(projectsList, 'projectList');
+            tx.objectStore('store').put(importedTracks, nId);
+            tx.oncomplete = () => { inp.value = ''; switchProject(nId); };
+        } catch(err) { alert("File error. Make sure it's a valid .magic file."); }
+    };
+    reader.readAsText(file);
+};
+
 let pressTm, didLongPress = false;
 const startPress = id => { didLongPress = false; pressTm = setTimeout(() => { haptic(30); didLongPress = true; editProjId=id; $('edit-show-name').value=projectsList.find(x=>x.id===id).name; openModal('edit-show-modal'); }, 600); };
 const cancelPress = () => clearTimeout(pressTm);
@@ -239,13 +289,11 @@ const openSet = id => {
     $('modal-content').innerHTML=`
     <div class="setting-row" style="flex-direction:column;align-items:flex-start;padding-bottom:20px"><label>Cue Type</label><div class="segmented-control"><button class="${isQ?'active':''}" onclick="haptic(10); updTrk('type','queue')">Main</button><button class="${t.type==='pad'?'active':''}" onclick="haptic(10); updTrk('type','pad')">Instant</button></div></div>
     <div class="setting-row"><label>Volume</label><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="haptic(5); updTrk('volume',this.value)"></div>
-    
     <details><summary onclick="haptic(10)">Voice Triggers</summary><div class="details-content">
         <div class="mini-row"><label>Trigger Phrase</label><input type="text" style="width:140px;margin:0;padding:8px 12px;font-size:14px;text-align:right;" placeholder="e.g. action" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div>
         <div style="border-top:1px solid var(--glass-border);margin:5px 0"></div>
         <div class="mini-row"><label>Global Trigger</label><input type="checkbox" ${t.globalVoice?'checked':''} onchange="haptic(10); updTrk('globalVoice',this.checked)" style="width:20px;height:20px;accent-color:var(--accent)"></div>
     </div></details>
-
     <details><summary onclick="haptic(10)">Advanced Audio Settings</summary><div class="details-content">
         <div class="mini-row"><label>Manual Pre-Delay (s)</label><input type="number" step="0.5" value="${t.delay||0}" onchange="haptic(10); updTrk('delay',this.value)"></div>
         <div class="mini-row"><label>Fade In (s)</label><input type="number" step="0.5" value="${t.fadeIn||0}" onchange="haptic(10); updTrk('fadeIn',this.value)"></div>
@@ -321,17 +369,19 @@ const playPad = t => {
     a.play(); manageSmartMic();
 };
 
+// --- AUDIO TRACKING FOR MIC CONTROL ---
+const audioIsPlaying = () => { let playing = false; activeCues.forEach(a => { if(!a.paused) playing = true; }); activePads.forEach(a => { if(!a.paused) playing = true; }); return playing; };
+
 const toggleGlobalPause = () => { 
     paused=!paused; 
     if(paused){ activeCues.forEach(a=>a.pause()); activePads.forEach(a=>a.pause()); $('pause-icon').innerText='play_arrow'; }
     else{ activeCues.forEach(a=>a.play()); activePads.forEach(a=>a.play()); $('pause-icon').innerText='pause'; } 
-    manageSmartMic();
+    manageSmartMic(); 
 };
+
 const toggleLock = () => { locked=!locked; document.body.className=locked?'locked show-progress':'unlocked show-progress'; $('lock-icon').innerText=locked?'lock':'lock_open'; render(); };
 
-// --- SPEECH RECOGNITION (WITH SMART MIC MANAGEMENT) ---
-let recognition; let isListening = false; let speechErrorOccurred = false; let processedTranscriptLength = 0;
-let userWantsMicOn = false;
+let recognition; let isListening = false; let speechErrorOccurred = false; let processedTranscriptLength = 0; let userWantsMicOn = false;
 
 const initSpeech = () => {
     window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -376,57 +426,57 @@ const initSpeech = () => {
     };
     
     recognition.onerror = (event) => { speechErrorOccurred = true; if(userWantsMicOn && !audioIsPlaying()) { turnMicOffUI(); userWantsMicOn = false;} };
-    recognition.onend = () => { 
-        processedTranscriptLength = 0; 
-        if(isListening && userWantsMicOn && !speechErrorOccurred) try { recognition.start(); } catch(e){} 
-        speechErrorOccurred = false; 
-    };
+    recognition.onend = () => { processedTranscriptLength = 0; if(isListening && userWantsMicOn && !speechErrorOccurred) try { recognition.start(); } catch(e){} speechErrorOccurred = false; };
 };
-
-const audioIsPlaying = () => { return activeCues.size > 0 || activePads.size > 0; };
 
 const manageSmartMic = () => {
     if(!userWantsMicOn || !recognition) return;
-    
     if(settings.autoPauseMic && audioIsPlaying()) {
-        isListening = false;
-        try { recognition.stop(); } catch(e) {}
-        $('mic-btn').classList.remove('mic-active');
-        $('mic-btn').classList.add('mic-paused');
-        $('mic-icon').innerText = 'mic_off';
-        $('speech-text').innerText = 'Mic paused during playback...';
+        isListening = false; try { recognition.stop(); } catch(e) {}
+        $('mic-btn').classList.remove('mic-active'); $('mic-btn').classList.add('mic-paused'); $('mic-icon').innerText = 'mic_off'; $('speech-text').innerText = 'Mic paused during playback...';
     } else {
-        if(!isListening) {
-            isListening = true;
-            try { recognition.start(); } catch(e) {}
-        }
+        if(!isListening) { isListening = true; try { recognition.start(); } catch(e) {} }
     }
 };
 
 const turnMicOffUI = () => { isListening = false; userWantsMicOn = false; $('mic-btn').classList.remove('mic-active'); $('mic-btn').classList.remove('mic-paused'); $('mic-icon').innerText = 'mic_off'; $('speech-debug').style.display = 'none'; $('speech-text').innerText = '...'; }
-
 const toggleMic = () => {
     userWantsMicOn = !userWantsMicOn;
     if(userWantsMicOn) {
         $('speech-debug').style.display = 'block';
-        if(settings.autoPauseMic && audioIsPlaying()) {
-            $('mic-btn').classList.add('mic-paused'); $('speech-text').innerText = 'Mic paused during playback...';
-        } else {
-            isListening = true; speechErrorOccurred = false; processedTranscriptLength = 0;
-            try { recognition.start(); } catch(e) {}
-        }
-    } else {
-        isListening = false; try { recognition.stop(); } catch(e) {} turnMicOffUI();
-    }
+        if(settings.autoPauseMic && audioIsPlaying()) { $('mic-btn').classList.add('mic-paused'); $('speech-text').innerText = 'Mic paused during playback...'; } 
+        else { isListening = true; speechErrorOccurred = false; processedTranscriptLength = 0; try { recognition.start(); } catch(e) {} }
+    } else { isListening = false; try { recognition.stop(); } catch(e) {} turnMicOffUI(); }
 };
 
-new Sortable($('track-list'),{
-    handle:'.drag-handle', animation:250,
+new Sortable($('track-list'), {
+    handle: '.drag-handle',
+    animation: 300,
+    easing: "cubic-bezier(1, 0, 0, 1)",
+    ghostClass: "sortable-ghost",
+    onStart: () => haptic(15),
+    onChange: () => haptic(5),
     onEnd: () => {
-        haptic(10);
-        let ids = Array.from($('track-list').children).map(e=>e.id.replace('tile-',''));
-        let q = tracks.filter(t=>t.type==='queue'); let p = tracks.filter(t=>t.type==='pad');
-        q.sort((a,b)=>ids.indexOf(a.id)-ids.indexOf(b.id)); tracks = [...q,...p]; saveData(); render();
+        haptic(15);
+        let ids = Array.from($('track-list').children).map(e => e.id.replace('tile-', ''));
+        let q = tracks.filter(t => t.type === 'queue');
+        let p = tracks.filter(t => t.type === 'pad');
+        q.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+        tracks = [...q, ...p];
+        saveData();
+        
+        // Lightweight visual update to keep drop animation intact
+        let qIdx = 1;
+        Array.from($('track-list').children).forEach(el => {
+            let id = el.id.replace('tile-', '');
+            let t = tracks.find(x => x.id === id);
+            if(t) {
+                let titleSpan = el.querySelector('.tile-name-text');
+                let micInd = t.triggerPhrase ? `<span class="material-symbols-rounded" style="color:var(--text-muted);font-size:16px;vertical-align:middle;margin-left:8px">mic</span>` : '';
+                if(t.globalVoice) micInd += `<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;vertical-align:middle;margin-left:2px">public</span>`;
+                if(titleSpan) titleSpan.innerHTML = `${qIdx++}. ${t.name}${micInd}`;
+            }
+        });
     }
 });
 
