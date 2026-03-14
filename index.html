@@ -73,13 +73,13 @@ details{background:rgba(128,128,128,.1);border-radius:18px;margin-bottom:12px;ov
 <dialog id="pocket-confirm-modal">
     <div class="modal-header"><span class="modal-title">Unlock Workspace?</span></div><p style="color:var(--text-muted);margin:0 0 15px">This will exit Pocket Mode.</p>
     <div style="margin-bottom:25px;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);padding:12px;border-radius:12px"><input type="checkbox" id="pocket-unlock-check" style="width:24px;height:24px;accent-color:var(--accent)"><label style="font-size:15px;font-weight:600">Confirm Unlock</label></div>
-    <div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="closeModal('pocket-confirm-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="confirmPocketExit()">Unlock</button></div>
+    <div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10); closeModal('pocket-confirm-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="confirmPocketExit()">Unlock</button></div>
 </dialog>
 
 <dialog id="custom-alert-modal">
     <div class="modal-header"><span class="modal-title" id="alert-title">Notice</span></div>
     <p id="alert-msg" style="color:var(--text-muted);margin-bottom:25px;line-height:1.5;"></p>
-    <button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="closeModal('custom-alert-modal')">OK</button>
+    <button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10); closeModal('custom-alert-modal')">OK</button>
 </dialog>
 
 <dialog id="nfc-write-modal" oncancel="cancelNfcWrite()">
@@ -90,58 +90,60 @@ details{background:rgba(128,128,128,.1);border-radius:18px;margin-bottom:12px;ov
 </dialog>
 <dialog id="nfc-success-modal">
     <div class="modal-header"><span class="modal-title">Success!</span></div><div style="text-align:center;margin:20px 0"><span class="material-symbols-rounded" style="font-size:60px;color:#34c759">check_circle</span></div>
-    <p style="text-align:center;color:var(--text-muted);margin-bottom:25px">Your NFC tag was programmed successfully.</p><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="closeModal('nfc-success-modal')">Done</button>
+    <p style="text-align:center;color:var(--text-muted);margin-bottom:25px">Your NFC tag was programmed successfully.</p><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10); closeModal('nfc-success-modal')">Done</button>
 </dialog>
 
 <dialog id="projects-modal">
-    <div class="modal-header"><span class="modal-title">My Shows</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="closeModal('projects-modal')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
+    <div class="modal-header"><span class="modal-title">My Shows</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10); closeModal('projects-modal')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
     <div id="projects-list-container" style="max-height:300px;overflow-y:auto;margin-bottom:20px"></div>
-    <div style="display:flex;gap:12px"><button class="action-btn" style="flex:1" onclick="$('import-file-input').click()"><span class="material-symbols-rounded">upload</span> Import</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="closeModal('projects-modal');openModal('new-show-modal')"><span class="material-symbols-rounded">add</span> New</button></div>
+    <div style="display:flex;gap:12px"><button class="action-btn" style="flex:1" onclick="haptic(15); $('import-file-input').click()"><span class="material-symbols-rounded">upload</span> Import</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15); closeModal('projects-modal');openModal('new-show-modal')"><span class="material-symbols-rounded">add</span> New</button></div>
 </dialog>
 <dialog id="new-show-modal">
-    <div class="modal-header"><span class="modal-title">Create Show</span></div><input type="text" id="new-show-name" placeholder="Enter show name..."><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="closeModal('new-show-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="createNewProject()">Create</button></div>
+    <div class="modal-header"><span class="modal-title">Create Show</span></div><input type="text" id="new-show-name" placeholder="Enter show name..."><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10); closeModal('new-show-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15); createNewProject()">Create</button></div>
 </dialog>
 <dialog id="edit-show-modal">
-    <div class="modal-header"><span class="modal-title">Edit Show</span></div><input type="text" id="edit-show-name"><button class="action-btn" style="width:100%;margin-bottom:20px" onclick="exportShow()"><span class="material-symbols-rounded">download</span> Export File</button>
-    <div style="display:flex;gap:12px;margin-bottom:12px"><button class="action-btn" style="border:none" onclick="closeModal('edit-show-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="saveShowEdit()">Save</button></div>
-    <button class="btn-delete" onclick="deleteShow()">Delete Show</button>
+    <div class="modal-header"><span class="modal-title">Edit Show</span></div><input type="text" id="edit-show-name"><button class="action-btn" style="width:100%;margin-bottom:20px" onclick="haptic(15); exportShow()"><span class="material-symbols-rounded">download</span> Export File</button>
+    <div style="display:flex;gap:12px;margin-bottom:12px"><button class="action-btn" style="border:none" onclick="haptic(10); closeModal('edit-show-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15); saveShowEdit()">Save</button></div>
+    <button class="btn-delete" onclick="haptic(15); deleteShow()">Delete Show</button>
 </dialog>
 
 <dialog id="app-settings">
-    <div class="modal-header"><span class="modal-title">App Settings</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="closeModal('app-settings')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
-    <div class="setting-row" style="flex-direction:column;align-items:flex-start"><label>Speech Language</label><div class="segmented-control" id="lang-controls"><button id="lang-en" class="active" onclick="setLang('en-US')">English</button><button id="lang-de" onclick="setLang('de-DE')">Deutsch</button></div></div>
-    <div class="setting-row" style="flex-direction:column;align-items:flex-start"><label>Theme</label><div class="segmented-control" id="theme-controls"><button id="btn-dark" class="active" onclick="setTheme('dark')">Dark</button><button id="btn-light" onclick="setTheme('light')">Light</button><button id="btn-vis" onclick="setTheme('high-vis')">High-Vis</button></div></div>
-    <div class="setting-row" style="margin-bottom:25px"><label>UI Size</label><input type="range" min="50" max="150" step="25" id="ui-size-slider" onchange="updSet('uiSize',this.value); applyUISize()" style="width:120px"></div>
+    <div class="modal-header"><span class="modal-title">App Settings</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10); closeModal('app-settings')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
+    <div class="setting-row" style="flex-direction:column;align-items:flex-start"><label>Speech Language</label><div class="segmented-control" id="lang-controls"><button id="lang-en" class="active" onclick="haptic(10); setLang('en-US')">English</button><button id="lang-de" onclick="haptic(10); setLang('de-DE')">Deutsch</button></div></div>
+    <div class="setting-row" style="flex-direction:column;align-items:flex-start"><label>Theme</label><div class="segmented-control" id="theme-controls"><button id="btn-dark" class="active" onclick="haptic(10); setTheme('dark')">Dark</button><button id="btn-light" onclick="haptic(10); setTheme('light')">Light</button><button id="btn-vis" onclick="haptic(10); setTheme('high-vis')">High-Vis</button></div></div>
+    <div class="setting-row" style="margin-bottom:25px"><label>UI Size</label><input type="range" min="50" max="150" step="25" id="ui-size-slider" onchange="haptic(10); updSet('uiSize',this.value); applyUISize()" style="width:120px"></div>
     
     <details onselect="haptic(10)"><summary>Advanced Settings</summary><div class="details-content">
-        <div class="mini-row"><label>Show Progress Fill</label><input type="checkbox" id="progress-toggle" onchange="updSet('showProgress',this.checked); toggleProgress(this.checked)" style="width:20px;height:20px"></div>
-        <div class="mini-row"><label>Confirm Reset</label><input type="checkbox" id="confirm-reset-toggle" onchange="updSet('confirmReset',this.checked)" style="width:20px;height:20px"></div>
-        <div class="mini-row"><label>Auto-Pause Mic</label><input type="checkbox" id="auto-pause-mic-toggle" onchange="updSet('autoPauseMic',this.checked)" style="width:20px;height:20px"></div>
-        <div class="mini-row"><label>Enable Haptics</label><input type="checkbox" id="haptics-toggle" onchange="updSet('enableHaptics',this.checked)" style="width:20px;height:20px"></div>
-        <div class="mini-row"><label>Enable Dragging</label><input type="checkbox" id="dragging-toggle" onchange="updSet('enableDragging',this.checked); initSortables()" style="width:20px;height:20px"></div>
-        <div class="mini-row"><label>Pocket Mode</label><input type="checkbox" id="pocket-toggle" onchange="updSet('pocketMode',this.checked)" style="width:20px;height:20px"></div>
-        <div class="mini-row"><label>NFC Tag Reader</label><input type="checkbox" id="nfc-toggle" onchange="updSet('nfcEnabled',this.checked); toggleNFCState(this.checked)" style="width:20px;height:20px"></div>
+        <div class="mini-row"><label>Show Progress Fill</label><input type="checkbox" id="progress-toggle" onchange="haptic(10); updSet('showProgress',this.checked); toggleProgress(this.checked)" style="width:20px;height:20px"></div>
+        <div class="mini-row"><label>Confirm Reset</label><input type="checkbox" id="confirm-reset-toggle" onchange="haptic(10); updSet('confirmReset',this.checked)" style="width:20px;height:20px"></div>
+        <div class="mini-row"><label>Auto-Pause Mic</label><input type="checkbox" id="auto-pause-mic-toggle" onchange="haptic(10); updSet('autoPauseMic',this.checked)" style="width:20px;height:20px"></div>
+        <div class="mini-row"><label>Enable Haptics</label><input type="checkbox" id="haptics-toggle" onchange="haptic(10); updSet('enableHaptics',this.checked)" style="width:20px;height:20px"></div>
+        <div class="mini-row"><label>Enable Dragging</label><input type="checkbox" id="dragging-toggle" onchange="haptic(10); updSet('enableDragging',this.checked); initSortables()" style="width:20px;height:20px"></div>
+        <div class="mini-row"><label>Pocket Mode</label><input type="checkbox" id="pocket-toggle" onchange="haptic(10); updSet('pocketMode',this.checked)" style="width:20px;height:20px"></div>
+        <div class="mini-row"><label>NFC Tag Reader</label><input type="checkbox" id="nfc-toggle" onchange="haptic(10); updSet('nfcEnabled',this.checked); toggleNFCState(this.checked)" style="width:20px;height:20px"></div>
         
-        <details style="background:rgba(0,0,0,0.2);margin-top:10px;"><summary style="font-size:14px;padding:12px">Program NFC Tags</summary>
+        <details style="background:rgba(0,0,0,0.2);margin-top:10px;" onselect="haptic(10)"><summary style="font-size:14px;padding:12px">Program NFC Tags</summary>
             <div class="details-content" id="nfc-dynamic-list" style="padding-top:0;"></div>
         </details>
     </div></details>
 </dialog>
 
 <dialog id="settings-modal">
-    <div class="modal-header"><span class="modal-title">Cue Settings</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="closeModal('settings-modal')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
-    <div id="modal-content"></div><div class="danger-zone"><button class="btn-delete" onclick="deleteTrack()">Delete Cue</button></div>
+    <div class="modal-header"><span class="modal-title">Cue Settings</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10); closeModal('settings-modal')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
+    <div id="modal-content"></div><div class="danger-zone"><button class="btn-delete" onclick="haptic(20); deleteTrack()">Delete Cue</button></div>
 </dialog>
 <dialog id="reset-modal">
     <div class="modal-header"><span class="modal-title">Reset Show?</span></div><p style="color:var(--text-muted);margin:0 0 25px">Stop audio and reset queue?</p>
-    <div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="closeModal('reset-modal')">Cancel</button><button class="btn-delete" style="flex:1" onclick="executeReset()">Reset Show</button></div>
+    <div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10); closeModal('reset-modal')">Cancel</button><button class="btn-delete" style="flex:1" onclick="haptic([20,40]); executeReset()">Reset Show</button></div>
 </dialog>
 
 <script>
 const $ = id => document.getElementById(id);
 let tracks=[], curIdx=0, locked=!1, activeId=null, activeCues=new Map(), activePads=new Map(), paused=!1;
 let db, projectsList=[], curProjId='default', editProjId=null;
-let settings = JSON.parse(localStorage.getItem('mc_settings')) || {showProgress:true, theme:'dark', lang:'en-US', uiSize:100, confirmReset:false, autoPauseMic:true, pocketMode:true, nfcEnabled:false, enableHaptics:true, enableDragging:true};
+
+let defSet = {showProgress:true, theme:'dark', lang:'en-US', uiSize:100, confirmReset:false, autoPauseMic:true, pocketMode:true, nfcEnabled:false, enableHaptics:true, enableDragging:true};
+let settings = { ...defSet, ...(JSON.parse(localStorage.getItem('mc_settings')) || {}) };
 let sortQueue, sortGrid;
 
 const haptic = (p=15) => { if(settings.enableHaptics && navigator.vibrate) navigator.vibrate(p); };
@@ -155,10 +157,9 @@ const closeModal = id => { $(id).close(); document.body.classList.remove('modal-
 const buildNfcMenu = () => {
     let html = `<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_NEXT', 'Next Cue')"><span class="material-symbols-rounded">nfc</span> Program 'Next Cue'</button>
                 <button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PLAYPAUSE', 'Play/Pause')"><span class="material-symbols-rounded">nfc</span> Program 'Play/Pause'</button>
-                <button class="action-btn" style="margin-bottom:15px" onclick="haptic(10); programNfcTag('CUE_MIC', 'Toggle Mic')"><span class="material-symbols-rounded">nfc</span> Program 'Toggle Mic'</button>`;
+                <button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_MIC', 'Toggle Mic')"><span class="material-symbols-rounded">nfc</span> Program 'Toggle Mic'</button>`;
     let pads = tracks.filter(t=>t.type==='pad');
-    if(pads.length > 0) { html += `<p style="font-size:12px;color:var(--text-muted);margin:5px 0">Instant Cues</p>`; }
-    pads.forEach(p => html += `<button class="action-btn" style="margin-bottom:8px;background:rgba(0,122,255,0.1);color:var(--accent);border-color:var(--accent)" onclick="haptic(10); programNfcTag('CUE_PAD_${p.id}', '${p.name.replace(/'/g,"\\'")}')"><span class="material-symbols-rounded">nfc</span> ${p.name}</button>`);
+    pads.forEach(p => html += `<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PAD_${p.id}', '${p.name.replace(/'/g,"\\'")}')"><span class="material-symbols-rounded">nfc</span> Program '${p.name}'</button>`);
     $('nfc-dynamic-list').innerHTML = html;
 };
 
@@ -188,7 +189,7 @@ const programNfcTag = async (cmd, name) => {
     try{ await new NDEFReader().write(cmd,{signal:nfcWriteAbortCtrl.signal}); haptic([40,60,40]); closeModal('nfc-write-modal'); openModal('nfc-success-modal'); }
     catch(e){ if(e.name!=='AbortError') showAlert("Failed", "Programming failed: "+e); }
 };
-const cancelNfcWrite = () => { if(nfcWriteAbortCtrl) nfcWriteAbortCtrl.abort(); closeModal('nfc-write-modal'); };
+const cancelNfcWrite = () => { haptic(10); if(nfcWriteAbortCtrl) nfcWriteAbortCtrl.abort(); closeModal('nfc-write-modal'); };
 
 const initDB = () => {
     let r = indexedDB.open('MagicCuesProDB', 4); r.onupgradeneeded=e=>{ if(!e.target.result.objectStoreNames.contains('store')) e.target.result.createObjectStore('store'); };
@@ -202,7 +203,7 @@ const render = () => {
         let mic = t.triggerPhrase ? `<span class="material-symbols-rounded" style="color:var(--text-muted);font-size:14px;vertical-align:middle;margin-left:4px">mic</span>` : ''; if(t.globalVoice) mic += `<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;vertical-align:middle;margin-left:2px">public</span>`;
         let e=document.createElement('div'); e.id=`tile-${t.id}`;
         if(t.type==='queue'){ e.className=`tile ${i===curIdx?'is-current':''} ${activeCues.has(t.id)?'is-playing':''}`; e.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><div class="tile-content"><span class="material-symbols-rounded drag-handle">drag_indicator</span><div class="tile-info" style="cursor:pointer" onclick="if(!locked)playCue('${t.id}')"><span class="tile-name-text">${qI++}. ${t.name}${mic}</span></div><button class="icon-btn edit-trigger" style="width:40px;height:40px" onclick="haptic(10); openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:20px">settings</span></button></div>`; $('track-list').appendChild(e); }
-        else{ e.className=`cue-pad ${activePads.has(t.id)?'is-playing':''}`; e.onclick=ev=>{ if(!ev.target.closest('.pad-settings-trigger')){haptic(20); playPad(t);} }; e.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><div class="pad-number">${pI++}</div><span>${t.name}${mic}</span><div class="pad-settings-trigger edit-trigger" onclick="event.stopPropagation(); haptic(10); openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:18px">settings</span></div>`; $('instant-grid').appendChild(e); }
+        else{ e.className=`cue-pad ${activePads.has(t.id)?'is-playing':''}`; e.onclick=ev=>{ if(!ev.target.closest('.pad-settings-trigger')){playPad(t);} }; e.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><div class="pad-number">${pI++}</div><span>${t.name}${mic}</span><div class="pad-settings-trigger edit-trigger" onclick="event.stopPropagation(); haptic(10); openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:18px">settings</span></div>`; $('instant-grid').appendChild(e); }
     });
 };
 
@@ -221,9 +222,9 @@ const openSet = id => {
     $('modal-content').innerHTML=`
     <div class="setting-row" style="flex-direction:column;align-items:flex-start;padding-bottom:20px"><label>Cue Type</label><div class="segmented-control"><button class="${isQ?'active':''}" onclick="haptic(10); updTrk('type','queue')">Main</button><button class="${!isQ?'active':''}" onclick="haptic(10); updTrk('type','pad')">Instant</button></div></div>
     <div class="setting-row"><label>Volume</label><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="updTrk('volume',this.value)"></div>
-    <details><summary>Voice Triggers</summary><div class="details-content"><div class="mini-row"><label>Phrase</label><input type="text" style="width:140px;margin:0;padding:8px;font-size:14px" placeholder="e.g. action" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div><div class="mini-row"><label>Global</label><input type="checkbox" ${t.globalVoice?'checked':''} onchange="updTrk('globalVoice',this.checked)" style="width:20px;height:20px"></div></div></details>
+    <details><summary>Voice Triggers</summary><div class="details-content"><div class="mini-row"><label>Phrase</label><input type="text" style="width:140px;margin:0;padding:8px;font-size:14px" placeholder="e.g. action" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div><div class="mini-row"><label>Global</label><input type="checkbox" ${t.globalVoice?'checked':''} onchange="haptic(10); updTrk('globalVoice',this.checked)" style="width:20px;height:20px"></div></div></details>
     <details><summary>Advanced Audio</summary><div class="details-content"><div class="mini-row"><label>Pre-Delay (s)</label><input type="number" step="0.5" value="${t.delay||0}" onchange="updTrk('delay',this.value)"></div><div class="mini-row"><label>Fade In (s)</label><input type="number" step="0.5" value="${t.fadeIn||0}" onchange="updTrk('fadeIn',this.value)"></div><div class="mini-row"><label>Fade Out (s)</label><input type="number" step="0.5" value="${t.fadeOut||0}" onchange="updTrk('fadeOut',this.value)"></div><div class="mini-row"><label>Trim Start</label><input type="number" step="0.5" value="${t.trimStart||0}" onchange="updTrk('trimStart',this.value)"></div><div class="mini-row"><label>Trim End</label><input type="number" step="0.5" value="${t.trimEnd||0}" onchange="updTrk('trimEnd',this.value)"></div>
-    ${isQ?`<div class="mini-row"><label style="color:var(--accent)">Auto-Follow</label><input type="checkbox" ${t.autoFollow?'checked':''} onchange="updTrk('autoFollow',this.checked)" style="width:20px;height:20px"></div><div class="mini-row"><label>Overlap (s)</label><input type="number" step="0.5" value="${t.overlap||0}" onchange="updTrk('overlap',this.value)"></div><div class="mini-row"><label>Post-Delay</label><input type="number" step="0.5" value="${t.postDelay||0}" onchange="updTrk('postDelay',this.value)"></div>`:''}</div></details>`;
+    ${isQ?`<div class="mini-row"><label style="color:var(--accent)">Auto-Follow</label><input type="checkbox" ${t.autoFollow?'checked':''} onchange="haptic(10); updTrk('autoFollow',this.checked)" style="width:20px;height:20px"></div><div class="mini-row"><label>Overlap (s)</label><input type="number" step="0.5" value="${t.overlap||0}" onchange="updTrk('overlap',this.value)"></div><div class="mini-row"><label>Post-Delay</label><input type="number" step="0.5" value="${t.postDelay||0}" onchange="updTrk('postDelay',this.value)"></div>`:''}</div></details>`;
     openModal('settings-modal');
 };
 const updTrk = (k,v) => { let t=tracks.find(x=>x.id===activeId); if(t){ let val = (k==='type'||k==='autoFollow'||k==='triggerPhrase'||k==='globalVoice')?v:parseFloat(v); t[k]=val; if(k==='volume'){ if(activeCues.has(activeId)) activeCues.get(activeId).volume=val; if(activePads.has(activeId)) activePads.get(activeId).volume=val; } if(k==='type') closeModal('settings-modal'); render(); saveData(); } };
@@ -247,6 +248,7 @@ const runAud = (t, L) => {
     a.onended=()=>{ if(t.autoFollow&&!af){ af=!0; if(pd>0){$('play-text').innerText=`Wait ${pd}s...`; setTimeout(()=>playNextCue(!1), pd*1000);}else playNextCue(!1); } activeCues.delete(t.id); if(activeCues.size===0) $('play-text').innerText='Next Cue'; render(); manageSmartMic(); }; render(); 
 };
 const playPad = t => { 
+    haptic(20);
     if(activePads.has(t.id)){ let oA=activePads.get(t.id); if(oA.fadeInt)clearInterval(oA.fadeInt); oA.pause(); activePads.delete(t.id); render(); manageSmartMic(); return; }
     let a=new Audio(t.blobUrl); a.currentTime=t.trimStart||0; a.volume=t.volume??1; activePads.set(t.id,a); render();
     a.ontimeupdate=()=>{ let d=t.trimEnd?t.trimEnd:a.duration; let pEl=$('prog-'+t.id); if(pEl) pEl.style.width=Math.max(0,Math.min(100,((a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100)))+'%'; if(a.currentTime>=d){ a.pause(); activePads.delete(t.id); render(); manageSmartMic(); } };
