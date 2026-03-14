@@ -79,7 +79,6 @@ details[open] summary::after{transform:rotate(180deg)}
 .project-item:active{transform:scale(0.98)}
 .project-item.active{border-color:var(--accent);background:var(--accent-glow)}
 
-/* --- NEW POCKET MODE STYLES --- */
 #pocket-mode-overlay { position:fixed; top:0; left:0; width:100vw; height:100vh; background-color:#000000; z-index:9998; display:none; align-items:center; justify-content:center; }
 #pocket-exit-btn { background:#111; color:#444; border:2px solid #222; border-radius:50%; width:80px; height:80px; font-size:32px; display:flex; align-items:center; justify-content:center; transition:all 0.2s;}
 #pocket-exit-btn:active { background:#222; color:#666; }
@@ -122,12 +121,19 @@ details[open] summary::after{transform:rotate(180deg)}
 
 <dialog id="pocket-confirm-modal">
     <div class="modal-header"><span class="modal-title">Unlock Workspace?</span></div>
-    <p style="color:var(--text-muted);margin:0 0 25px 0;font-size:15px;line-height:1.5;">This will exit Pocket Mode and reactivate the screen.</p>
+    <p style="color:var(--text-muted);margin:0 0 15px 0;font-size:15px;line-height:1.5;">This will exit Pocket Mode and reactivate the screen.</p>
+    
+    <div style="margin-bottom: 25px; display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; border: 1px solid var(--glass-border);">
+        <input type="checkbox" id="pocket-unlock-check" style="width: 24px; height: 24px; accent-color: var(--accent);">
+        <label for="pocket-unlock-check" style="font-size: 15px; font-weight: 600; color:var(--text-main)">Confirm Unlock</label>
+    </div>
+
     <div style="display:flex;gap:12px;">
         <button class="action-btn" style="margin:0;border:none" onclick="haptic(10); closeModal('pocket-confirm-modal')">Cancel</button>
-        <button class="action-btn" style="margin:0;flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic([20, 30]); confirmPocketExit()">Unlock</button>
+        <button class="action-btn" style="margin:0;flex:1;background:var(--accent);color:#fff;border:none" onclick="confirmPocketExit()">Unlock</button>
     </div>
 </dialog>
+
 <dialog id="projects-modal">
     <div class="modal-header"><span class="modal-title">My Shows</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10); closeModal('projects-modal')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
     <div id="projects-list-container" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px;"></div>
@@ -181,6 +187,14 @@ details[open] summary::after{transform:rotate(180deg)}
         <label>Enable NFC Tag Reader</label>
         <input type="checkbox" id="nfc-toggle" onchange="haptic(10); updNfcEnabled(this.checked)" style="width:20px;height:20px;accent-color:var(--accent)">
     </div>
+    
+    <details><summary onclick="haptic(10)">Program Global NFC Tags</summary><div class="details-content">
+        <p style="font-size:13px; color:var(--text-muted); margin:0;">Tap a button, then hold a blank NFC chip to your phone to program it.</p>
+        <button class="action-btn" onclick="haptic(10); programNfcTag('CUE_NEXT')"><span class="material-symbols-rounded">nfc</span> Program 'Next Cue'</button>
+        <button class="action-btn" onclick="haptic(10); programNfcTag('CUE_PLAYPAUSE')"><span class="material-symbols-rounded">nfc</span> Program 'Play / Pause'</button>
+        <button class="action-btn" onclick="haptic(10); programNfcTag('CUE_MIC')"><span class="material-symbols-rounded">nfc</span> Program 'Toggle Mic'</button>
+    </div></details>
+
     <div class="setting-row" style="border-top:1px solid var(--glass-border); margin-top:10px; padding-top:20px;"><label>UI Size</label><input type="range" min="50" max="150" step="25" value="100" id="ui-size-slider" oninput="haptic(10)" onchange="updUISize(this.value)" style="width:120px"></div>
 </dialog>
 
@@ -204,7 +218,6 @@ const $ = id => document.getElementById(id);
 let tracks=[], curIdx=0, locked=!1, activeId=null, activeCues=new Map(), activePads=new Map(), paused=!1;
 let db, projectsList=[], curProjId='default', editProjId=null;
 
-// Updated settings object
 let settings = JSON.parse(localStorage.getItem('mc_settings')) || {showProgress: true, theme: 'dark', lang: 'en-US', uiSize: 100, confirmReset: true, autoPauseMic: true, pocketMode: false, nfcEnabled: false};
 
 const haptic = (pattern = 15) => { if (navigator.vibrate) navigator.vibrate(pattern); };
@@ -225,7 +238,6 @@ const applySettings = () => {
     $('nfc-toggle').checked = settings.nfcEnabled || false;
     applyUISize(); 
     
-    // Attempt to restart NFC if it was previously authorized
     if(settings.nfcEnabled) {
         setTimeout(() => toggleNFCState(true), 1000);
     }
@@ -238,14 +250,14 @@ const updUISize = v => { settings.uiSize=v; saveSettings(); applyUISize(); };
 const applyUISize = () => { document.body.style.zoom = (settings.uiSize || 100) + '%'; };
 const updConfRes = v => { settings.confirmReset=v; saveSettings(); };
 const updAutoPauseMic = v => { settings.autoPauseMic=v; saveSettings(); };
-
-// --- NEW POCKET & NFC SETTING CONTROLLERS ---
 const updPocketMode = v => { settings.pocketMode = v; saveSettings(); };
 const updNfcEnabled = v => { settings.nfcEnabled = v; saveSettings(); toggleNFCState(v); };
 
-// --- NEW NFC TAG SCANNER ENGINE ---
+// --- NFC SCANNER ENGINE WITH 2 SECOND DELAY & IN-APP WRITER ---
 let nfcReader = null;
 let nfcAbortController = null;
+let lastNfcScanTime = 0; 
+
 const toggleNFCState = async (enabled) => {
     if(enabled) {
         if (!("NDEFReader" in window)) { 
@@ -262,21 +274,34 @@ const toggleNFCState = async (enabled) => {
                 nfcReader = new NDEFReader();
                 nfcReader.addEventListener("reading", ({ message }) => {
                     if(!settings.nfcEnabled) return;
+                    
+                    // 2 SECOND DEAD TIME CHECK
+                    if (Date.now() - lastNfcScanTime < 2000) return; 
+                    
                     for (const record of message.records) {
                         if (record.recordType === "text") {
                             const text = new TextDecoder(record.encoding).decode(record.data);
+                            lastNfcScanTime = Date.now(); // Update scan time
+                            haptic([20, 30]); // Give clear physical feedback it read successfully
+                            
                             if (text === "CUE_NEXT") {
                                 playNextCue();
+                            } else if (text === "CUE_PLAYPAUSE") {
+                                toggleGlobalPause();
+                            } else if (text === "CUE_MIC") {
+                                toggleMic();
+                            } else if (text.startsWith("CUE_PAD_")) {
+                                let padId = text.replace("CUE_PAD_", "");
+                                let t = tracks.find(x => x.id === padId);
+                                if(t) playPad(t);
                             }
                         }
                     }
                 });
             }
             await nfcReader.scan({ signal: nfcAbortController.signal });
-            console.log("NFC scanning active");
         } catch(err) {
             console.error("NFC start failed:", err);
-            // Don't alert on page load if it fails due to needing a fresh gesture
             if(event && event.type === 'change') {
                 alert("Failed to start NFC. Make sure it's enabled in your phone settings and grant permission.");
             }
@@ -288,8 +313,24 @@ const toggleNFCState = async (enabled) => {
         if(nfcAbortController) { 
             nfcAbortController.abort(); 
             nfcAbortController = null; 
-            console.log("NFC scanning stopped");
         }
+    }
+};
+
+// NFC Writer Function
+const programNfcTag = async (commandText) => {
+    if (!("NDEFReader" in window)) {
+        alert("NFC is not supported on your browser/device.");
+        return;
+    }
+    try {
+        const ndef = new NDEFReader();
+        alert(`Ready! Hold your NFC chip to the back of your phone now to program: ${commandText}`);
+        await ndef.write(commandText);
+        haptic([40, 60, 40]);
+        alert("Success! Tag programmed correctly.");
+    } catch (error) {
+        alert("Programming failed: " + error);
     }
 };
 
@@ -402,6 +443,9 @@ const openSet = id => {
     activeId=id; let t=tracks.find(x=>x.id===id); let isQ = t.type === 'queue';
     $('modal-content').innerHTML=`
     <div class="setting-row" style="flex-direction:column;align-items:flex-start;padding-bottom:20px"><label>Cue Type</label><div class="segmented-control"><button class="${isQ?'active':''}" onclick="haptic(10); updTrk('type','queue')">Main</button><button class="${t.type==='pad'?'active':''}" onclick="haptic(10); updTrk('type','pad')">Instant</button></div></div>
+    
+    ${!isQ ? `<div class="setting-row" style="flex-direction:column;align-items:flex-start"><label>NFC Trigger</label><button class="action-btn" style="width:100%;margin-top:10px;background:rgba(0,122,255,0.1);color:var(--accent);border:1px solid var(--accent)" onclick="programNfcTag('CUE_PAD_${t.id}')"><span class="material-symbols-rounded">nfc</span> Program NFC for this Instant Cue</button></div>` : ''}
+
     <div class="setting-row"><label>Volume</label><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="haptic(5); updTrk('volume',this.value)"></div>
     <details><summary onclick="haptic(10)">Voice Triggers</summary><div class="details-content">
         <div class="mini-row"><label>Trigger Phrase</label><input type="text" style="width:140px;margin:0;padding:8px 12px;font-size:14px;text-align:right;" placeholder="e.g. action" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div>
@@ -437,7 +481,11 @@ const triggerSequence = (t, isLayered) => {
 const runAud = (t, isLayered) => { 
     if(!isLayered){ activeCues.forEach(a => { a.onended=null; if(a.fadeInt)clearInterval(a.fadeInt); a.pause(); }); activeCues.clear(); }
     let a = new Audio(t.blobUrl); a.trkId = t.id; activeCues.set(t.id, a);
-    paused = !1; let vol = t.volume ?? 1; a.currentTime = t.trimStart || 0;
+    
+    // ENSURE PAUSED IS OFF (Fixes NFC autoplay bug where state was out of sync)
+    paused = false; $('pause-icon').innerText='pause'; 
+    
+    let vol = t.volume ?? 1; a.currentTime = t.trimStart || 0;
     
     if(t.fadeIn>0){ a.volume=0; let v=0, s=0.05/t.fadeIn; a.fadeInt=setInterval(()=>{v+=s; if(v>=vol){v=vol; clearInterval(a.fadeInt);} if(activeCues.has(t.id))a.volume=v;},50); } 
     else a.volume=vol;
@@ -456,7 +504,8 @@ const runAud = (t, isLayered) => {
         if(a.currentTime >= dur && !a.paused){ a.pause(); if(a.onended) a.onended(); }
     };
 
-    a.play(); $('pause-icon').innerText='pause'; $('play-text').innerText=t.name; 
+    a.play().catch(e => console.warn("Audio play blocked by browser:", e));
+    $('play-text').innerText=t.name; 
     manageSmartMic(); 
     
     a.onended = () => { 
@@ -480,7 +529,9 @@ const playPad = t => {
         let progEl = $('prog-'+t.id); if(progEl) progEl.style.width = Math.max(0, Math.min(100, ((a.currentTime - (t.trimStart||0)) / (dur - (t.trimStart||0)) * 100))) + '%';
         if(a.currentTime >= dur){ a.pause(); activePads.delete(t.id); render(); manageSmartMic(); }
     };
-    a.play(); manageSmartMic();
+    paused = false; $('pause-icon').innerText='pause'; 
+    a.play().catch(e => console.warn("Audio play blocked by browser:", e));
+    manageSmartMic();
 };
 
 const audioIsPlaying = () => { let playing = false; activeCues.forEach(a => { if(!a.paused) playing = true; }); activePads.forEach(a => { if(!a.paused) playing = true; }); return playing; };
@@ -492,25 +543,45 @@ const toggleGlobalPause = () => {
     manageSmartMic(); 
 };
 
-// --- UPDATED TOGGLE LOCK LOGIC ---
-const toggleLock = () => { 
-    locked=!locked; 
+// --- UPDATED POCKET MODE PERSISTENCE LOGIC ---
+const toggleLock = (force=null) => { 
+    locked = (force !== null) ? force : !locked; 
     document.body.className=locked?'locked show-progress':'unlocked show-progress'; 
     $('lock-icon').innerText=locked?'lock':'lock_open'; 
     render(); 
     
     if(locked && settings.pocketMode) {
         $('pocket-mode-overlay').style.display = 'flex';
+        sessionStorage.setItem('mc_pocket_active', 'true');
+        try { document.documentElement.requestFullscreen(); } catch(e){} // Force fullscreen to hide nav buttons
+    } else {
+        $('pocket-mode-overlay').style.display = 'none';
+        sessionStorage.removeItem('mc_pocket_active');
+        try { if(document.fullscreenElement) document.exitFullscreen(); } catch(e){}
     }
 };
 
-// --- POCKET MODE EXIT HANDLERS ---
-const requestPocketExit = () => openModal('pocket-confirm-modal');
-const confirmPocketExit = () => {
-    closeModal('pocket-confirm-modal');
-    $('pocket-mode-overlay').style.display = 'none';
-    if(locked) toggleLock(); // Exits locked mode entirely
+const requestPocketExit = () => {
+    $('pocket-unlock-check').checked = false; // Always unchecked when opened
+    openModal('pocket-confirm-modal');
 };
+
+const confirmPocketExit = () => {
+    if (!$('pocket-unlock-check').checked) {
+        haptic([50, 50]);
+        alert("Please check the 'Confirm Unlock' box first.");
+        return;
+    }
+    closeModal('pocket-confirm-modal');
+    toggleLock(false);
+};
+
+// Check for Pocket Mode on page load/refresh
+window.addEventListener('load', () => {
+    if(sessionStorage.getItem('mc_pocket_active') === 'true') {
+        setTimeout(() => toggleLock(true), 500); // Small delay to let UI load
+    }
+});
 
 let recognition; let isListening = false; let speechErrorOccurred = false; let processedTranscriptLength = 0; let userWantsMicOn = false;
 
