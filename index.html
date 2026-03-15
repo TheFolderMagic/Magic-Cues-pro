@@ -32,7 +32,17 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;transition:al
 .tile-content{padding:22px;display:flex;align-items:center;gap:16px} .tile-info{flex:1;min-width:0} .tile-name-text{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .progress-fill{position:absolute;top:0;left:0;height:100%;background:var(--accent-glow);width:0%;z-index:1;pointer-events:none;display:none} body.show-progress .is-playing .progress-fill{display:block}
 #instant-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.cue-pad{aspect-ratio:1.5/1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;cursor:pointer} .cue-pad span{font-size:15px;font-weight:700;line-height:1.3}
+.cue-pad{
+aspect-ratio:1.5/1;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+padding:20px;
+text-align:center;
+cursor:pointer;
+position:relative;
+} .cue-pad span{font-size:15px;font-weight:700;line-height:1.3}
 .pad-settings-trigger{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:10px;background:rgba(128,128,128,.2);color:var(--text-main);display:flex;align-items:center;justify-content:center} 
 .pad-number{position:absolute;top:12px;left:12px;font-size:12px;font-weight:800;color:var(--text-muted);opacity:.7}
 .pad-drag-handle{
@@ -296,45 +306,4 @@ const confirmPocketExit = () => { if(!$('pocket-unlock-check').checked){haptic([
 
 let recognition, isLis=!1, spErr=!1, prLen=0, micOn=!1, spLog=[];
 const upSp = t => { if(t&&t.trim()!==""){ spLog.push(t); if(spLog.length>3)spLog.shift(); } $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent); font-weight:800">&gt;</span> ')+(isLis?'<span style="animation:pulse 1s infinite">_</span>':''); $('speech-debug').scrollTop=$('speech-debug').scrollHeight; };
-const initSpeech = () => { window.SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition; if(!window.SpeechRecognition)return; recognition=new window.SpeechRecognition(); recognition.continuous=!0; recognition.interimResults=!0; recognition.lang=settings.lang;
-    recognition.onstart=()=>{ prLen=0; $('mic-btn').classList.add('mic-active'); $('mic-btn').classList.remove('mic-paused'); $('mic-icon').innerText='mic'; spLog=["Listening..."]; upSp(""); };
-    recognition.onresult=e=>{ let fl=''; for(let i=e.resultIndex;i<e.results.length;++i)fl+=e.results[i][0].transcript; let nw=fl.substring(prLen);
-        $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent); font-weight:800">&gt;</span> ')+'<br><span style="color:var(--accent); font-weight:800">&gt;</span> '+fl; $('speech-debug').scrollTop=$('speech-debug').scrollHeight;
-        let ss=nw.toLowerCase().replace(/[.,!?]/g,'').trim(); if(!ss)return; let trg=!1, q=tracks.filter(x=>x.type==='queue');
-        if(curIdx<q.length&&q[curIdx].triggerPhrase&&!q[curIdx].globalVoice){ let cl=q[curIdx].triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim(); if(cl&&ss.includes(cl)){ haptic(30); playNextCue(); trg=!0; } }
-        if(!trg){ for(let t of tracks){ if(t.globalVoice&&t.triggerPhrase){ let cl=t.triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim(); if(cl&&ss.includes(cl)){ haptic(30); t.type==='queue'?playCue(t.id):playPad(t); trg=!0; break; } } } } if(trg)prLen=fl.length; };
-    recognition.onerror=e=>{ spErr=!0; if(micOn&&!audioPlay()){ isLis=!1; micOn=!1; $('mic-btn').className=''; $('mic-icon').innerText='mic_off'; } };
-    recognition.onend=()=>{ prLen=0; if(isLis&&micOn&&!spErr)try{recognition.start();}catch(e){} spErr=!1; }; };
-const manageSmartMic = () => { if(!micOn||!recognition)return; if(settings.autoPauseMic&&audioPlay()){ isLis=!1; try{recognition.stop();}catch(e){} $('mic-btn').classList.remove('mic-active'); $('mic-btn').classList.add('mic-paused'); $('mic-icon').innerText='mic_off'; spLog=["Mic paused..."]; upSp(""); } else if(!isLis){ isLis=!0; try{recognition.start();}catch(e){} } };
-const toggleMic = () => { micOn=!micOn; if(micOn){ $('speech-debug').style.display='block'; if(settings.autoPauseMic&&audioPlay()){ $('mic-btn').classList.add('mic-paused'); spLog=["Mic paused..."]; upSp(""); } else { isLis=!0; spErr=!1; prLen=0; try{recognition.start();}catch(e){} } } else { isLis=!1; try{recognition.stop();}catch(e){} micOn=!1; $('mic-btn').classList.remove('mic-active','mic-paused'); $('mic-icon').innerText='mic_off'; $('speech-debug').style.display='none'; } };
-
-const initSortables = () => {
-    if(sortQueue) sortQueue.destroy(); if(sortGrid) sortGrid.destroy();
-    let opt = { 
-        group: 'shared', animation: 300, ghostClass: "sortable-ghost", disabled: !settings.enableDragging, 
-        onStart: ()=>haptic(15), 
-        onChange: e=>{ if(e.to!==e.from) haptic([30,50,30]); else haptic(5); }, 
-        onEnd: e=>{ 
-            if(e.to !== e.from) haptic([40, 60, 40]); else haptic(15); 
-            let id=e.item.id.replace('tile-',''), t=tracks.find(x=>x.id===id); 
-            if(e.to.id==='track-list')t.type='queue'; else if(e.to.id==='instant-grid')t.type='pad'; 
-            let qIds=Array.from($('track-list').children).map(el=>el.id.replace('tile-','')), pIds=Array.from($('instant-grid').children).map(el=>el.id.replace('tile-','')); 
-            tracks=[...tracks.filter(x=>x.type==='queue').sort((a,b)=>qIds.indexOf(a.id)-qIds.indexOf(b.id)), ...tracks.filter(x=>x.type==='pad').sort((a,b)=>pIds.indexOf(a.id)-pIds.indexOf(b.id))]; 
-            saveData(); render(); 
-        } 
-    };
-    sortQueue = new Sortable($('track-list'), { ...opt, handle: '.drag-handle' }); 
-    sortGrid = new Sortable($('instant-grid'), { ...opt, handle: '.drag-handle', filter: ".pad-settings-trigger", preventOnFilter: !1 });
-};
-
-if('mediaSession' in navigator) { 
-    navigator.mediaSession.setActionHandler('nexttrack', () => { playNextCue(); }); 
-    navigator.mediaSession.setActionHandler('play', () => { if(paused) toggleGlobalPause(); else playNextCue(); });
-    navigator.mediaSession.setActionHandler('pause', () => { if(!paused) toggleGlobalPause(); });
-}
-window.addEventListener('load', () => { if(sessionStorage.getItem('mc_pocket')==='true') setTimeout(()=>toggleLock(!0),500); });
-document.fonts.ready.then(()=>document.body.style.opacity="1");
-applySettings(); initDB(); initSpeech();
-</script>
-</body>
-</html>
+const initSpeech
