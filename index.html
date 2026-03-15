@@ -27,14 +27,14 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;transition:al
 .tile, .cue-pad{background:var(--glass);border-radius:20px;position:relative;overflow:hidden;border:1px solid var(--glass-border);backdrop-filter:blur(10px)}  
 .sortable-ghost{opacity:0.4;background:var(--accent-glow);border-color:var(--accent)}  
 .is-playing{border:1px solid var(--accent)!important;box-shadow:0 0 20px var(--accent-glow)} html[data-theme="high-vis"] .is-playing{border-color:#ff0!important}  
-.tile-content, .cue-pad span, .pad-settings-trigger, .pad-number, .pad-drag-handle{position:relative;z-index:2}  
+.tile-content, .cue-pad > span, .pad-settings-trigger, .pad-number{position:relative;z-index:2}  
 .tile-content{padding:22px;display:flex;align-items:center;gap:16px} .tile-info{flex:1;min-width:0} .tile-name-text{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}  
 .progress-fill{position:absolute;top:0;left:0;height:100%;background:var(--accent-glow);width:0%;z-index:1;pointer-events:none;display:none} body.show-progress .is-playing .progress-fill{display:block}  
 #instant-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}  
 .cue-pad{aspect-ratio:1.5/1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;cursor:pointer} .cue-pad span{font-size:15px;font-weight:700;line-height:1.3}  
 .pad-settings-trigger{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:10px;background:rgba(128,128,128,.2);color:var(--text-main);display:flex;align-items:center;justify-content:center}   
 .pad-number{position:absolute;top:12px;left:12px;font-size:12px;font-weight:800;color:var(--text-muted);opacity:.7}  
-.pad-drag-handle{position:absolute;bottom:12px;left:12px;color:var(--text-muted);opacity:0.6;font-size:20px;cursor:grab}  
+.pad-drag-handle{position:absolute !important;bottom:12px !important;left:12px !important;z-index:3;color:var(--text-muted);opacity:0.6;font-size:20px;cursor:grab}  
 .locked .drag-handle,.locked .action-row,.locked .edit-trigger,.locked .pad-settings-trigger,.locked #queue-label{display:none!important} .locked .tile:not(.is-current){display:none} .locked .is-current{border:2px solid var(--accent)}  
 dialog{background:var(--modal-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:32px;padding:30px;width:calc(100% - 32px);max-width:400px;margin:auto;box-shadow:0 40px 80px rgba(0,0,0,.8);backdrop-filter:blur(20px)} dialog::backdrop{background:rgba(0,0,0,.85);backdrop-filter:blur(4px)}  
 .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px} .modal-title{font-size:22px;font-weight:800}  
@@ -246,7 +246,7 @@ const playPad = t => {
     haptic(20);  
     if(activePads.has(t.id)){ let oA=activePads.get(t.id); if(oA.fadeInt)clearInterval(oA.fadeInt); oA.pause(); activePads.delete(t.id); render(); manageSmartMic(); return; }  
     let a=new Audio(t.blobUrl); a.currentTime=t.trimStart||0; a.volume=t.volume??1; activePads.set(t.id,a); render();  
-    a.ontimeupdate=()=>{ let d=t.trimEnd?t.trimEnd:a.duration; let pEl=$('prog-'+t.id); if(pEl) pEl.style.width=Math.max(0,Math.min(100,((a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100)))+'%'; if(a.currentTime>=d){ a.pause(); activePads.delete(t.id); render(); manageSmartMic(); } };  
+    a.ontimeupdate=()=>{ let d=t.trimEnd?t.trimEnd:a.duration; let pEl=$('prog-${t.id}'); if(pEl) pEl.style.width=Math.max(0,Math.min(100,((a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100)))+'%'; if(a.currentTime>=d){ a.pause(); activePads.delete(t.id); render(); manageSmartMic(); } };  
     paused=!1; $('pause-icon').innerText='pause'; a.play().catch(e=>{}); manageSmartMic();  
 };  
 const audioPlay = () => activeCues.size>0 || activePads.size>0;  
@@ -296,4 +296,4 @@ window.addEventListener('load', () => { if(sessionStorage.getItem('mc_pocket')==
 document.fonts.ready.then(()=>document.body.style.opacity="1");  
 applySettings(); initDB(); initSpeech();  
 </script>  </body>  
-</html>  
+</html>
