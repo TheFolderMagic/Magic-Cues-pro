@@ -1,309 +1,299 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Magic Cues Pro</title><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-<style>
-*,*::before,*::after{box-sizing:border-box}
-:root{--bg-top:#1c1c1e;--bg-bot:#09090b;--glass:rgba(30,30,35,.8);--glass-border:rgba(255,255,255,.1);--accent:#007AFF;--accent-glow:rgba(0,122,255,.3);--text-main:#f4f4f5;--text-muted:#a1a1aa;--danger:#ff453a;--modal-bg:#18181b;--input-bg:#09090b}
-html[data-theme="light"]{--bg-top:#f4f4f7;--bg-bot:#e2e2e7;--glass:rgba(255,255,255,.9);--glass-border:rgba(0,0,0,.1);--accent-glow:rgba(0,122,255,.2);--text-main:#1c1c1e;--text-muted:#636366;--modal-bg:#fff;--input-bg:#e2e2e7}
-html[data-theme="high-vis"]{--bg-top:#000;--bg-bot:#000;--glass:#000;--glass-border:#ff0;--accent:#ff0;--accent-glow:rgba(255,255,0,.3);--text-main:#fff;--text-muted:#ff0;--modal-bg:#000;--input-bg:#000;--danger:#ff453a}
-body{background:linear-gradient(180deg,var(--bg-top),var(--bg-bot)) fixed;color:var(--text-main);font-family:'Inter',sans-serif;margin:0;padding:24px 24px 140px;-webkit-user-select:none;opacity:0;transition:opacity .3s}
-body.modal-open{overflow:hidden} .material-symbols-rounded{font-variation-settings:'FILL' 1,'wght' 400}
-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px}
-h1{font-weight:700;font-size:28px;letter-spacing:-1px;margin:0;display:flex;align-items:center;gap:6px;cursor:pointer} h1:active{opacity:.7}
-h2{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;margin:35px 0 15px 5px;font-weight:800}
-button{font-family:inherit;cursor:pointer;border:none;outline:none;transition:all .2s;-webkit-tap-highlight-color:transparent}
-.icon-btn{background:var(--glass);color:var(--text-main);width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;border:1px solid var(--glass-border)}
-.master-grid{display:grid;grid-template-columns:1fr 64px 64px;gap:12px;margin-bottom:12px}
-#master-play{background:var(--accent);color:#fff;padding:22px;font-size:18px;font-weight:700;border-radius:20px;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 10px 20px var(--accent-glow)} html[data-theme="high-vis"] #master-play{color:#000}
-#pause-btn, #mic-btn{background:var(--glass);color:var(--text-main);border-radius:20px;border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center}
-.mic-active{background:var(--danger)!important;color:#fff!important;border-color:var(--danger)!important;box-shadow:0 0 15px rgba(255,69,58,.5)} .mic-paused{background:var(--text-muted)!important;color:#fff!important;border-color:var(--text-muted)!important}
-#speech-debug{display:none;color:var(--text-muted);font-size:14px;margin-bottom:24px;padding:12px 16px;background:var(--glass);border-radius:12px;border:1px solid var(--glass-border);height:70px;overflow-y:hidden;scroll-behavior:smooth} #speech-text{color:var(--text-main);font-weight:600;line-height:1.4}
-.action-row{display:flex;gap:10px;margin-bottom:30px} .action-btn{flex:1;background:var(--glass);color:var(--text-main);padding:16px;border-radius:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;border:1px solid var(--glass-border)}
-#track-list{display:flex;flex-direction:column;gap:12px}
-.tile, .cue-pad{background:var(--glass);border-radius:20px;position:relative;overflow:hidden;border:1px solid var(--glass-border);backdrop-filter:blur(10px)}
-.sortable-ghost{opacity:0.4;background:var(--accent-glow);border-color:var(--accent)}
-.is-playing{border:1px solid var(--accent)!important;box-shadow:0 0 20px var(--accent-glow)} html[data-theme="high-vis"] .is-playing{border-color:#ff0!important}
-.tile-content, .cue-pad span, .pad-settings-trigger, .pad-number, .pad-drag-handle{position:relative;z-index:2}
-.tile-content{padding:22px;display:flex;align-items:center;gap:16px} .tile-info{flex:1;min-width:0} .tile-name-text{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
-.progress-fill{position:absolute;top:0;left:0;height:100%;background:var(--accent-glow);width:0%;z-index:1;pointer-events:none;display:none} body.show-progress .is-playing .progress-fill{display:block}
-#instant-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.cue-pad{
-aspect-ratio:1.5/1;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-padding:20px;
-text-align:center;
-cursor:pointer;
-position:relative;
-} .cue-pad span{font-size:15px;font-weight:700;line-height:1.3}
-.pad-settings-trigger{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:10px;background:rgba(128,128,128,.2);color:var(--text-main);display:flex;align-items:center;justify-content:center} 
-.pad-number{position:absolute;top:12px;left:12px;font-size:12px;font-weight:800;color:var(--text-muted);opacity:.7}
-.pad-drag-handle{
-    position:absolute;
-    bottom:12px;
-    left:12px;
-    color:var(--text-muted);
-    opacity:0.6;
-    font-size:28px;          /* larger like gear icon */
-    line-height:1;           /* removes vertical centering offset */
-    width:32px;              /* same visual footprint as gear */
-    height:32px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:grab;
-}
-.locked .drag-handle,.locked .action-row,.locked .edit-trigger,.locked .pad-settings-trigger,.locked #queue-label{display:none!important} .locked .tile:not(.is-current){display:none} .locked .is-current{border:2px solid var(--accent)}
-dialog{background:var(--modal-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:32px;padding:30px;width:calc(100% - 32px);max-width:400px;margin:auto;box-shadow:0 40px 80px rgba(0,0,0,.8);backdrop-filter:blur(20px)} dialog::backdrop{background:rgba(0,0,0,.85);backdrop-filter:blur(4px)}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px} .modal-title{font-size:22px;font-weight:800}
-.setting-row{background:rgba(128,128,128,.1);padding:16px;border-radius:18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px} .setting-row label{font-size:15px;font-weight:600}
-.segmented-control{display:flex;width:100%;background:var(--input-bg);border-radius:12px;border:1px solid var(--glass-border);overflow:hidden;margin-top:10px} .segmented-control button{flex:1;padding:12px;background:0 0;color:var(--text-muted);font-size:14px;font-weight:600} .segmented-control button.active{background:var(--accent);color:#fff} html[data-theme="high-vis"] .segmented-control button.active{color:#000}
-input[type="number"], input[type="text"]{background:var(--input-bg);color:var(--accent);border:1px solid var(--glass-border);font-size:15px;font-weight:700;border-radius:10px;padding:8px 12px;width:90px;text-align:right;outline:none} input[type="text"]{width:100%;text-align:left;color:var(--text-main);margin-bottom:15px;padding:16px;font-size:16px} input[type="range"]{width:100%;accent-color:var(--accent)}
-input[type="checkbox"]{accent-color:var(--accent);cursor:pointer;}
-details{background:rgba(128,128,128,.1);border-radius:18px;margin-bottom:12px;overflow:hidden} summary{padding:16px;font-weight:700;cursor:pointer;outline:none;display:flex;align-items:center;justify-content:space-between} summary::after{content:'expand_more';font-family:'Material Symbols Rounded';font-size:24px;transition:transform .3s} details[open]>summary::after{transform:rotate(180deg)} .details-content{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}
-.mini-row{display:flex;justify-content:space-between;align-items:center} .mini-row label{font-size:14px;font-weight:500}
-.danger-zone{margin-top:20px;border-top:1px solid var(--glass-border);padding-top:20px} .btn-delete{width:100%;padding:18px;border-radius:16px;background:rgba(255,69,58,.15);color:var(--danger);font-weight:700;font-size:16px;border:1px solid var(--danger)}
-.project-item{padding:16px;background:var(--input-bg);border:1px solid var(--glass-border);border-radius:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer} .project-item.active{border-color:var(--accent);background:var(--accent-glow)}
-#pocket-mode-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:9998;display:none;align-items:center;justify-content:center} #pocket-exit-btn{background:#111;color:#444;border:2px solid #222;border-radius:50%;width:80px;height:80px;display:flex;align-items:center;justify-content:center}
-.nfc-pulse{width:80px;height:80px;border-radius:50%;background:var(--accent-glow);margin:20px auto;display:flex;align-items:center;justify-content:center;animation:pulse 1.5s infinite} @keyframes pulse{0%{box-shadow:0 0 0 0 var(--accent-glow)}70%{box-shadow:0 0 0 20px transparent}100%{box-shadow:0 0 0 0 transparent}}
-</style>
-</head>
-<body class="unlocked show-progress">
+<!DOCTYPE html>  <html lang="en" data-theme="dark">  
+<head>  
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
+<title>Magic Cues Pro</title><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">  
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">  
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />  
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>  
+<style>  
+*,*::before,*::after{box-sizing:border-box}  
+:root{--bg-top:#1c1c1e;--bg-bot:#09090b;--glass:rgba(30,30,35,.8);--glass-border:rgba(255,255,255,.1);--accent:#007AFF;--accent-glow:rgba(0,122,255,.3);--text-main:#f4f4f5;--text-muted:#a1a1aa;--danger:#ff453a;--modal-bg:#18181b;--input-bg:#09090b}  
+html[data-theme="light"]{--bg-top:#f4f4f7;--bg-bot:#e2e2e7;--glass:rgba(255,255,255,.9);--glass-border:rgba(0,0,0,.1);--accent-glow:rgba(0,122,255,.2);--text-main:#1c1c1e;--text-muted:#636366;--modal-bg:#fff;--input-bg:#e2e2e7}  
+html[data-theme="high-vis"]{--bg-top:#000;--bg-bot:#000;--glass:#000;--glass-border:#ff0;--accent:#ff0;--accent-glow:rgba(255,255,0,.3);--text-main:#fff;--text-muted:#ff0;--modal-bg:#000;--input-bg:#000;--danger:#ff453a}  
+body{background:linear-gradient(180deg,var(--bg-top),var(--bg-bot)) fixed;color:var(--text-main);font-family:'Inter',sans-serif;margin:0;padding:24px 24px 140px;-webkit-user-select:none;opacity:0;transition:opacity .3s}  
+body.modal-open{overflow:hidden} .material-symbols-rounded{font-variation-settings:'FILL' 1,'wght' 400}  
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px}  
+h1{font-weight:700;font-size:28px;letter-spacing:-1px;margin:0;display:flex;align-items:center;gap:6px;cursor:pointer} h1:active{opacity:.7}  
+h2{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;margin:35px 0 15px 5px;font-weight:800}  
+button{font-family:inherit;cursor:pointer;border:none;outline:none;transition:all .2s;-webkit-tap-highlight-color:transparent}  
+.icon-btn{background:var(--glass);color:var(--text-main);width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;border:1px solid var(--glass-border)}  
+.master-grid{display:grid;grid-template-columns:1fr 64px 64px;gap:12px;margin-bottom:12px}  
+#master-play{background:var(--accent);color:#fff;padding:22px;font-size:18px;font-weight:700;border-radius:20px;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 10px 20px var(--accent-glow)} html[data-theme="high-vis"] #master-play{color:#000}  
+#pause-btn, #mic-btn{background:var(--glass);color:var(--text-main);border-radius:20px;border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center}  
+.mic-active{background:var(--danger)!important;color:#fff!important;border-color:var(--danger)!important;box-shadow:0 0 15px rgba(255,69,58,.5)} .mic-paused{background:var(--text-muted)!important;color:#fff!important;border-color:var(--text-muted)!important}  
+#speech-debug{display:none;color:var(--text-muted);font-size:14px;margin-bottom:24px;padding:12px 16px;background:var(--glass);border-radius:12px;border:1px solid var(--glass-border);height:70px;overflow-y:hidden;scroll-behavior:smooth} #speech-text{color:var(--text-main);font-weight:600;line-height:1.4}  
+.action-row{display:flex;gap:10px;margin-bottom:30px} .action-btn{flex:1;background:var(--glass);color:var(--text-main);padding:16px;border-radius:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;border:1px solid var(--glass-border)}  
+#track-list{display:flex;flex-direction:column;gap:12px}  
+.tile, .cue-pad{background:var(--glass);border-radius:20px;position:relative;overflow:hidden;border:1px solid var(--glass-border);backdrop-filter:blur(10px)}  
+.sortable-ghost{opacity:0.4;background:var(--accent-glow);border-color:var(--accent)}  
+.is-playing{border:1px solid var(--accent)!important;box-shadow:0 0 20px var(--accent-glow)} html[data-theme="high-vis"] .is-playing{border-color:#ff0!important}  
+.tile-content, .cue-pad span, .pad-settings-trigger, .pad-number, .pad-drag-handle{position:relative;z-index:2}  
+.tile-content{padding:22px;display:flex;align-items:center;gap:16px} .tile-info{flex:1;min-width:0} .tile-name-text{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}  
+.progress-fill{position:absolute;top:0;left:0;height:100%;background:var(--accent-glow);width:0%;z-index:1;pointer-events:none;display:none} body.show-progress .is-playing .progress-fill{display:block}  
+#instant-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}  
+.cue-pad{aspect-ratio:1.5/1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;cursor:pointer} .cue-pad span{font-size:15px;font-weight:700;line-height:1.3}  
+.pad-settings-trigger{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:10px;background:rgba(128,128,128,.2);color:var(--text-main);display:flex;align-items:center;justify-content:center}   
+.pad-number{position:absolute;top:12px;left:12px;font-size:12px;font-weight:800;color:var(--text-muted);opacity:.7}  
+.pad-drag-handle{position:absolute;bottom:12px;left:12px;color:var(--text-muted);opacity:0.6;font-size:20px;cursor:grab}  
+.locked .drag-handle,.locked .action-row,.locked .edit-trigger,.locked .pad-settings-trigger,.locked #queue-label{display:none!important} .locked .tile:not(.is-current){display:none} .locked .is-current{border:2px solid var(--accent)}  
+dialog{background:var(--modal-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:32px;padding:30px;width:calc(100% - 32px);max-width:400px;margin:auto;box-shadow:0 40px 80px rgba(0,0,0,.8);backdrop-filter:blur(20px)} dialog::backdrop{background:rgba(0,0,0,.85);backdrop-filter:blur(4px)}  
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px} .modal-title{font-size:22px;font-weight:800}  
+.setting-row{background:rgba(128,128,128,.1);padding:16px;border-radius:18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px} .setting-row label{font-size:15px;font-weight:600}  
+.segmented-control{display:flex;width:100%;background:var(--input-bg);border-radius:12px;border:1px solid var(--glass-border);overflow:hidden;margin-top:10px} .segmented-control button{flex:1;padding:12px;background:0 0;color:var(--text-muted);font-size:14px;font-weight:600} .segmented-control button.active{background:var(--accent);color:#fff} html[data-theme="high-vis"] .segmented-control button.active{color:#000}  
+input[type="number"], input[type="text"]{background:var(--input-bg);color:var(--accent);border:1px solid var(--glass-border);font-size:15px;font-weight:700;border-radius:10px;padding:8px 12px;width:90px;text-align:right;outline:none} input[type="text"]{width:100%;text-align:left;color:var(--text-main);margin-bottom:15px;padding:16px;font-size:16px} input[type="range"]{width:100%;accent-color:var(--accent)}  
+input[type="checkbox"]{accent-color:var(--accent);cursor:pointer;}  
+details{background:rgba(128,128,128,.1);border-radius:18px;margin-bottom:12px;overflow:hidden} summary{padding:16px;font-weight:700;cursor:pointer;outline:none;display:flex;align-items:center;justify-content:space-between} summary::after{content:'expand_more';font-family:'Material Symbols Rounded';font-size:24px;transition:transform .3s} details[open]>summary::after{transform:rotate(180deg)} .details-content{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}  
+.mini-row{display:flex;justify-content:space-between;align-items:center} .mini-row label{font-size:14px;font-weight:500}  
+.danger-zone{margin-top:20px;border-top:1px solid var(--glass-border);padding-top:20px} .btn-delete{width:100%;padding:18px;border-radius:16px;background:rgba(255,69,58,.15);color:var(--danger);font-weight:700;font-size:16px;border:1px solid var(--danger)}  
+.project-item{padding:16px;background:var(--input-bg);border:1px solid var(--glass-border);border-radius:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer} .project-item.active{border-color:var(--accent);background:var(--accent-glow)}  
+#pocket-mode-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:9998;display:none;align-items:center;justify-content:center} #pocket-exit-btn{background:#111;color:#444;border:2px solid #222;border-radius:50%;width:80px;height:80px;display:flex;align-items:center;justify-content:center}  
+.nfc-pulse{width:80px;height:80px;border-radius:50%;background:var(--accent-glow);margin:20px auto;display:flex;align-items:center;justify-content:center;animation:pulse 1.5s infinite} @keyframes pulse{0%{box-shadow:0 0 0 0 var(--accent-glow)}70%{box-shadow:0 0 0 20px transparent}100%{box-shadow:0 0 0 0 transparent}}  
+</style>  
+</head>  
+<body class="unlocked show-progress">  <header>  
+    <h1 onclick="haptic(15); openProjects()"><span id="header-title-text">Magic Cues</span> <span class="material-symbols-rounded" style="font-size:28px">expand_more</span></h1>  
+    <div style="display:flex;gap:8px"><button class="icon-btn" onclick="haptic(15); openModal('app-settings')"><span class="material-symbols-rounded">settings</span></button><button class="icon-btn" onclick="haptic(15); toggleLock()"><span class="material-symbols-rounded" id="lock-icon">lock_open</span></button></div>  
+</header>  <div class="master-grid">  
+    <button id="master-play" onclick="playNextCue()"><span class="material-symbols-rounded">play_arrow</span><span id="play-text">Next Cue</span></button>  
+    <button id="mic-btn" onclick="haptic(15); toggleMic()"><span class="material-symbols-rounded" id="mic-icon">mic_off</span></button>  
+    <button id="pause-btn" onclick="haptic(15); toggleGlobalPause()"><span class="material-symbols-rounded" id="pause-icon">pause</span></button>  
+</div>  <div id="speech-debug"><div id="speech-text">...</div></div>  
+<div class="action-row"><button class="action-btn" onclick="haptic(15); $('file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button><button class="action-btn" onclick="haptic([15, 30, 15]); triggerReset()"><span class="material-symbols-rounded">restart_alt</span> Reset</button></div>  
+<input type="file" id="file-input" accept="audio/*" multiple onchange="handleFiles(this)" style="display:none"><input type="file" id="import-file-input" accept=".magic" style="display:none" onchange="importShow(this)">  <div id="queue-container"><h2 id="queue-label">Main Queue</h2><div id="track-list"></div></div>  
+<h2>Instant Cues</h2><div id="instant-grid"></div>  <div id="pocket-mode-overlay"><button id="pocket-exit-btn" onclick="haptic(15); openModal('pocket-confirm-modal')"><span class="material-symbols-rounded" style="font-size:32px">lock</span></button></div>  <dialog id="pocket-confirm-modal">  
+    <div class="modal-header"><span class="modal-title">Unlock Workspace?</span></div><p style="color:var(--text-muted);margin:0 0 15px">This will exit Pocket Mode.</p>  
+    <div style="margin-bottom:25px;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);padding:12px;border-radius:12px"><input type="checkbox" id="pocket-unlock-check" style="width:24px;height:24px;accent-color:var(--accent)"><label style="font-size:15px;font-weight:600">Confirm Unlock</label></div>  
+    <div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10); closeModal('pocket-confirm-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="confirmPocketExit()">Unlock</button></div>  
+</dialog>  <dialog id="custom-alert-modal">  
+    <div class="modal-header"><span class="modal-title" id="alert-title">Notice</span></div>  
+    <p id="alert-msg" style="color:var(--text-muted);margin-bottom:25px;line-height:1.5;"></p>  
+    <button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10); closeModal('custom-alert-modal')">OK</button>  
+</dialog>  <dialog id="nfc-write-modal" oncancel="cancelNfcWrite()">  
+    <div class="modal-header"><span class="modal-title">Program NFC</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="cancelNfcWrite()"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>  
+    <div class="nfc-pulse"><span class="material-symbols-rounded" style="font-size:40px;color:var(--accent)">nfc</span></div>  
+    <p id="nfc-write-text" style="text-align:center;font-weight:600;font-size:16px;margin:20px 0">Hold an NFC chip near your phone...</p>  
+    <button class="action-btn" style="width:100%;border:none" onclick="cancelNfcWrite()">Cancel</button>  
+</dialog>  
+<dialog id="nfc-success-modal">  
+    <div class="modal-header"><span class="modal-title">Success!</span></div><div style="text-align:center;margin:20px 0"><span class="material-symbols-rounded" style="font-size:60px;color:#34c759">check_circle</span></div>  
+    <p style="text-align:center;color:var(--text-muted);margin-bottom:25px">Your NFC tag was programmed successfully.</p><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10); closeModal('nfc-success-modal')">Done</button>  
+</dialog>  <dialog id="projects-modal">  
+    <div class="modal-header"><span class="modal-title">My Shows</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10); closeModal('projects-modal')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>  
+    <div id="projects-list-container" style="max-height:300px;overflow-y:auto;margin-bottom:20px"></div>  
+    <div style="display:flex;gap:12px"><button class="action-btn" style="flex:1" onclick="haptic(15); $('import-file-input').click()"><span class="material-symbols-rounded">upload</span> Import</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15); closeModal('projects-modal');openModal('new-show-modal')"><span class="material-symbols-rounded">add</span> New</button></div>  
+</dialog>  
+<dialog id="new-show-modal">  
+    <div class="modal-header"><span class="modal-title">Create Show</span></div><input type="text" id="new-show-name" placeholder="Enter show name..."><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10); closeModal('new-show-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15); createNewProject()">Create</button></div>  
+</dialog>  
+<dialog id="edit-show-modal">  
+    <div class="modal-header"><span class="modal-title">Edit Show</span></div><input type="text" id="edit-show-name"><button class="action-btn" style="width:100%;margin-bottom:20px" onclick="haptic(15); exportShow()"><span class="material-symbols-rounded">download</span> Export File</button>  
+    <div style="display:flex;gap:12px;margin-bottom:12px"><button class="action-btn" style="border:none" onclick="haptic(10); closeModal('edit-show-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15); saveShowEdit()">Save</button></div>  
+    <button class="btn-delete" onclick="haptic([30, 50, 30]); deleteShow()">Delete Show</button>  
+</dialog>  <dialog id="app-settings">  
+    <div class="modal-header"><span class="modal-title">App Settings</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10); closeModal('app-settings')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>  
+    <div class="setting-row" style="flex-direction:column;align-items:flex-start"><label>Speech Language</label><div class="segmented-control" id="lang-controls"><button id="lang-en" class="active" onclick="haptic(10); setLang('en-US')">English</button><button id="lang-de" onclick="haptic(10); setLang('de-DE')">Deutsch</button></div></div>  
+    <div class="setting-row" style="flex-direction:column;align-items:flex-start"><label>Theme</label><div class="segmented-control" id="theme-controls"><button id="btn-auto" onclick="haptic(10); setTheme('auto')">Auto</button><button id="btn-dark" class="active" onclick="haptic(10); setTheme('dark')">Dark</button><button id="btn-light" onclick="haptic(10); setTheme('light')">Light</button><button id="btn-vis" onclick="haptic(10); setTheme('high-vis')">High-Vis</button></div></div>  
+    <div class="setting-row" style="margin-bottom:25px"><label>UI Size</label><input type="range" min="50" max="150" step="25" id="ui-size-slider" onchange="haptic(10); updSet('uiSize',this.value); applyUISize()" style="width:120px"></div>  <details onselect="haptic(10)"><summary onclick="haptic(10)">Advanced Settings</summary><div class="details-content">  
+    <div class="mini-row"><label>Show Progress Fill</label><input type="checkbox" id="progress-toggle" onchange="haptic(10); updSet('showProgress',this.checked)" style="width:20px;height:20px"></div>  
+    <div class="mini-row"><label>Confirm Reset</label><input type="checkbox" id="confirm-reset-toggle" onchange="haptic(10); updSet('confirmReset',this.checked)" style="width:20px;height:20px"></div>  
+    <div class="mini-row"><label>Auto-Pause Mic</label><input type="checkbox" id="auto-pause-mic-toggle" onchange="haptic(10); updSet('autoPauseMic',this.checked)" style="width:20px;height:20px"></div>  
+    <div class="mini-row"><label>Enable Haptics</label><input type="checkbox" id="haptics-toggle" onchange="haptic(10); updSet('enableHaptics',this.checked)" style="width:20px;height:20px"></div>  
+    <div class="mini-row"><label>Enable Dragging</label><input type="checkbox" id="dragging-toggle" onchange="haptic(10); updSet('enableDragging',this.checked); initSortables()" style="width:20px;height:20px"></div>  
+    <div class="mini-row"><label>Pocket Mode</label><input type="checkbox" id="pocket-toggle" onchange="haptic(10); updSet('pocketMode',this.checked)" style="width:20px;height:20px"></div>  
+    <div class="mini-row"><label>NFC Tag Reader</label><input type="checkbox" id="nfc-toggle" onchange="haptic(10); updSet('nfcEnabled',this.checked); toggleNFCState(this.checked)" style="width:20px;height:20px"></div>  
+      
+    <details style="background:rgba(0,0,0,0.2);margin-top:10px;" onselect="haptic(10)"><summary onclick="haptic(10)" style="font-size:14px;padding:12px">Program NFC Tags</summary>  
+        <div class="details-content" id="nfc-dynamic-list" style="padding-top:0;"></div>  
+    </details>  
+</div></details>
 
-<header>
-    <h1 onclick="haptic(15); openProjects()"><span id="header-title-text">Magic Cues</span> <span class="material-symbols-rounded" style="font-size:28px">expand_more</span></h1>
-    <div style="display:flex;gap:8px"><button class="icon-btn" onclick="haptic(15); openModal('app-settings')"><span class="material-symbols-rounded">settings</span></button><button class="icon-btn" onclick="haptic(15); toggleLock()"><span class="material-symbols-rounded" id="lock-icon">lock_open</span></button></div>
-</header>
-
-<div class="master-grid">
-    <button id="master-play" onclick="playNextCue()"><span class="material-symbols-rounded">play_arrow</span><span id="play-text">Next Cue</span></button>
-    <button id="mic-btn" onclick="haptic(15); toggleMic()"><span class="material-symbols-rounded" id="mic-icon">mic_off</span></button>
-    <button id="pause-btn" onclick="haptic(15); toggleGlobalPause()"><span class="material-symbols-rounded" id="pause-icon">pause</span></button>
-</div>
-
-<div id="speech-debug"><div id="speech-text">...</div></div>
-<div class="action-row"><button class="action-btn" onclick="haptic(15); $('file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button><button class="action-btn" onclick="haptic([15, 30, 15]); triggerReset()"><span class="material-symbols-rounded">restart_alt</span> Reset</button></div>
-<input type="file" id="file-input" accept="audio/*" multiple onchange="handleFiles(this)" style="display:none"><input type="file" id="import-file-input" accept=".magic" style="display:none" onchange="importShow(this)">
-
-<div id="queue-container"><h2 id="queue-label">Main Queue</h2><div id="track-list"></div></div>
-<h2>Instant Cues</h2><div id="instant-grid"></div>
-
-<div id="pocket-mode-overlay"><button id="pocket-exit-btn" onclick="haptic(15); openModal('pocket-confirm-modal')"><span class="material-symbols-rounded" style="font-size:32px">lock</span></button></div>
-
-<dialog id="pocket-confirm-modal">
-    <div class="modal-header"><span class="modal-title">Unlock Workspace?</span></div><p style="color:var(--text-muted);margin:0 0 15px">This will exit Pocket Mode.</p>
-    <div style="margin-bottom:25px;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);padding:12px;border-radius:12px"><input type="checkbox" id="pocket-unlock-check" style="width:24px;height:24px;accent-color:var(--accent)"><label style="font-size:15px;font-weight:600">Confirm Unlock</label></div>
-    <div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10); closeModal('pocket-confirm-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="confirmPocketExit()">Unlock</button></div>
-</dialog>
-
-<dialog id="custom-alert-modal">
-    <div class="modal-header"><span class="modal-title" id="alert-title">Notice</span></div>
-    <p id="alert-msg" style="color:var(--text-muted);margin-bottom:25px;line-height:1.5;"></p>
-    <button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10); closeModal('custom-alert-modal')">OK</button>
-</dialog>
-
-<dialog id="nfc-write-modal" oncancel="cancelNfcWrite()">
-    <div class="modal-header"><span class="modal-title">Program NFC</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="cancelNfcWrite()"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
-    <div class="nfc-pulse"><span class="material-symbols-rounded" style="font-size:40px;color:var(--accent)">nfc</span></div>
-    <p id="nfc-write-text" style="text-align:center;font-weight:600;font-size:16px;margin:20px 0">Hold an NFC chip near your phone...</p>
-    <button class="action-btn" style="width:100%;border:none" onclick="cancelNfcWrite()">Cancel</button>
-</dialog>
-<dialog id="nfc-success-modal">
-    <div class="modal-header"><span class="modal-title">Success!</span></div><div style="text-align:center;margin:20px 0"><span class="material-symbols-rounded" style="font-size:60px;color:#34c759">check_circle</span></div>
-    <p style="text-align:center;color:var(--text-muted);margin-bottom:25px">Your NFC tag was programmed successfully.</p><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10); closeModal('nfc-success-modal')">Done</button>
-</dialog>
-
-<dialog id="projects-modal">
-    <div class="modal-header"><span class="modal-title">My Shows</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10); closeModal('projects-modal')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
-    <div id="projects-list-container" style="max-height:300px;overflow-y:auto;margin-bottom:20px"></div>
-    <div style="display:flex;gap:12px"><button class="action-btn" style="flex:1" onclick="haptic(15); $('import-file-input').click()"><span class="material-symbols-rounded">upload</span> Import</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15); closeModal('projects-modal');openModal('new-show-modal')"><span class="material-symbols-rounded">add</span> New</button></div>
-</dialog>
-<dialog id="new-show-modal">
-    <div class="modal-header"><span class="modal-title">Create Show</span></div><input type="text" id="new-show-name" placeholder="Enter show name..."><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10); closeModal('new-show-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15); createNewProject()">Create</button></div>
-</dialog>
-<dialog id="edit-show-modal">
-    <div class="modal-header"><span class="modal-title">Edit Show</span></div><input type="text" id="edit-show-name"><button class="action-btn" style="width:100%;margin-bottom:20px" onclick="haptic(15); exportShow()"><span class="material-symbols-rounded">download</span> Export File</button>
-    <div style="display:flex;gap:12px;margin-bottom:12px"><button class="action-btn" style="border:none" onclick="haptic(10); closeModal('edit-show-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15); saveShowEdit()">Save</button></div>
-    <button class="btn-delete" onclick="haptic([30, 50, 30]); deleteShow()">Delete Show</button>
-</dialog>
-
-<dialog id="app-settings">
-    <div class="modal-header"><span class="modal-title">App Settings</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10); closeModal('app-settings')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
-    <div class="setting-row" style="flex-direction:column;align-items:flex-start"><label>Speech Language</label><div class="segmented-control" id="lang-controls"><button id="lang-en" class="active" onclick="haptic(10); setLang('en-US')">English</button><button id="lang-de" onclick="haptic(10); setLang('de-DE')">Deutsch</button></div></div>
-    <div class="setting-row" style="flex-direction:column;align-items:flex-start"><label>Theme</label><div class="segmented-control" id="theme-controls"><button id="btn-auto" onclick="haptic(10); setTheme('auto')">Auto</button><button id="btn-dark" class="active" onclick="haptic(10); setTheme('dark')">Dark</button><button id="btn-light" onclick="haptic(10); setTheme('light')">Light</button><button id="btn-vis" onclick="haptic(10); setTheme('high-vis')">High-Vis</button></div></div>
-    <div class="setting-row" style="margin-bottom:25px"><label>UI Size</label><input type="range" min="50" max="150" step="25" id="ui-size-slider" onchange="haptic(10); updSet('uiSize',this.value); applyUISize()" style="width:120px"></div>
-    
-    <details onselect="haptic(10)"><summary onclick="haptic(10)">Advanced Settings</summary><div class="details-content">
-        <div class="mini-row"><label>Show Progress Fill</label><input type="checkbox" id="progress-toggle" onchange="haptic(10); updSet('showProgress',this.checked)" style="width:20px;height:20px"></div>
-        <div class="mini-row"><label>Confirm Reset</label><input type="checkbox" id="confirm-reset-toggle" onchange="haptic(10); updSet('confirmReset',this.checked)" style="width:20px;height:20px"></div>
-        <div class="mini-row"><label>Auto-Pause Mic</label><input type="checkbox" id="auto-pause-mic-toggle" onchange="haptic(10); updSet('autoPauseMic',this.checked)" style="width:20px;height:20px"></div>
-        <div class="mini-row"><label>Enable Haptics</label><input type="checkbox" id="haptics-toggle" onchange="haptic(10); updSet('enableHaptics',this.checked)" style="width:20px;height:20px"></div>
-        <div class="mini-row"><label>Enable Dragging</label><input type="checkbox" id="dragging-toggle" onchange="haptic(10); updSet('enableDragging',this.checked); initSortables()" style="width:20px;height:20px"></div>
-        <div class="mini-row"><label>Pocket Mode</label><input type="checkbox" id="pocket-toggle" onchange="haptic(10); updSet('pocketMode',this.checked)" style="width:20px;height:20px"></div>
-        <div class="mini-row"><label>NFC Tag Reader</label><input type="checkbox" id="nfc-toggle" onchange="haptic(10); updSet('nfcEnabled',this.checked); toggleNFCState(this.checked)" style="width:20px;height:20px"></div>
-        
-        <details style="background:rgba(0,0,0,0.2);margin-top:10px;" onselect="haptic(10)"><summary onclick="haptic(10)" style="font-size:14px;padding:12px">Program NFC Tags</summary>
-            <div class="details-content" id="nfc-dynamic-list" style="padding-top:0;"></div>
-        </details>
-    </div></details>
-</dialog>
-
-<dialog id="settings-modal">
-    <div class="modal-header"><span class="modal-title">Cue Settings</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10); closeModal('settings-modal')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>
-    <div id="modal-content"></div><div class="danger-zone"><button class="btn-delete" onclick="haptic([30, 50, 30]); deleteTrack()">Delete Cue</button></div>
-</dialog>
-<dialog id="reset-modal">
-    <div class="modal-header"><span class="modal-title">Reset Show?</span></div><p style="color:var(--text-muted);margin:0 0 25px">Stop audio and reset queue?</p>
-    <div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10); closeModal('reset-modal')">Cancel</button><button class="btn-delete" style="flex:1" onclick="haptic([50, 50, 50]); executeReset()">Reset Show</button></div>
-</dialog>
-
-<script>
-const $ = id => document.getElementById(id);
-let tracks=[], curIdx=0, locked=!1, activeId=null, activeCues=new Map(), activePads=new Map(), paused=!1;
-let db, projectsList=[], curProjId='default', editProjId=null;
-
-let defSet = {showProgress:true, theme:'auto', lang:'en-US', uiSize:100, confirmReset:false, autoPauseMic:true, pocketMode:true, nfcEnabled:false, enableHaptics:true, enableDragging:true};
-let settings = { ...defSet, ...(JSON.parse(localStorage.getItem('mc_settings')) || {}) };
-let sortQueue, sortGrid;
-
-const haptic = (p=15) => { if(settings.enableHaptics && navigator.vibrate) navigator.vibrate(p); };
-const showAlert = (title, msg) => { $('alert-title').innerText=title; $('alert-msg').innerText=msg; openModal('custom-alert-modal'); };
-const openModal = id => { 
-    if(id==='app-settings') buildNfcMenu();
-    document.body.classList.add('modal-open'); $(id).showModal(); 
-};
-const closeModal = id => { $(id).close(); document.body.classList.remove('modal-open'); };
-
-const buildNfcMenu = () => {
-    let html = `<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_NEXT', 'Next Cue')"><span class="material-symbols-rounded">nfc</span> Program 'Next Cue'</button>
-                <button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PLAYPAUSE', 'Play/Pause')"><span class="material-symbols-rounded">nfc</span> Program 'Play/Pause'</button>
-                <button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_MIC', 'Toggle Mic')"><span class="material-symbols-rounded">nfc</span> Program 'Toggle Mic'</button>`;
-    let pads = tracks.filter(t=>t.type==='pad');
-    pads.forEach(p => html += `<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PAD_${p.id}', '${p.name.replace(/'/g,"\\'")}')"><span class="material-symbols-rounded">nfc</span> Program '${p.name}'</button>`);
-    $('nfc-dynamic-list').innerHTML = html;
-};
-
-const setLang = l => { settings.lang=l; updSet('lang',l); document.querySelectorAll('#lang-controls button').forEach(b=>b.classList.remove('active')); $(l==='en-US'?'lang-en':'lang-de').classList.add('active'); if(recognition) recognition.lang=l; };
-const updSet = (k,v) => { settings[k]=v; localStorage.setItem('mc_settings', JSON.stringify(settings)); };
-const applySettings = () => { 
-    setTheme(settings.theme); setLang(settings.lang); 
-    ['progress', 'confirm-reset', 'auto-pause-mic', 'haptics', 'dragging', 'pocket', 'nfc'].forEach(k => { let prop = k==='confirm-reset'?'confirmReset':k==='auto-pause-mic'?'autoPauseMic':k==='haptics'?'enableHaptics':k==='dragging'?'enableDragging':k==='pocket'?'pocketMode':k==='nfc'?'nfcEnabled':'showProgress'; $(`${k}-toggle`).checked=settings[prop]; });
-    toggleProgress(settings.showProgress); $('ui-size-slider').value=settings.uiSize||100; applyUISize(); 
-    if(settings.nfcEnabled) setTimeout(()=>toggleNFCState(true), 1000);
-    initSortables();
-};
-const setTheme = t => { 
-    let actualTheme = t;
-    if(t === 'auto') {
-        actualTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-    }
-    document.documentElement.setAttribute('data-theme',actualTheme); 
-    document.querySelectorAll('#theme-controls button').forEach(b=>b.classList.remove('active')); 
-    $(`btn-${t==='high-vis'?'vis':t}`).classList.add('active'); 
-    updSet('theme',t); 
-};
-window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
-    if(settings.theme === 'auto') setTheme('auto');
-});
-
-const toggleProgress = v => { document.body.classList.toggle('show-progress',v); };
-const applyUISize = () => { document.body.style.zoom=(settings.uiSize||100)+'%'; };
-
-let nfcReader=null, nfcAbortCtrl=null, nfcWriteAbortCtrl=null, lastNfc=0; 
-const toggleNFCState = async e => {
-    if(e){ if(!("NDEFReader" in window)) return showAlert("Error", "NFC is not supported.");
-        try{ if(nfcAbortCtrl) nfcAbortCtrl.abort(); nfcAbortCtrl=new AbortController(); if(!nfcReader){ nfcReader=new NDEFReader(); nfcReader.addEventListener("reading",({message})=>{ if(!settings.nfcEnabled || Date.now()-lastNfc<2000)return; for(const r of message.records){ if(r.recordType==="text"){ let txt=new TextDecoder(r.encoding).decode(r.data); lastNfc=Date.now(); haptic([20,30]); if(txt==="CUE_NEXT") playNextCue(); else if(txt==="CUE_PLAYPAUSE") toggleGlobalPause(); else if(txt==="CUE_MIC") toggleMic(); else if(txt.startsWith("CUE_PAD_")){ let t=tracks.find(x=>x.id===txt.replace("CUE_PAD_","")); if(t) playPad(t); } } } }); } await nfcReader.scan({signal:nfcAbortCtrl.signal}); } catch(err){ $('nfc-toggle').checked=false; updSet('nfcEnabled',false); }
-    } else if(nfcAbortCtrl){ nfcAbortCtrl.abort(); nfcAbortCtrl=null; }
-};
-const programNfcTag = async (cmd, name) => {
-    if(!("NDEFReader" in window)) return showAlert("Error","NFC not supported.");
-    if(nfcWriteAbortCtrl) nfcWriteAbortCtrl.abort(); nfcWriteAbortCtrl=new AbortController();
-    $('nfc-write-text').innerText=`Programming: ${name}`; openModal('nfc-write-modal');
-    try{ await new NDEFReader().write(cmd,{signal:nfcWriteAbortCtrl.signal}); haptic([40,60,40]); closeModal('nfc-write-modal'); openModal('nfc-success-modal'); }
-    catch(e){ if(e.name!=='AbortError') showAlert("Failed", "Programming failed: "+e); }
-};
-const cancelNfcWrite = () => { haptic(10); if(nfcWriteAbortCtrl) nfcWriteAbortCtrl.abort(); closeModal('nfc-write-modal'); };
-
-const initDB = () => {
-    let r = indexedDB.open('MagicCuesProDB', 4); r.onupgradeneeded=e=>{ if(!e.target.result.objectStoreNames.contains('store')) e.target.result.createObjectStore('store'); };
-    r.onsuccess=e=>{ db=e.target.result; let st=db.transaction('store','readwrite').objectStore('store'); st.get('projectList').onsuccess=res=>{ projectsList=res.target.result||[{id:'default',name:'Main Show'}]; if(!res.target.result) st.put(projectsList,'projectList'); curProjId=localStorage.getItem('mc_curProj')||projectsList[0].id; $('header-title-text').innerText=(projectsList.find(x=>x.id===curProjId)||projectsList[0]).name; st.get('proj_'+curProjId).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:URL.createObjectURL(t.file)})):[]; render(); }; }; };
-};
-const saveData = () => { if(db) db.transaction('store','readwrite').objectStore('store').put(tracks.map(t=>({id:t.id,name:t.name,type:t.type,delay:t.delay,fadeIn:t.fadeIn,fadeOut:t.fadeOut,volume:t.volume,trimStart:t.trimStart,trimEnd:t.trimEnd,autoFollow:t.autoFollow,overlap:t.overlap,postDelay:t.postDelay,triggerPhrase:t.triggerPhrase||'',globalVoice:t.globalVoice||false,file:t.file})), 'proj_'+curProjId); };
-
-const render = () => {
-    $('track-list').innerHTML=''; $('instant-grid').innerHTML=''; let qI=1, pI=1;
-    tracks.forEach((t,i)=>{
-        let mic = t.triggerPhrase ? `<span class="material-symbols-rounded" style="color:var(--text-muted);font-size:14px;vertical-align:middle;margin-left:4px">mic</span>` : ''; if(t.globalVoice) mic += `<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;vertical-align:middle;margin-left:2px">public</span>`;
-        let e=document.createElement('div'); e.id=`tile-${t.id}`;
-        if(t.type==='queue'){ e.className=`tile ${i===curIdx?'is-current':''} ${activeCues.has(t.id)?'is-playing':''}`; e.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><div class="tile-content"><span class="material-symbols-rounded drag-handle">drag_indicator</span><div class="tile-info" style="cursor:pointer" onclick="if(!locked)playCue('${t.id}')"><span class="tile-name-text">${qI++}. ${t.name}${mic}</span></div><button class="icon-btn edit-trigger" style="width:40px;height:40px" onclick="haptic(10); openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:20px">settings</span></button></div>`; $('track-list').appendChild(e); }
-        else{ 
-            e.className=`cue-pad ${activePads.has(t.id)?'is-playing':''}`; 
-            e.onclick=ev=>{ if(!ev.target.closest('.pad-settings-trigger') && !ev.target.closest('.drag-handle')){playPad(t);} }; 
-            e.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><span class="material-symbols-rounded drag-handle pad-drag-handle">drag_indicator</span><div class="pad-number">${pI++}</div><span>${t.name}${mic}</span><div class="pad-settings-trigger edit-trigger" onclick="event.stopPropagation(); haptic(10); openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:18px">settings</span></div>`; 
-            $('instant-grid').appendChild(e); 
-        }
-    });
-};
-
-const handleFiles = async i => { for(let f of Array.from(i.files)){ let b=new Blob([await f.arrayBuffer()],{type:f.type}); tracks.push({id:'id'+Date.now()+Math.random().toString(36).slice(2,7),name:f.name.replace(/\.[^/.]+$/,""),blobUrl:URL.createObjectURL(b),type:'queue',delay:0,fadeIn:0,fadeOut:0,volume:1,trimStart:0,trimEnd:0,autoFollow:!1,overlap:0,postDelay:0,triggerPhrase:'',globalVoice:!1,file:b}); } render(); saveData(); i.value=''; };
-let pTm, didLng=!1; const sPrs=id=>{ didLng=!1; pTm=setTimeout(()=>{haptic(30); didLng=!0; editProjId=id; $('edit-show-name').value=projectsList.find(x=>x.id===id).name; openModal('edit-show-modal');},600); }; const cPrs=()=>clearTimeout(pTm); const clPrj=id=>{ cPrs(); if(!didLng){haptic(15); swPrj(id);} };
-const openProjects = () => { $('projects-list-container').innerHTML=projectsList.map(p=>`<div class="project-item ${p.id===curProjId?'active':''}" onpointerdown="sPrs('${p.id}')" onpointerup="cPrs()" onpointerleave="cPrs()" onclick="clPrj('${p.id}')"><span style="font-weight:700">${p.name}</span>${p.id===curProjId?'<span class="material-symbols-rounded">check_circle</span>':''}</div>`).join(''); openModal('projects-modal'); };
-const createNewProject = () => { let n=$('new-show-name').value.trim(); if(!n)return; let id='proj_'+Date.now(); projectsList.push({id,name:n}); db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList'); closeModal('new-show-modal'); $('new-show-name').value=''; swPrj(id); };
-const saveShowEdit = () => { let n=$('edit-show-name').value.trim(); if(n&&editProjId){ let p=projectsList.find(x=>x.id===editProjId); if(p)p.name=n; db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList'); if(editProjId===curProjId) $('header-title-text').innerText=n; } closeModal('edit-show-modal'); openProjects(); };
-const deleteShow = () => { if(projectsList.length<=1) return showAlert("Notice", "Cannot delete last show."); projectsList=projectsList.filter(x=>x.id!==editProjId); let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('store').delete('proj_'+editProjId); closeModal('edit-show-modal'); if(curProjId===editProjId)swPrj(projectsList[0].id); else openProjects(); };
-const swPrj = id => { if(curProjId===id)return; executeReset(); tracks.forEach(t=>{if(t.blobUrl)URL.revokeObjectURL(t.blobUrl);}); tracks=[]; curProjId=id; localStorage.setItem('mc_curProj',id); $('header-title-text').innerText=projectsList.find(x=>x.id===id).name; closeModal('projects-modal'); db.transaction('store').objectStore('store').get('proj_'+id).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:URL.createObjectURL(t.file)})):[]; render(); }; };
-const triggerReset = () => { settings.confirmReset ? openModal('reset-modal') : executeReset(); };
-const executeReset = () => { closeModal('reset-modal'); curIdx=0; activeCues.forEach(a=>{if(a.fadeInt)clearInterval(a.fadeInt); a.pause();}); activeCues.clear(); activePads.forEach(a=>{if(a.fadeInt)clearInterval(a.fadeInt); a.pause();}); activePads.clear(); paused=!1; $('play-text').innerText='Next Cue'; render(); manageSmartMic(); };
-
-const openSet = id => {
-    activeId=id; let t=tracks.find(x=>x.id===id), isQ=t.type==='queue';
-    $('modal-content').innerHTML=`
-    <div class="setting-row" style="flex-direction:column;align-items:flex-start;padding-bottom:20px"><label>Cue Type</label><div class="segmented-control"><button class="${isQ?'active':''}" onclick="haptic(10); updTrk('type','queue')">Main</button><button class="${!isQ?'active':''}" onclick="haptic(10); updTrk('type','pad')">Instant</button></div></div>
-    <div class="setting-row"><label>Volume</label><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="haptic(5); updTrk('volume',this.value)"></div>
-    <details><summary onclick="haptic(10)">Voice Triggers</summary><div class="details-content"><div class="mini-row"><label>Phrase</label><input type="text" style="width:140px;margin:0;padding:8px 12px 8px 8px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:rgba(128,128,128,.1)" placeholder="e.g. action" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div><div class="mini-row"><label>Global</label><input type="checkbox" ${t.globalVoice?'checked':''} onchange="haptic(10); updTrk('globalVoice',this.checked)" style="width:20px;height:20px"></div></div></details>
-    <details><summary onclick="haptic(10)">Advanced Audio</summary><div class="details-content"><div class="mini-row"><label>Pre-Delay (s)</label><input type="number" step="0.5" value="${t.delay||0}" onchange="haptic(10); updTrk('delay',this.value)"></div><div class="mini-row"><label>Fade In (s)</label><input type="number" step="0.5" value="${t.fadeIn||0}" onchange="haptic(10); updTrk('fadeIn',this.value)"></div><div class="mini-row"><label>Fade Out (s)</label><input type="number" step="0.5" value="${t.fadeOut||0}" onchange="haptic(10); updTrk('fadeOut',this.value)"></div><div class="mini-row"><label>Trim Start</label><input type="number" step="0.5" value="${t.trimStart||0}" onchange="haptic(10); updTrk('trimStart',this.value)"></div><div class="mini-row"><label>Trim End</label><input type="number" step="0.5" value="${t.trimEnd||0}" onchange="haptic(10); updTrk('trimEnd',this.value)"></div>
-    ${isQ?`<div class="mini-row"><label style="color:var(--accent)">Auto-Follow</label><input type="checkbox" ${t.autoFollow?'checked':''} onchange="haptic(10); updTrk('autoFollow',this.checked)" style="width:20px;height:20px"></div><div class="mini-row"><label>Overlap (s)</label><input type="number" step="0.5" value="${t.overlap||0}" onchange="haptic(10); updTrk('overlap',this.value)"></div><div class="mini-row"><label>Post-Delay</label><input type="number" step="0.5" value="${t.postDelay||0}" onchange="haptic(10); updTrk('postDelay',this.value)"></div>`:''}</div></details>`;
-    openModal('settings-modal');
-};
-const updTrk = (k,v) => { let t=tracks.find(x=>x.id===activeId); if(t){ let val = (k==='type'||k==='autoFollow'||k==='triggerPhrase'||k==='globalVoice')?v:parseFloat(v); t[k]=val; if(k==='volume'){ if(activeCues.has(activeId)) activeCues.get(activeId).volume=val; if(activePads.has(activeId)) activePads.get(activeId).volume=val; } if(k==='type') closeModal('settings-modal'); render(); saveData(); } };
-const deleteTrack = () => { let t=tracks.find(x=>x.id===activeId); if(t&&t.blobUrl)URL.revokeObjectURL(t.blobUrl); tracks=tracks.filter(x=>x.id!==activeId); closeModal('settings-modal'); render(); saveData(); };
-
-const playCue = id => { if(locked)return; haptic(20); let q=tracks.filter(x=>x.type==='queue'), idx=q.findIndex(x=>x.id===id); if(idx>-1){curIdx=idx; trigSeq(q[curIdx++]);} };
-const playNextCue = (L=!1) => { let q=tracks.filter(x=>x.type==='queue'); if(curIdx>=q.length)return; if(!L)haptic(25); trigSeq(q[curIdx++], L); };
-const trigSeq = (t,L) => { if(t.delay>0 && !L){ $('play-text').innerText=`Wait ${t.delay}s...`; setTimeout(()=>runAud(t,L), t.delay*1000); } else runAud(t,L); render(); };
-
-const runAud = (t, L) => { 
-    if(!L){ activeCues.forEach(a=>{ a.onended=null; if(a.fadeInt)clearInterval(a.fadeInt); a.pause(); }); activeCues.clear(); }
-    let a=new Audio(t.blobUrl); activeCues.set(t.id,a); paused=!1; $('pause-icon').innerText='pause'; 
-    let vol=t.volume??1; a.currentTime=t.trimStart||0;
-    if(t.fadeIn>0){ a.volume=0; let v=0, s=0.05/t.fadeIn; a.fadeInt=setInterval(()=>{v+=s; if(v>=vol){v=vol; clearInterval(a.fadeInt);} if(activeCues.has(t.id))a.volume=v;},50); } else a.volume=vol;
-    let out=!1, af=!1, ov=parseFloat(t.overlap)||0, pd=parseFloat(t.postDelay)||0;
-    a.ontimeupdate=()=>{ let d=t.trimEnd?t.trimEnd:(a.duration||0); if(d===0)return; let pEl=$('prog-'+t.id); if(pEl) pEl.style.width=Math.max(0,Math.min(100,((a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100)))+'%';
-        if(t.autoFollow&&ov>0&&!af&&a.currentTime>=(d-ov)){ af=!0; playNextCue(!0); }
-        if(t.fadeOut>0&&!out&&a.currentTime>=(d-t.fadeOut)){ out=!0; if(a.fadeInt)clearInterval(a.fadeInt); let v=a.volume, s=v/(t.fadeOut*20); a.fadeInt=setInterval(()=>{v-=s; if(v<=0){v=0;clearInterval(a.fadeInt);} if(activeCues.has(t.id))a.volume=v;},50); }
-        if(a.currentTime>=d&&!a.paused){ a.pause(); if(a.onended)a.onended(); } };
-    a.play().catch(e=>{}); $('play-text').innerText=t.name; manageSmartMic(); 
-    a.onended=()=>{ if(t.autoFollow&&!af){ af=!0; if(pd>0){$('play-text').innerText=`Wait ${pd}s...`; setTimeout(()=>playNextCue(!1), pd*1000);}else playNextCue(!1); } activeCues.delete(t.id); if(activeCues.size===0) $('play-text').innerText='Next Cue'; render(); manageSmartMic(); }; render(); 
-};
-const playPad = t => { 
-    haptic(20);
-    if(activePads.has(t.id)){ let oA=activePads.get(t.id); if(oA.fadeInt)clearInterval(oA.fadeInt); oA.pause(); activePads.delete(t.id); render(); manageSmartMic(); return; }
-    let a=new Audio(t.blobUrl); a.currentTime=t.trimStart||0; a.volume=t.volume??1; activePads.set(t.id,a); render();
-    a.ontimeupdate=()=>{ let d=t.trimEnd?t.trimEnd:a.duration; let pEl=$('prog-'+t.id); if(pEl) pEl.style.width=Math.max(0,Math.min(100,((a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100)))+'%'; if(a.currentTime>=d){ a.pause(); activePads.delete(t.id); render(); manageSmartMic(); } };
-    paused=!1; $('pause-icon').innerText='pause'; a.play().catch(e=>{}); manageSmartMic();
-};
-const audioPlay = () => activeCues.size>0 || activePads.size>0;
-const toggleGlobalPause = () => { paused=!paused; if(paused){ activeCues.forEach(a=>a.pause()); activePads.forEach(a=>a.pause()); $('pause-icon').innerText='play_arrow'; } else { activeCues.forEach(a=>a.play()); activePads.forEach(a=>a.play()); $('pause-icon').innerText='pause'; } manageSmartMic(); };
-const toggleLock = (f=null) => { locked=(f!==null)?f:!locked; document.body.className=locked?'locked show-progress':'unlocked show-progress'; $('lock-icon').innerText=locked?'lock':'lock_open'; render(); if(locked&&settings.pocketMode){ $('pocket-mode-overlay').style.display='flex'; sessionStorage.setItem('mc_pocket','true'); try{document.documentElement.requestFullscreen();}catch(e){} } else { $('pocket-mode-overlay').style.display='none'; sessionStorage.removeItem('mc_pocket'); try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){} } };
-const confirmPocketExit = () => { if(!$('pocket-unlock-check').checked){haptic([50,50]); return showAlert("Notice", "Check 'Confirm Unlock' box.");} closeModal('pocket-confirm-modal'); toggleLock(!1); };
-
-let recognition, isLis=!1, spErr=!1, prLen=0, micOn=!1, spLog=[];
-const upSp = t => { if(t&&t.trim()!==""){ spLog.push(t); if(spLog.length>3)spLog.shift(); } $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent); font-weight:800">&gt;</span> ')+(isLis?'<span style="animation:pulse 1s infinite">_</span>':''); $('speech-debug').scrollTop=$('speech-debug').scrollHeight; };
-const initSpeech
+</dialog>  <dialog id="settings-modal">  
+    <div class="modal-header"><span class="modal-title">Cue Settings</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10); closeModal('settings-modal')"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>  
+    <div id="modal-content"></div><div class="danger-zone"><button class="btn-delete" onclick="haptic([30, 50, 30]); deleteTrack()">Delete Cue</button></div>  
+</dialog>  
+<dialog id="reset-modal">  
+    <div class="modal-header"><span class="modal-title">Reset Show?</span></div><p style="color:var(--text-muted);margin:0 0 25px">Stop audio and reset queue?</p>  
+    <div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10); closeModal('reset-modal')">Cancel</button><button class="btn-delete" style="flex:1" onclick="haptic([50, 50, 50]); executeReset()">Reset Show</button></div>  
+</dialog>  <script>  
+const $ = id => document.getElementById(id);  
+let tracks=[], curIdx=0, locked=!1, activeId=null, activeCues=new Map(), activePads=new Map(), paused=!1;  
+let db, projectsList=[], curProjId='default', editProjId=null;  
+  
+let defSet = {showProgress:true, theme:'auto', lang:'en-US', uiSize:100, confirmReset:false, autoPauseMic:true, pocketMode:true, nfcEnabled:false, enableHaptics:true, enableDragging:true};  
+let settings = { ...defSet, ...(JSON.parse(localStorage.getItem('mc_settings')) || {}) };  
+let sortQueue, sortGrid;  
+  
+const haptic = (p=15) => { if(settings.enableHaptics && navigator.vibrate) navigator.vibrate(p); };  
+const showAlert = (title, msg) => { $('alert-title').innerText=title; $('alert-msg').innerText=msg; openModal('custom-alert-modal'); };  
+const openModal = id => {   
+    if(id==='app-settings') buildNfcMenu();  
+    document.body.classList.add('modal-open'); $(id).showModal();   
+};  
+const closeModal = id => { $(id).close(); document.body.classList.remove('modal-open'); };  
+  
+const buildNfcMenu = () => {  
+    let html = `<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_NEXT', 'Next Cue')"><span class="material-symbols-rounded">nfc</span> Program 'Next Cue'</button>  
+                <button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PLAYPAUSE', 'Play/Pause')"><span class="material-symbols-rounded">nfc</span> Program 'Play/Pause'</button>  
+                <button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_MIC', 'Toggle Mic')"><span class="material-symbols-rounded">nfc</span> Program 'Toggle Mic'</button>`;  
+    let pads = tracks.filter(t=>t.type==='pad');  
+    pads.forEach(p => html += `<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PAD_${p.id}', '${p.name.replace(/'/g,"\\'")}')"><span class="material-symbols-rounded">nfc</span> Program '${p.name}'</button>`);  
+    $('nfc-dynamic-list').innerHTML = html;  
+};  
+  
+const setLang = l => { settings.lang=l; updSet('lang',l); document.querySelectorAll('#lang-controls button').forEach(b=>b.classList.remove('active')); $(l==='en-US'?'lang-en':'lang-de').classList.add('active'); if(recognition) recognition.lang=l; };  
+const updSet = (k,v) => { settings[k]=v; localStorage.setItem('mc_settings', JSON.stringify(settings)); };  
+const applySettings = () => {   
+    setTheme(settings.theme); setLang(settings.lang);   
+    ['progress', 'confirm-reset', 'auto-pause-mic', 'haptics', 'dragging', 'pocket', 'nfc'].forEach(k => { let prop = k==='confirm-reset'?'confirmReset':k==='auto-pause-mic'?'autoPauseMic':k==='haptics'?'enableHaptics':k==='dragging'?'enableDragging':k==='pocket'?'pocketMode':k==='nfc'?'nfcEnabled':'showProgress'; $(`${k}-toggle`).checked=settings[prop]; });  
+    toggleProgress(settings.showProgress); $('ui-size-slider').value=settings.uiSize||100; applyUISize();   
+    if(settings.nfcEnabled) setTimeout(()=>toggleNFCState(true), 1000);  
+    initSortables();  
+};  
+const setTheme = t => {   
+    let actualTheme = t;  
+    if(t === 'auto') {  
+        actualTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';  
+    }  
+    document.documentElement.setAttribute('data-theme',actualTheme);   
+    document.querySelectorAll('#theme-controls button').forEach(b=>b.classList.remove('active'));   
+    $(`btn-${t==='high-vis'?'vis':t}`).classList.add('active');   
+    updSet('theme',t);   
+};  
+window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {  
+    if(settings.theme === 'auto') setTheme('auto');  
+});  
+  
+const toggleProgress = v => { document.body.classList.toggle('show-progress',v); };  
+const applyUISize = () => { document.body.style.zoom=(settings.uiSize||100)+'%'; };  
+  
+let nfcReader=null, nfcAbortCtrl=null, nfcWriteAbortCtrl=null, lastNfc=0;   
+const toggleNFCState = async e => {  
+    if(e){ if(!("NDEFReader" in window)) return showAlert("Error", "NFC is not supported.");  
+        try{ if(nfcAbortCtrl) nfcAbortCtrl.abort(); nfcAbortCtrl=new AbortController(); if(!nfcReader){ nfcReader=new NDEFReader(); nfcReader.addEventListener("reading",({message})=>{ if(!settings.nfcEnabled || Date.now()-lastNfc<2000)return; for(const r of message.records){ if(r.recordType==="text"){ let txt=new TextDecoder(r.encoding).decode(r.data); lastNfc=Date.now(); haptic([20,30]); if(txt==="CUE_NEXT") playNextCue(); else if(txt==="CUE_PLAYPAUSE") toggleGlobalPause(); else if(txt==="CUE_MIC") toggleMic(); else if(txt.startsWith("CUE_PAD_")){ let t=tracks.find(x=>x.id===txt.replace("CUE_PAD_","")); if(t) playPad(t); } } } }); } await nfcReader.scan({signal:nfcAbortCtrl.signal}); } catch(err){ $('nfc-toggle').checked=false; updSet('nfcEnabled',false); }  
+    } else if(nfcAbortCtrl){ nfcAbortCtrl.abort(); nfcAbortCtrl=null; }  
+};  
+const programNfcTag = async (cmd, name) => {  
+    if(!("NDEFReader" in window)) return showAlert("Error","NFC not supported.");  
+    if(nfcWriteAbortCtrl) nfcWriteAbortCtrl.abort(); nfcWriteAbortCtrl=new AbortController();  
+    $('nfc-write-text').innerText=`Programming: ${name}`; openModal('nfc-write-modal');  
+    try{ await new NDEFReader().write(cmd,{signal:nfcWriteAbortCtrl.signal}); haptic([40,60,40]); closeModal('nfc-write-modal'); openModal('nfc-success-modal'); }  
+    catch(e){ if(e.name!=='AbortError') showAlert("Failed", "Programming failed: "+e); }  
+};  
+const cancelNfcWrite = () => { haptic(10); if(nfcWriteAbortCtrl) nfcWriteAbortCtrl.abort(); closeModal('nfc-write-modal'); };  
+  
+const initDB = () => {  
+    let r = indexedDB.open('MagicCuesProDB', 4); r.onupgradeneeded=e=>{ if(!e.target.result.objectStoreNames.contains('store')) e.target.result.createObjectStore('store'); };  
+    r.onsuccess=e=>{ db=e.target.result; let st=db.transaction('store','readwrite').objectStore('store'); st.get('projectList').onsuccess=res=>{ projectsList=res.target.result||[{id:'default',name:'Main Show'}]; if(!res.target.result) st.put(projectsList,'projectList'); curProjId=localStorage.getItem('mc_curProj')||projectsList[0].id; $('header-title-text').innerText=(projectsList.find(x=>x.id===curProjId)||projectsList[0]).name; st.get('proj_'+curProjId).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:URL.createObjectURL(t.file)})):[]; render(); }; }; };  
+};  
+const saveData = () => { if(db) db.transaction('store','readwrite').objectStore('store').put(tracks.map(t=>({id:t.id,name:t.name,type:t.type,delay:t.delay,fadeIn:t.fadeIn,fadeOut:t.fadeOut,volume:t.volume,trimStart:t.trimStart,trimEnd:t.trimEnd,autoFollow:t.autoFollow,overlap:t.overlap,postDelay:t.postDelay,triggerPhrase:t.triggerPhrase||'',globalVoice:t.globalVoice||false,file:t.file})), 'proj_'+curProjId); };  
+  
+const render = () => {  
+    $('track-list').innerHTML=''; $('instant-grid').innerHTML=''; let qI=1, pI=1;  
+    tracks.forEach((t,i)=>{  
+        let mic = t.triggerPhrase ? `<span class="material-symbols-rounded" style="color:var(--text-muted);font-size:14px;vertical-align:middle;margin-left:4px">mic</span>` : ''; if(t.globalVoice) mic += `<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;vertical-align:middle;margin-left:2px">public</span>`;  
+        let e=document.createElement('div'); e.id=`tile-${t.id}`;  
+        if(t.type==='queue'){ e.className=`tile ${i===curIdx?'is-current':''} ${activeCues.has(t.id)?'is-playing':''}`; e.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><div class="tile-content"><span class="material-symbols-rounded drag-handle">drag_indicator</span><div class="tile-info" style="cursor:pointer" onclick="if(!locked)playCue('${t.id}')"><span class="tile-name-text">${qI++}. ${t.name}${mic}</span></div><button class="icon-btn edit-trigger" style="width:40px;height:40px" onclick="haptic(10); openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:20px">settings</span></button></div>`; $('track-list').appendChild(e); }  
+        else{   
+            e.className=`cue-pad ${activePads.has(t.id)?'is-playing':''}`;   
+            e.onclick=ev=>{ if(!ev.target.closest('.pad-settings-trigger') && !ev.target.closest('.drag-handle')){playPad(t);} };   
+            e.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><span class="material-symbols-rounded drag-handle pad-drag-handle">drag_indicator</span><div class="pad-number">${pI++}</div><span>${t.name}${mic}</span><div class="pad-settings-trigger edit-trigger" onclick="event.stopPropagation(); haptic(10); openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:18px">settings</span></div>`;   
+            $('instant-grid').appendChild(e);   
+        }  
+    });  
+};  
+  
+const handleFiles = async i => { for(let f of Array.from(i.files)){ let b=new Blob([await f.arrayBuffer()],{type:f.type}); tracks.push({id:'id'+Date.now()+Math.random().toString(36).slice(2,7),name:f.name.replace(/\.[^/.]+$/,""),blobUrl:URL.createObjectURL(b),type:'queue',delay:0,fadeIn:0,fadeOut:0,volume:1,trimStart:0,trimEnd:0,autoFollow:!1,overlap:0,postDelay:0,triggerPhrase:'',globalVoice:!1,file:b}); } render(); saveData(); i.value=''; };  
+let pTm, didLng=!1; const sPrs=id=>{ didLng=!1; pTm=setTimeout(()=>{haptic(30); didLng=!0; editProjId=id; $('edit-show-name').value=projectsList.find(x=>x.id===id).name; openModal('edit-show-modal');},600); }; const cPrs=()=>clearTimeout(pTm); const clPrj=id=>{ cPrs(); if(!didLng){haptic(15); swPrj(id);} };  
+const openProjects = () => { $('projects-list-container').innerHTML=projectsList.map(p=>`<div class="project-item ${p.id===curProjId?'active':''}" onpointerdown="sPrs('${p.id}')" onpointerup="cPrs()" onpointerleave="cPrs()" onclick="clPrj('${p.id}')"><span style="font-weight:700">${p.name}</span>${p.id===curProjId?'<span class="material-symbols-rounded">check_circle</span>':''}</div>`).join(''); openModal('projects-modal'); };  
+const createNewProject = () => { let n=$('new-show-name').value.trim(); if(!n)return; let id='proj_'+Date.now(); projectsList.push({id,name:n}); db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList'); closeModal('new-show-modal'); $('new-show-name').value=''; swPrj(id); };  
+const saveShowEdit = () => { let n=$('edit-show-name').value.trim(); if(n&&editProjId){ let p=projectsList.find(x=>x.id===editProjId); if(p)p.name=n; db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList'); if(editProjId===curProjId) $('header-title-text').innerText=n; } closeModal('edit-show-modal'); openProjects(); };  
+const deleteShow = () => { if(projectsList.length<=1) return showAlert("Notice", "Cannot delete last show."); projectsList=projectsList.filter(x=>x.id!==editProjId); let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('store').delete('proj_'+editProjId); closeModal('edit-show-modal'); if(curProjId===editProjId)swPrj(projectsList[0].id); else openProjects(); };  
+const swPrj = id => { if(curProjId===id)return; executeReset(); tracks.forEach(t=>{if(t.blobUrl)URL.revokeObjectURL(t.blobUrl);}); tracks=[]; curProjId=id; localStorage.setItem('mc_curProj',id); $('header-title-text').innerText=projectsList.find(x=>x.id===id).name; closeModal('projects-modal'); db.transaction('store').objectStore('store').get('proj_'+id).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:URL.createObjectURL(t.file)})):[]; render(); }; };  
+const triggerReset = () => { settings.confirmReset ? openModal('reset-modal') : executeReset(); };  
+const executeReset = () => { closeModal('reset-modal'); curIdx=0; activeCues.forEach(a=>{if(a.fadeInt)clearInterval(a.fadeInt); a.pause();}); activeCues.clear(); activePads.forEach(a=>{if(a.fadeInt)clearInterval(a.fadeInt); a.pause();}); activePads.clear(); paused=!1; $('play-text').innerText='Next Cue'; render(); manageSmartMic(); };  
+  
+const openSet = id => {  
+    activeId=id; let t=tracks.find(x=>x.id===id), isQ=t.type==='queue';  
+    $('modal-content').innerHTML=`  
+    <div class="setting-row" style="flex-direction:column;align-items:flex-start;padding-bottom:20px"><label>Cue Type</label><div class="segmented-control"><button class="${isQ?'active':''}" onclick="haptic(10); updTrk('type','queue')">Main</button><button class="${!isQ?'active':''}" onclick="haptic(10); updTrk('type','pad')">Instant</button></div></div>  
+    <div class="setting-row"><label>Volume</label><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="haptic(5); updTrk('volume',this.value)"></div>  
+    <details><summary onclick="haptic(10)">Voice Triggers</summary><div class="details-content"><div class="mini-row"><label>Phrase</label><input type="text" style="width:140px;margin:0;padding:8px 12px 8px 8px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:rgba(128,128,128,.1)" placeholder="e.g. action" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div><div class="mini-row"><label>Global</label><input type="checkbox" ${t.globalVoice?'checked':''} onchange="haptic(10); updTrk('globalVoice',this.checked)" style="width:20px;height:20px"></div></div></details>  
+    <details><summary onclick="haptic(10)">Advanced Audio</summary><div class="details-content"><div class="mini-row"><label>Pre-Delay (s)</label><input type="number" step="0.5" value="${t.delay||0}" onchange="haptic(10); updTrk('delay',this.value)"></div><div class="mini-row"><label>Fade In (s)</label><input type="number" step="0.5" value="${t.fadeIn||0}" onchange="haptic(10); updTrk('fadeIn',this.value)"></div><div class="mini-row"><label>Fade Out (s)</label><input type="number" step="0.5" value="${t.fadeOut||0}" onchange="haptic(10); updTrk('fadeOut',this.value)"></div><div class="mini-row"><label>Trim Start</label><input type="number" step="0.5" value="${t.trimStart||0}" onchange="haptic(10); updTrk('trimStart',this.value)"></div><div class="mini-row"><label>Trim End</label><input type="number" step="0.5" value="${t.trimEnd||0}" onchange="haptic(10); updTrk('trimEnd',this.value)"></div>  
+    ${isQ?`<div class="mini-row"><label style="color:var(--accent)">Auto-Follow</label><input type="checkbox" ${t.autoFollow?'checked':''} onchange="haptic(10); updTrk('autoFollow',this.checked)" style="width:20px;height:20px"></div><div class="mini-row"><label>Overlap (s)</label><input type="number" step="0.5" value="${t.overlap||0}" onchange="haptic(10); updTrk('overlap',this.value)"></div><div class="mini-row"><label>Post-Delay</label><input type="number" step="0.5" value="${t.postDelay||0}" onchange="haptic(10); updTrk('postDelay',this.value)"></div>`:''}</div></details>`;  
+    openModal('settings-modal');  
+};  
+const updTrk = (k,v) => { let t=tracks.find(x=>x.id===activeId); if(t){ let val = (k==='type'||k==='autoFollow'||k==='triggerPhrase'||k==='globalVoice')?v:parseFloat(v); t[k]=val; if(k==='volume'){ if(activeCues.has(activeId)) activeCues.get(activeId).volume=val; if(activePads.has(activeId)) activePads.get(activeId).volume=val; } if(k==='type') closeModal('settings-modal'); render(); saveData(); } };  
+const deleteTrack = () => { let t=tracks.find(x=>x.id===activeId); if(t&&t.blobUrl)URL.revokeObjectURL(t.blobUrl); tracks=tracks.filter(x=>x.id!==activeId); closeModal('settings-modal'); render(); saveData(); };  
+  
+const playCue = id => { if(locked)return; haptic(20); let q=tracks.filter(x=>x.type==='queue'), idx=q.findIndex(x=>x.id===id); if(idx>-1){curIdx=idx; trigSeq(q[curIdx++]);} };  
+const playNextCue = (L=!1) => { let q=tracks.filter(x=>x.type==='queue'); if(curIdx>=q.length)return; if(!L)haptic(25); trigSeq(q[curIdx++], L); };  
+const trigSeq = (t,L) => { if(t.delay>0 && !L){ $('play-text').innerText=`Wait ${t.delay}s...`; setTimeout(()=>runAud(t,L), t.delay*1000); } else runAud(t,L); render(); };  
+  
+const runAud = (t, L) => {   
+    if(!L){ activeCues.forEach(a=>{ a.onended=null; if(a.fadeInt)clearInterval(a.fadeInt); a.pause(); }); activeCues.clear(); }  
+    let a=new Audio(t.blobUrl); activeCues.set(t.id,a); paused=!1; $('pause-icon').innerText='pause';   
+    let vol=t.volume??1; a.currentTime=t.trimStart||0;  
+    if(t.fadeIn>0){ a.volume=0; let v=0, s=0.05/t.fadeIn; a.fadeInt=setInterval(()=>{v+=s; if(v>=vol){v=vol; clearInterval(a.fadeInt);} if(activeCues.has(t.id))a.volume=v;},50); } else a.volume=vol;  
+    let out=!1, af=!1, ov=parseFloat(t.overlap)||0, pd=parseFloat(t.postDelay)||0;  
+    a.ontimeupdate=()=>{ let d=t.trimEnd?t.trimEnd:(a.duration||0); if(d===0)return; let pEl=$('prog-'+t.id); if(pEl) pEl.style.width=Math.max(0,Math.min(100,((a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100)))+'%';  
+        if(t.autoFollow&&ov>0&&!af&&a.currentTime>=(d-ov)){ af=!0; playNextCue(!0); }  
+        if(t.fadeOut>0&&!out&&a.currentTime>=(d-t.fadeOut)){ out=!0; if(a.fadeInt)clearInterval(a.fadeInt); let v=a.volume, s=v/(t.fadeOut*20); a.fadeInt=setInterval(()=>{v-=s; if(v<=0){v=0;clearInterval(a.fadeInt);} if(activeCues.has(t.id))a.volume=v;},50); }  
+        if(a.currentTime>=d&&!a.paused){ a.pause(); if(a.onended)a.onended(); } };  
+    a.play().catch(e=>{}); $('play-text').innerText=t.name; manageSmartMic();   
+    a.onended=()=>{ if(t.autoFollow&&!af){ af=!0; if(pd>0){$('play-text').innerText=`Wait ${pd}s...`; setTimeout(()=>playNextCue(!1), pd*1000);}else playNextCue(!1); } activeCues.delete(t.id); if(activeCues.size===0) $('play-text').innerText='Next Cue'; render(); manageSmartMic(); }; render();   
+};  
+const playPad = t => {   
+    haptic(20);  
+    if(activePads.has(t.id)){ let oA=activePads.get(t.id); if(oA.fadeInt)clearInterval(oA.fadeInt); oA.pause(); activePads.delete(t.id); render(); manageSmartMic(); return; }  
+    let a=new Audio(t.blobUrl); a.currentTime=t.trimStart||0; a.volume=t.volume??1; activePads.set(t.id,a); render();  
+    a.ontimeupdate=()=>{ let d=t.trimEnd?t.trimEnd:a.duration; let pEl=$('prog-'+t.id); if(pEl) pEl.style.width=Math.max(0,Math.min(100,((a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100)))+'%'; if(a.currentTime>=d){ a.pause(); activePads.delete(t.id); render(); manageSmartMic(); } };  
+    paused=!1; $('pause-icon').innerText='pause'; a.play().catch(e=>{}); manageSmartMic();  
+};  
+const audioPlay = () => activeCues.size>0 || activePads.size>0;  
+const toggleGlobalPause = () => { paused=!paused; if(paused){ activeCues.forEach(a=>a.pause()); activePads.forEach(a=>a.pause()); $('pause-icon').innerText='play_arrow'; } else { activeCues.forEach(a=>a.play()); activePads.forEach(a=>a.play()); $('pause-icon').innerText='pause'; } manageSmartMic(); };  
+const toggleLock = (f=null) => { locked=(f!==null)?f:!locked; document.body.className=locked?'locked show-progress':'unlocked show-progress'; $('lock-icon').innerText=locked?'lock':'lock_open'; render(); if(locked&&settings.pocketMode){ $('pocket-mode-overlay').style.display='flex'; sessionStorage.setItem('mc_pocket','true'); try{document.documentElement.requestFullscreen();}catch(e){} } else { $('pocket-mode-overlay').style.display='none'; sessionStorage.removeItem('mc_pocket'); try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){} } };  
+const confirmPocketExit = () => { if(!$('pocket-unlock-check').checked){haptic([50,50]); return showAlert("Notice", "Check 'Confirm Unlock' box.");} closeModal('pocket-confirm-modal'); toggleLock(!1); };  
+  
+let recognition, isLis=!1, spErr=!1, prLen=0, micOn=!1, spLog=[];  
+const upSp = t => { if(t&&t.trim()!==""){ spLog.push(t); if(spLog.length>3)spLog.shift(); } $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent); font-weight:800">&gt;</span> ')+(isLis?'<span style="animation:pulse 1s infinite">_</span>':''); $('speech-debug').scrollTop=$('speech-debug').scrollHeight; };  
+const initSpeech = () => { window.SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition; if(!window.SpeechRecognition)return; recognition=new window.SpeechRecognition(); recognition.continuous=!0; recognition.interimResults=!0; recognition.lang=settings.lang;  
+    recognition.onstart=()=>{ prLen=0; $('mic-btn').classList.add('mic-active'); $('mic-btn').classList.remove('mic-paused'); $('mic-icon').innerText='mic'; spLog=["Listening..."]; upSp(""); };  
+    recognition.onresult=e=>{ let fl=''; for(let i=e.resultIndex;i<e.results.length;++i)fl+=e.results[i][0].transcript; let nw=fl.substring(prLen);  
+        $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent); font-weight:800">&gt;</span> ')+'<br><span style="color:var(--accent); font-weight:800">&gt;</span> '+fl; $('speech-debug').scrollTop=$('speech-debug').scrollHeight;  
+        let ss=nw.toLowerCase().replace(/[.,!?]/g,'').trim(); if(!ss)return; let trg=!1, q=tracks.filter(x=>x.type==='queue');  
+        if(curIdx<q.length&&q[curIdx].triggerPhrase&&!q[curIdx].globalVoice){ let cl=q[curIdx].triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim(); if(cl&&ss.includes(cl)){ haptic(30); playNextCue(); trg=!0; } }  
+        if(!trg){ for(let t of tracks){ if(t.globalVoice&&t.triggerPhrase){ let cl=t.triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim(); if(cl&&ss.includes(cl)){ haptic(30); t.type==='queue'?playCue(t.id):playPad(t); trg=!0; break; } } } } if(trg)prLen=fl.length; };  
+    recognition.onerror=e=>{ spErr=!0; if(micOn&&!audioPlay()){ isLis=!1; micOn=!1; $('mic-btn').className=''; $('mic-icon').innerText='mic_off'; } };  
+    recognition.onend=()=>{ prLen=0; if(isLis&&micOn&&!spErr)try{recognition.start();}catch(e){} spErr=!1; }; };  
+const manageSmartMic = () => { if(!micOn||!recognition)return; if(settings.autoPauseMic&&audioPlay()){ isLis=!1; try{recognition.stop();}catch(e){} $('mic-btn').classList.remove('mic-active'); $('mic-btn').classList.add('mic-paused'); $('mic-icon').innerText='mic_off'; spLog=["Mic paused..."]; upSp(""); } else if(!isLis){ isLis=!0; try{recognition.start();}catch(e){} } };  
+const toggleMic = () => { micOn=!micOn; if(micOn){ $('speech-debug').style.display='block'; if(settings.autoPauseMic&&audioPlay()){ $('mic-btn').classList.add('mic-paused'); spLog=["Mic paused..."]; upSp(""); } else { isLis=!0; spErr=!1; prLen=0; try{recognition.start();}catch(e){} } } else { isLis=!1; try{recognition.stop();}catch(e){} micOn=!1; $('mic-btn').classList.remove('mic-active','mic-paused'); $('mic-icon').innerText='mic_off'; $('speech-debug').style.display='none'; } };  
+  
+const initSortables = () => {  
+    if(sortQueue) sortQueue.destroy(); if(sortGrid) sortGrid.destroy();  
+    let opt = {   
+        group: 'shared', animation: 300, ghostClass: "sortable-ghost", disabled: !settings.enableDragging,   
+        onStart: ()=>haptic(15),   
+        onChange: e=>{ if(e.to!==e.from) haptic([30,50,30]); else haptic(5); },   
+        onEnd: e=>{   
+            if(e.to !== e.from) haptic([40, 60, 40]); else haptic(15);   
+            let id=e.item.id.replace('tile-',''), t=tracks.find(x=>x.id===id);   
+            if(e.to.id==='track-list')t.type='queue'; else if(e.to.id==='instant-grid')t.type='pad';   
+            let qIds=Array.from($('track-list').children).map(el=>el.id.replace('tile-','')), pIds=Array.from($('instant-grid').children).map(el=>el.id.replace('tile-',''));   
+            tracks=[...tracks.filter(x=>x.type==='queue').sort((a,b)=>qIds.indexOf(a.id)-qIds.indexOf(b.id)), ...tracks.filter(x=>x.type==='pad').sort((a,b)=>pIds.indexOf(a.id)-pIds.indexOf(b.id))];   
+            saveData(); render();   
+        }   
+    };  
+    sortQueue = new Sortable($('track-list'), { ...opt, handle: '.drag-handle' });   
+    sortGrid = new Sortable($('instant-grid'), { ...opt, handle: '.drag-handle', filter: ".pad-settings-trigger", preventOnFilter: !1 });  
+};  
+  
+if('mediaSession' in navigator) {   
+    navigator.mediaSession.setActionHandler('nexttrack', () => { playNextCue(); });   
+    navigator.mediaSession.setActionHandler('play', () => { if(paused) toggleGlobalPause(); else playNextCue(); });  
+    navigator.mediaSession.setActionHandler('pause', () => { if(!paused) toggleGlobalPause(); });  
+}  
+window.addEventListener('load', () => { if(sessionStorage.getItem('mc_pocket')==='true') setTimeout(()=>toggleLock(!0),500); });  
+document.fonts.ready.then(()=>document.body.style.opacity="1");  
+applySettings(); initDB(); initSpeech();  
+</script>  </body>  
+</html>  
