@@ -48,6 +48,11 @@ details{background:rgba(128,128,128,.1);border-radius:18px;margin-bottom:12px;ov
 .project-item{padding:16px;background:var(--input-bg);border:1px solid var(--glass-border);border-radius:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer} .project-item.active{border-color:var(--accent);background:var(--accent-glow)}  
 #pocket-mode-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:9998;display:none;align-items:center;justify-content:center} #pocket-exit-btn{background:#111;color:#444;border:2px solid #222;border-radius:50%;width:80px;height:80px;display:flex;align-items:center;justify-content:center}  
 .nfc-pulse{width:80px;height:80px;border-radius:50%;background:var(--accent-glow);margin:20px auto;display:flex;align-items:center;justify-content:center;animation:pulse 1.5s infinite} @keyframes pulse{0%{box-shadow:0 0 0 0 var(--accent-glow)}70%{box-shadow:0 0 0 20px transparent}100%{box-shadow:0 0 0 0 transparent}}  
+
+/* Sideload UI styling */
+#sideload-modal { width:100%; height:100%; max-width:100%; max-height:100%; margin:0; padding:24px; border-radius:0; border:none; box-sizing:border-box; background:var(--bg-top); }
+#sideload-modal[open] { display:flex; flex-direction:column; }
+#sideload-modal::backdrop { background:#000; }
 </style>  
 </head>  
 <body class="unlocked show-progress">  <header>  
@@ -59,7 +64,11 @@ details{background:rgba(128,128,128,.1);border-radius:18px;margin-bottom:12px;ov
     <button id="pause-btn" onclick="haptic(15); toggleGlobalPause()"><span class="material-symbols-rounded" id="pause-icon">pause</span></button>  
 </div>  <div id="speech-debug"><div id="speech-text">...</div></div>  
 <div class="action-row"><button class="action-btn" onclick="haptic(15); $('file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button><button class="action-btn" onclick="haptic([15, 30, 15]); triggerReset()"><span class="material-symbols-rounded">restart_alt</span> Reset</button></div>  
-<input type="file" id="file-input" accept="audio/*" multiple onchange="handleFiles(this)" style="display:none"><input type="file" id="import-file-input" accept=".magic" style="display:none" onchange="importShow(this)">  <div id="queue-container"><h2 id="queue-label">Main Queue</h2><div id="track-list"></div></div>  
+
+<input type="file" id="file-input" accept="audio/*,.magic,.json" multiple onchange="handleFiles(this)" style="display:none">
+<input type="file" id="import-file-input" accept=".magic,.json" style="display:none" onchange="importShow(this)">  
+
+<div id="queue-container"><h2 id="queue-label">Main Queue</h2><div id="track-list"></div></div>  
 <h2>Instant Cues</h2><div id="instant-grid"></div>  <div id="pocket-mode-overlay"><button id="pocket-exit-btn" onclick="haptic(15); openModal('pocket-confirm-modal')"><span class="material-symbols-rounded" style="font-size:32px">lock</span></button></div>  <dialog id="pocket-confirm-modal">  
     <div class="modal-header"><span class="modal-title">Unlock Workspace?</span></div><p style="color:var(--text-muted);margin:0 0 15px">This will exit Pocket Mode.</p>  
     <div style="margin-bottom:25px;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);padding:12px;border-radius:12px"><input type="checkbox" id="pocket-unlock-check" style="width:24px;height:24px;accent-color:var(--accent)"><label style="font-size:15px;font-weight:600">Confirm Unlock</label></div>  
@@ -68,7 +77,24 @@ details{background:rgba(128,128,128,.1);border-radius:18px;margin-bottom:12px;ov
     <div class="modal-header"><span class="modal-title" id="alert-title">Notice</span></div>  
     <p id="alert-msg" style="color:var(--text-muted);margin-bottom:25px;line-height:1.5;"></p>  
     <button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10); closeModal('custom-alert-modal')">OK</button>  
-</dialog>  <dialog id="nfc-write-modal" oncancel="cancelNfcWrite()">  
+</dialog>  
+
+<dialog id="sideload-modal">
+    <div class="modal-header">
+        <span class="modal-title" id="sideload-title">Sideload Show</span>
+        <button class="icon-btn" style="width:48px;height:48px;border-radius:16px" onclick="haptic(10); closeSideload()">
+            <span class="material-symbols-rounded">close</span>
+        </button>
+    </div>
+    <div class="master-grid" style="margin-bottom:20px; grid-template-columns: 1fr;">
+        <button id="master-play" onclick="playSideloadNextCue()">
+            <span class="material-symbols-rounded">play_arrow</span><span id="sideload-play-text">Start Show</span>
+        </button>
+    </div>
+    <div id="sideload-track-list" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:12px; padding-bottom:100px;"></div>
+</dialog>
+
+<dialog id="nfc-write-modal" oncancel="cancelNfcWrite()">  
     <div class="modal-header"><span class="modal-title">Program NFC</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="cancelNfcWrite()"><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div>  
     <div class="nfc-pulse"><span class="material-symbols-rounded" style="font-size:40px;color:var(--accent)">nfc</span></div>  
     <p id="nfc-write-text" style="text-align:center;font-weight:600;font-size:16px;margin:20px 0">Hold an NFC chip near your phone...</p>  
@@ -122,6 +148,9 @@ let db, projectsList=[], curProjId='default', editProjId=null;
 let defSet = {showProgress:true, theme:'auto', lang:'en-US', uiSize:100, confirmReset:false, autoPauseMic:true, pocketMode:true, nfcEnabled:false, enableHaptics:true, enableDragging:true};  
 let settings = { ...defSet, ...(JSON.parse(localStorage.getItem('mc_settings')) || {}) };  
 let sortQueue, sortGrid;  
+
+// Sideload Variables
+let isSideloadActive = false, activeSideloadSourceId = null, sideloadTracks = [], sideloadIdx = 0, activeSideloadCues = new Map();
   
 const haptic = (p=15) => { if(settings.enableHaptics && navigator.vibrate) navigator.vibrate(p); };  
 const showAlert = (title, msg) => { $('alert-title').innerText=title; $('alert-msg').innerText=msg; openModal('custom-alert-modal'); };  
@@ -169,7 +198,7 @@ const applyUISize = () => { document.body.style.zoom=(settings.uiSize||100)+'%';
 let nfcReader=null, nfcAbortCtrl=null, nfcWriteAbortCtrl=null, lastNfc=0;   
 const toggleNFCState = async e => {  
     if(e){ if(!("NDEFReader" in window)) return showAlert("Error", "NFC is not supported.");  
-        try{ if(nfcAbortCtrl) nfcAbortCtrl.abort(); nfcAbortCtrl=new AbortController(); if(!nfcReader){ nfcReader=new NDEFReader(); nfcReader.addEventListener("reading",({message})=>{ if(!settings.nfcEnabled || Date.now()-lastNfc<2000)return; for(const r of message.records){ if(r.recordType==="text"){ let txt=new TextDecoder(r.encoding).decode(r.data); lastNfc=Date.now(); haptic([20,30]); if(txt==="CUE_NEXT") playNextCue(); else if(txt==="CUE_PLAYPAUSE") toggleGlobalPause(); else if(txt==="CUE_MIC") toggleMic(); else if(txt.startsWith("CUE_PAD_")){ let t=tracks.find(x=>x.id===txt.replace("CUE_PAD_","")); if(t) playPad(t); } } } }); } await nfcReader.scan({signal:nfcAbortCtrl.signal}); } catch(err){ $('nfc-toggle').checked=false; updSet('nfcEnabled',false); }  
+        try{ if(nfcAbortCtrl) nfcAbortCtrl.abort(); nfcAbortCtrl=new AbortController(); if(!nfcReader){ nfcReader=new NDEFReader(); nfcReader.addEventListener("reading",({message})=>{ if(!settings.nfcEnabled || Date.now()-lastNfc<2000)return; for(const r of message.records){ if(r.recordType==="text"){ let txt=new TextDecoder(r.encoding).decode(r.data); lastNfc=Date.now(); haptic([20,30]); if(txt==="CUE_NEXT") playNextCue(); else if(txt==="CUE_PLAYPAUSE") toggleGlobalPause(); else if(txt==="CUE_MIC") toggleMic(); else if(txt.startsWith("CUE_PAD_")){ let t=tracks.find(x=>x.id===txt.replace("CUE_PAD_","")); if(t) { if(t.isExternalShow) { if(isSideloadActive && activeSideloadSourceId === t.id) { haptic([30,50]); closeSideload(); } else { haptic([40,60,40]); openSideload(t); } } else { playPad(t); } } } } } }); } await nfcReader.scan({signal:nfcAbortCtrl.signal}); } catch(err){ $('nfc-toggle').checked=false; updSet('nfcEnabled',false); }  
     } else if(nfcAbortCtrl){ nfcAbortCtrl.abort(); nfcAbortCtrl=null; }  
 };  
 const programNfcTag = async (cmd, name) => {  
@@ -183,39 +212,127 @@ const cancelNfcWrite = () => { haptic(10); if(nfcWriteAbortCtrl) nfcWriteAbortCt
   
 const initDB = () => {  
     let r = indexedDB.open('MagicCuesProDB', 4); r.onupgradeneeded=e=>{ if(!e.target.result.objectStoreNames.contains('store')) e.target.result.createObjectStore('store'); };  
-    r.onsuccess=e=>{ db=e.target.result; let st=db.transaction('store','readwrite').objectStore('store'); st.get('projectList').onsuccess=res=>{ projectsList=res.target.result||[{id:'default',name:'Main Show'}]; if(!res.target.result) st.put(projectsList,'projectList'); curProjId=localStorage.getItem('mc_curProj')||projectsList[0].id; $('header-title-text').innerText=(projectsList.find(x=>x.id===curProjId)||projectsList[0]).name; st.get('proj_'+curProjId).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:URL.createObjectURL(t.file)})):[]; render(); }; }; };  
+    r.onsuccess=e=>{ db=e.target.result; let st=db.transaction('store','readwrite').objectStore('store'); st.get('projectList').onsuccess=res=>{ projectsList=res.target.result||[{id:'default',name:'Main Show'}]; if(!res.target.result) st.put(projectsList,'projectList'); curProjId=localStorage.getItem('mc_curProj')||projectsList[0].id; $('header-title-text').innerText=(projectsList.find(x=>x.id===curProjId)||projectsList[0]).name; st.get('proj_'+curProjId).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:t.file?URL.createObjectURL(t.file):undefined})):[]; render(); }; }; };  
 };  
-const saveData = () => { if(db) db.transaction('store','readwrite').objectStore('store').put(tracks.map(t=>({id:t.id,name:t.name,type:t.type,delay:t.delay,fadeIn:t.fadeIn,fadeOut:t.fadeOut,volume:t.volume,trimStart:t.trimStart,trimEnd:t.trimEnd,autoFollow:t.autoFollow,overlap:t.overlap,postDelay:t.postDelay,triggerPhrase:t.triggerPhrase||'',globalVoice:t.globalVoice||false,file:t.file})), 'proj_'+curProjId); };  
+const saveData = () => { if(db) db.transaction('store','readwrite').objectStore('store').put(tracks.map(t=>({id:t.id,name:t.name,type:t.type,delay:t.delay,fadeIn:t.fadeIn,fadeOut:t.fadeOut,volume:t.volume,trimStart:t.trimStart,trimEnd:t.trimEnd,autoFollow:t.autoFollow,overlap:t.overlap,postDelay:t.postDelay,triggerPhrase:t.triggerPhrase||'',globalVoice:t.globalVoice||false, isExternalShow:t.isExternalShow||false, showData:t.showData||null, file:t.file})), 'proj_'+curProjId); };  
   
 const render = () => {  
     $('track-list').innerHTML=''; $('instant-grid').innerHTML=''; let qI=1, pI=1;  
     tracks.forEach((t,i)=>{  
         let mic = t.triggerPhrase ? `<span class="material-symbols-rounded" style="color:var(--text-muted);font-size:14px;vertical-align:middle;margin-left:4px">mic</span>` : ''; if(t.globalVoice) mic += `<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;vertical-align:middle;margin-left:2px">public</span>`;  
+        let showIcon = t.isExternalShow ? `<span class="material-symbols-rounded" style="color:var(--accent);font-size:18px;display:block;margin-top:6px;margin-bottom:-6px">movie</span>` : '';
         let e=document.createElement('div'); e.id=`tile-${t.id}`;  
-        if(t.type==='queue'){ e.className=`tile ${i===curIdx?'is-current':''} ${activeCues.has(t.id)?'is-playing':''}`; e.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><div class="tile-content"><span class="material-symbols-rounded drag-handle">drag_indicator</span><div class="tile-info" style="cursor:pointer" onclick="if(!locked)playCue('${t.id}')"><span class="tile-name-text">${qI++}. ${t.name}${mic}</span></div><button class="icon-btn edit-trigger" style="width:40px;height:40px" onclick="haptic(10); openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:20px">settings</span></button></div>`; $('track-list').appendChild(e); }  
+        if(t.type==='queue'){ e.className=`tile ${i===curIdx?'is-current':''} ${activeCues.has(t.id)?'is-playing':''}`; e.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><div class="tile-content"><span class="material-symbols-rounded drag-handle">drag_indicator</span><div class="tile-info" style="cursor:pointer" onclick="if(!locked)playCue('${t.id}')"><span class="tile-name-text">${qI++}. ${t.name}${mic} ${t.isExternalShow?'<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;vertical-align:middle;">movie</span>':''}</span></div><button class="icon-btn edit-trigger" style="width:40px;height:40px" onclick="haptic(10); openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:20px">settings</span></button></div>`; $('track-list').appendChild(e); }  
         else{   
             e.className=`cue-pad ${activePads.has(t.id)?'is-playing':''}`;   
             e.onclick=ev=>{ if(!ev.target.closest('.pad-settings-trigger') && !ev.target.closest('.drag-handle')){playPad(t);} };   
-            e.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><span class="material-symbols-rounded drag-handle pad-drag-handle">drag_indicator</span><div class="pad-number">${pI++}</div><span>${t.name}${mic}</span><div class="pad-settings-trigger edit-trigger" onclick="event.stopPropagation(); haptic(10); openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:18px">settings</span></div>`;   
+            e.innerHTML=`<div class="progress-fill" id="prog-${t.id}"></div><span class="material-symbols-rounded drag-handle pad-drag-handle">drag_indicator</span><div class="pad-number">${pI++}</div><span>${t.name}${mic}${showIcon}</span><div class="pad-settings-trigger edit-trigger" onclick="event.stopPropagation(); haptic(10); openSet('${t.id}')"><span class="material-symbols-rounded" style="font-size:18px">settings</span></div>`;   
             $('instant-grid').appendChild(e);   
         }  
     });  
 };  
-  
-const handleFiles = async i => { for(let f of Array.from(i.files)){ let b=new Blob([await f.arrayBuffer()],{type:f.type}); tracks.push({id:'id'+Date.now()+Math.random().toString(36).slice(2,7),name:f.name.replace(/\.[^/.]+$/,""),blobUrl:URL.createObjectURL(b),type:'queue',delay:0,fadeIn:0,fadeOut:0,volume:1,trimStart:0,trimEnd:0,autoFollow:!1,overlap:0,postDelay:0,triggerPhrase:'',globalVoice:!1,file:b}); } render(); saveData(); i.value=''; };  
+
+const handleFiles = async i => { 
+    for(let f of Array.from(i.files)){ 
+        if(f.name.endsWith('.magic') || f.name.endsWith('.json')) {
+            let txt = await f.text();
+            let showData = JSON.parse(txt);
+            tracks.push({
+                id:'id'+Date.now()+Math.random().toString(36).slice(2,7),
+                name:f.name.replace(/\.[^/.]+$/,""),
+                type:'queue', delay:0,fadeIn:0,fadeOut:0,volume:1,
+                autoFollow:!1, overlap:0, postDelay:0, triggerPhrase:'', globalVoice:!1,
+                isExternalShow: true, showData: showData
+            });
+        } else {
+            let b=new Blob([await f.arrayBuffer()],{type:f.type}); 
+            tracks.push({id:'id'+Date.now()+Math.random().toString(36).slice(2,7),name:f.name.replace(/\.[^/.]+$/,""),blobUrl:URL.createObjectURL(b),type:'queue',delay:0,fadeIn:0,fadeOut:0,volume:1,trimStart:0,trimEnd:0,autoFollow:!1,overlap:0,postDelay:0,triggerPhrase:'',globalVoice:!1,isExternalShow:false,showData:null,file:b}); 
+        }
+    } 
+    render(); saveData(); i.value=''; 
+};  
+
+// EXPORT AND IMPORT LOGIC TO ALLOW REAL SHOW DATA TRANSFERS
+const exportShow = async () => {
+    let p = projectsList.find(x => x.id === editProjId);
+    if (!p) return;
+    let tx = db.transaction('store', 'readonly').objectStore('store');
+    tx.get('proj_' + p.id).onsuccess = async r => {
+        let trks = r.target.result || [];
+        let exp = [];
+        $('edit-show-name').value = "Exporting, please wait...";
+        for (let t of trks) {
+            if (t.isExternalShow) {
+                exp.push({ ...t, file: undefined, blobUrl: undefined });
+            } else if (t.file) {
+                let b64 = await new Promise(res => {
+                    let fr = new FileReader();
+                    fr.onload = () => res(fr.result);
+                    fr.readAsDataURL(t.file);
+                });
+                exp.push({ ...t, fileData: b64, file: undefined, blobUrl: undefined });
+            }
+        }
+        let blob = new Blob([JSON.stringify(exp)], { type: 'application/json' });
+        let a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = p.name + '.magic';
+        a.click();
+        $('edit-show-name').value = p.name;
+    };
+};
+
+const importShow = async i => {
+    let f = i.files[0];
+    if (!f) return;
+    let txt = await f.text();
+    let data = JSON.parse(txt);
+    let id = 'proj_' + Date.now();
+    let name = f.name.replace(/\.[^/.]+$/, "");
+    projectsList.push({ id, name });
+
+    let newTracks = [];
+    for (let st of data) {
+        if (st.isExternalShow) {
+            newTracks.push({ ...st });
+        } else if (st.fileData) {
+            let fetchRes = await fetch(st.fileData);
+            let blob = await fetchRes.blob();
+            newTracks.push({ ...st, file: blob, fileData: undefined });
+        }
+    }
+
+    let tx = db.transaction('store', 'readwrite');
+    tx.objectStore('store').put(projectsList, 'projectList');
+    tx.objectStore('store').put(newTracks, id);
+    
+    i.value = '';
+    closeModal('projects-modal');
+    swPrj(id);
+};
+
 let pTm, didLng=!1; const sPrs=id=>{ didLng=!1; pTm=setTimeout(()=>{haptic(30); didLng=!0; editProjId=id; $('edit-show-name').value=projectsList.find(x=>x.id===id).name; openModal('edit-show-modal');},600); }; const cPrs=()=>clearTimeout(pTm); const clPrj=id=>{ cPrs(); if(!didLng){haptic(15); swPrj(id);} };  
 const openProjects = () => { $('projects-list-container').innerHTML=projectsList.map(p=>`<div class="project-item ${p.id===curProjId?'active':''}" onpointerdown="sPrs('${p.id}')" onpointerup="cPrs()" onpointerleave="cPrs()" onclick="clPrj('${p.id}')"><span style="font-weight:700">${p.name}</span>${p.id===curProjId?'<span class="material-symbols-rounded">check_circle</span>':''}</div>`).join(''); openModal('projects-modal'); };  
 const createNewProject = () => { let n=$('new-show-name').value.trim(); if(!n)return; let id='proj_'+Date.now(); projectsList.push({id,name:n}); db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList'); closeModal('new-show-modal'); $('new-show-name').value=''; swPrj(id); };  
 const saveShowEdit = () => { let n=$('edit-show-name').value.trim(); if(n&&editProjId){ let p=projectsList.find(x=>x.id===editProjId); if(p)p.name=n; db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList'); if(editProjId===curProjId) $('header-title-text').innerText=n; } closeModal('edit-show-modal'); openProjects(); };  
 const deleteShow = () => { if(projectsList.length<=1) return showAlert("Notice", "Cannot delete last show."); projectsList=projectsList.filter(x=>x.id!==editProjId); let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('store').delete('proj_'+editProjId); closeModal('edit-show-modal'); if(curProjId===editProjId)swPrj(projectsList[0].id); else openProjects(); };  
-const swPrj = id => { if(curProjId===id)return; executeReset(); tracks.forEach(t=>{if(t.blobUrl)URL.revokeObjectURL(t.blobUrl);}); tracks=[]; curProjId=id; localStorage.setItem('mc_curProj',id); $('header-title-text').innerText=projectsList.find(x=>x.id===id).name; closeModal('projects-modal'); db.transaction('store').objectStore('store').get('proj_'+id).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:URL.createObjectURL(t.file)})):[]; render(); }; };  
+const swPrj = id => { 
+    if(curProjId===id)return; 
+    executeReset(); tracks.forEach(t=>{if(t.blobUrl)URL.revokeObjectURL(t.blobUrl);}); tracks=[]; curProjId=id; localStorage.setItem('mc_curProj',id); $('header-title-text').innerText=projectsList.find(x=>x.id===id).name; closeModal('projects-modal'); db.transaction('store').objectStore('store').get('proj_'+id).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:t.file?URL.createObjectURL(t.file):undefined})):[]; render(); }; 
+};  
 const triggerReset = () => { settings.confirmReset ? openModal('reset-modal') : executeReset(); };  
-const executeReset = () => { closeModal('reset-modal'); curIdx=0; activeCues.forEach(a=>{if(a.fadeInt)clearInterval(a.fadeInt); a.pause();}); activeCues.clear(); activePads.forEach(a=>{if(a.fadeInt)clearInterval(a.fadeInt); a.pause();}); activePads.clear(); paused=!1; $('play-text').innerText='Next Cue'; render(); manageSmartMic(); };  
+const executeReset = () => { if(isSideloadActive) closeSideload(); closeModal('reset-modal'); curIdx=0; activeCues.forEach(a=>{if(a.fadeInt)clearInterval(a.fadeInt); a.pause();}); activeCues.clear(); activePads.forEach(a=>{if(a.fadeInt)clearInterval(a.fadeInt); a.pause();}); activePads.clear(); paused=!1; $('play-text').innerText='Next Cue'; render(); manageSmartMic(); };  
   
 const openSet = id => {  
     activeId=id; let t=tracks.find(x=>x.id===id), isQ=t.type==='queue';  
     $('modal-content').innerHTML=`  
-    <div class="setting-row" style="flex-direction:column;align-items:flex-start;padding-bottom:20px"><label>Cue Type</label><div class="segmented-control"><button class="${isQ?'active':''}" onclick="haptic(10); updTrk('type','queue')">Main</button><button class="${!isQ?'active':''}" onclick="haptic(10); updTrk('type','pad')">Instant</button></div></div>  
+    <div class="setting-row" style="flex-direction:column;align-items:flex-start;padding-bottom:20px">
+        <label>Cue Type</label>
+        <div class="segmented-control">
+            <button class="${isQ?'active':''}" onclick="haptic(10); updTrk('type','queue')">Main</button>
+            <button class="${!isQ?'active':''}" onclick="haptic(10); updTrk('type','pad')">Instant</button>
+        </div>
+    </div>  
     <div class="setting-row"><label>Volume</label><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="haptic(5); updTrk('volume',this.value)"></div>  
     <details><summary onclick="haptic(10)">Voice Triggers</summary><div class="details-content"><div class="mini-row"><label>Phrase</label><input type="text" style="width:140px;margin:0;padding:8px 12px 8px 8px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:rgba(128,128,128,.1)" placeholder="e.g. action" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div><div class="mini-row"><label>Global</label><input type="checkbox" ${t.globalVoice?'checked':''} onchange="haptic(10); updTrk('globalVoice',this.checked)" style="width:20px;height:20px"></div></div></details>  
     <details><summary onclick="haptic(10)">Advanced Audio</summary><div class="details-content"><div class="mini-row"><label>Pre-Delay (s)</label><input type="number" step="0.5" value="${t.delay||0}" onchange="haptic(10); updTrk('delay',this.value)"></div><div class="mini-row"><label>Fade In (s)</label><input type="number" step="0.5" value="${t.fadeIn||0}" onchange="haptic(10); updTrk('fadeIn',this.value)"></div><div class="mini-row"><label>Fade Out (s)</label><input type="number" step="0.5" value="${t.fadeOut||0}" onchange="haptic(10); updTrk('fadeOut',this.value)"></div><div class="mini-row"><label>Trim Start</label><input type="number" step="0.5" value="${t.trimStart||0}" onchange="haptic(10); updTrk('trimStart',this.value)"></div><div class="mini-row"><label>Trim End</label><input type="number" step="0.5" value="${t.trimEnd||0}" onchange="haptic(10); updTrk('trimEnd',this.value)"></div>  
@@ -226,11 +343,21 @@ const updTrk = (k,v) => { let t=tracks.find(x=>x.id===activeId); if(t){ let val 
 const deleteTrack = () => { let t=tracks.find(x=>x.id===activeId); if(t&&t.blobUrl)URL.revokeObjectURL(t.blobUrl); tracks=tracks.filter(x=>x.id!==activeId); closeModal('settings-modal'); render(); saveData(); };  
   
 const playCue = id => { if(locked)return; haptic(20); let q=tracks.filter(x=>x.type==='queue'), idx=q.findIndex(x=>x.id===id); if(idx>-1){curIdx=idx; trigSeq(q[curIdx++]);} };  
-const playNextCue = (L=!1) => { let q=tracks.filter(x=>x.type==='queue'); if(curIdx>=q.length)return; if(!L)haptic(25); trigSeq(q[curIdx++], L); };  
+const playNextCue = (L=!1) => { 
+    if(isSideloadActive) { playSideloadNextCue(L); return; }
+    let q=tracks.filter(x=>x.type==='queue'); if(curIdx>=q.length)return; if(!L)haptic(25); trigSeq(q[curIdx++], L); 
+};  
 const trigSeq = (t,L) => { if(t.delay>0 && !L){ $('play-text').innerText=`Wait ${t.delay}s...`; setTimeout(()=>runAud(t,L), t.delay*1000); } else runAud(t,L); render(); };  
   
 const runAud = (t, L) => {   
     if(!L){ activeCues.forEach(a=>{ a.onended=null; if(a.fadeInt)clearInterval(a.fadeInt); a.pause(); }); activeCues.clear(); }  
+
+    if(t.isExternalShow) {
+        $('play-text').innerText = "Show: " + t.name;
+        openSideload(t);
+        return;
+    }
+
     let a=new Audio(t.blobUrl); activeCues.set(t.id,a); paused=!1; $('pause-icon').innerText='pause';   
     let vol=t.volume??1; a.currentTime=t.trimStart||0;  
     if(t.fadeIn>0){ a.volume=0; let v=0, s=0.05/t.fadeIn; a.fadeInt=setInterval(()=>{v+=s; if(v>=vol){v=vol; clearInterval(a.fadeInt);} if(activeCues.has(t.id))a.volume=v;},50); } else a.volume=vol;  
@@ -242,15 +369,156 @@ const runAud = (t, L) => {
     a.play().catch(e=>{}); $('play-text').innerText=t.name; manageSmartMic();   
     a.onended=()=>{ if(t.autoFollow&&!af){ af=!0; if(pd>0){$('play-text').innerText=`Wait ${pd}s...`; setTimeout(()=>playNextCue(!1), pd*1000);}else playNextCue(!1); } activeCues.delete(t.id); if(activeCues.size===0) $('play-text').innerText='Next Cue'; render(); manageSmartMic(); }; render();   
 };  
+
 const playPad = t => {   
+    if(t.isExternalShow) {
+        haptic([40, 60, 40]);
+        openSideload(t);
+        return;
+    }
+
     haptic(20);  
     if(activePads.has(t.id)){ let oA=activePads.get(t.id); if(oA.fadeInt)clearInterval(oA.fadeInt); oA.pause(); activePads.delete(t.id); render(); manageSmartMic(); return; }  
     let a=new Audio(t.blobUrl); a.currentTime=t.trimStart||0; a.volume=t.volume??1; activePads.set(t.id,a); render();  
-    a.ontimeupdate=()=>{ let d=t.trimEnd?t.trimEnd:a.duration; let pEl=$('prog-${t.id}'); if(pEl) pEl.style.width=Math.max(0,Math.min(100,((a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100)))+'%'; if(a.currentTime>=d){ a.pause(); activePads.delete(t.id); render(); manageSmartMic(); } };  
+    a.ontimeupdate=()=>{ let d=t.trimEnd?t.trimEnd:a.duration; let pEl=$('prog-'+t.id); if(pEl) pEl.style.width=Math.max(0,Math.min(100,((a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100)))+'%'; if(a.currentTime>=d){ a.pause(); activePads.delete(t.id); render(); manageSmartMic(); } };  
     paused=!1; $('pause-icon').innerText='pause'; a.play().catch(e=>{}); manageSmartMic();  
 };  
-const audioPlay = () => activeCues.size>0 || activePads.size>0;  
-const toggleGlobalPause = () => { paused=!paused; if(paused){ activeCues.forEach(a=>a.pause()); activePads.forEach(a=>a.pause()); $('pause-icon').innerText='play_arrow'; } else { activeCues.forEach(a=>a.play()); activePads.forEach(a=>a.play()); $('pause-icon').innerText='pause'; } manageSmartMic(); };  
+
+// SIDELOAD ENGINE LOGIC
+const openSideload = async (t) => {
+    if (isSideloadActive) return;
+    isSideloadActive = true;
+    activeSideloadSourceId = t.id;
+    sideloadIdx = 0;
+    sideloadTracks = [];
+
+    $('sideload-play-text').innerText = 'Loading...';
+    $('sideload-track-list').innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted)">Unpacking Show Data...</div>';
+    openModal('sideload-modal');
+
+    try {
+        for (let st of t.showData) {
+            if (st.isExternalShow) {
+                sideloadTracks.push({ ...st });
+            } else if (st.fileData) {
+                let fetchRes = await fetch(st.fileData);
+                let blob = await fetchRes.blob();
+                sideloadTracks.push({ ...st, blobUrl: URL.createObjectURL(blob) });
+            }
+        }
+        $('sideload-title').innerText = t.name;
+        $('sideload-play-text').innerText = 'Start Show';
+        renderSideload();
+    } catch(e) {
+        showAlert("Error", "Failed to load show data.");
+        closeSideload();
+    }
+};
+
+const renderSideload = () => {
+    let list = $('sideload-track-list');
+    list.innerHTML = '';
+    let q = sideloadTracks.filter(x => x.type === 'queue');
+    q.forEach((t, i) => {
+        let e = document.createElement('div');
+        e.className = `tile ${i === sideloadIdx ? 'is-current' : ''} ${activeSideloadCues.has(t.id) ? 'is-playing' : ''}`;
+        e.innerHTML = `<div class="progress-fill" id="side-prog-${t.id}"></div><div class="tile-content"><div class="tile-info"><span class="tile-name-text">${i+1}. ${t.name}</span></div></div>`;
+        list.appendChild(e);
+    });
+};
+
+const playSideloadNextCue = (L=false) => {
+    let q = sideloadTracks.filter(x => x.type === 'queue');
+    if (sideloadIdx >= q.length) { closeSideload(); return; }
+    if(!L) haptic(25);
+    let t = q[sideloadIdx++];
+    if(t.delay>0 && !L) {
+        $('sideload-play-text').innerText = `Wait ${t.delay}s...`;
+        setTimeout(() => runSideloadAud(t, L), t.delay*1000);
+    } else runSideloadAud(t, L);
+    renderSideload();
+};
+
+const runSideloadAud = (t, L) => {
+    if(!L){ activeSideloadCues.forEach(a=>{ a.onended=null; if(a.fadeInt)clearInterval(a.fadeInt); a.pause(); }); activeSideloadCues.clear(); }
+    
+    if(t.isExternalShow) { showAlert("Notice", "Nested shows are skipped."); playSideloadNextCue(); return; }
+
+    let a = new Audio(t.blobUrl); activeSideloadCues.set(t.id, a);
+    let vol = t.volume ?? 1; a.currentTime = t.trimStart || 0;
+    
+    if(t.fadeIn > 0) { 
+        a.volume = 0; let v = 0, s = 0.05/t.fadeIn; 
+        a.fadeInt = setInterval(() => { v+=s; if(v>=vol){v=vol; clearInterval(a.fadeInt);} if(activeSideloadCues.has(t.id)) a.volume = v; }, 50); 
+    } else a.volume = vol;
+    
+    let out = false, af = false, ov = parseFloat(t.overlap)||0, pd = parseFloat(t.postDelay)||0;
+    a.ontimeupdate = () => { 
+        let d = t.trimEnd ? t.trimEnd : (a.duration || 0); if(d===0) return; 
+        let pEl = $('side-prog-'+t.id); if(pEl) pEl.style.width = Math.max(0,Math.min(100,((a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100)))+'%';
+        
+        if(t.autoFollow && ov>0 && !af && a.currentTime >= (d-ov)) { af=true; playSideloadNextCue(true); }
+        if(t.fadeOut > 0 && !out && a.currentTime >= (d-t.fadeOut)) { 
+            out = true; if(a.fadeInt) clearInterval(a.fadeInt); 
+            let v = a.volume, s = v/(t.fadeOut*20); 
+            a.fadeInt = setInterval(() => { v-=s; if(v<=0){v=0;clearInterval(a.fadeInt);} if(activeSideloadCues.has(t.id)) a.volume=v; }, 50); 
+        }
+        if(a.currentTime >= d && !a.paused) { a.pause(); if(a.onended) a.onended(); } 
+    };
+    a.play().catch(e=>{}); $('sideload-play-text').innerText = t.name;
+    
+    a.onended = () => { 
+        if(t.autoFollow && !af) { 
+            af = true; 
+            if(pd>0) { $('sideload-play-text').innerText = `Wait ${pd}s...`; setTimeout(()=>playSideloadNextCue(false), pd*1000); } 
+            else playSideloadNextCue(false); 
+        } 
+        activeSideloadCues.delete(t.id); 
+        if(activeSideloadCues.size === 0) {
+            let q = sideloadTracks.filter(x => x.type === 'queue');
+            if (sideloadIdx >= q.length) closeSideload();
+            else { $('sideload-play-text').innerText = 'Next Cue'; renderSideload(); }
+        }
+    }; 
+    renderSideload();
+};
+
+const closeSideload = () => {
+    isSideloadActive = false;
+    activeSideloadCues.forEach(a => { a.onended=null; if(a.fadeInt) clearInterval(a.fadeInt); a.pause(); });
+    activeSideloadCues.clear();
+    sideloadTracks.forEach(st => { if(st.blobUrl) URL.revokeObjectURL(st.blobUrl); });
+    sideloadTracks = [];
+    closeModal('sideload-modal');
+    render(); 
+
+    // Handle return context (Auto-Follow check)
+    if (activeSideloadSourceId) {
+        let srcT = tracks.find(x => x.id === activeSideloadSourceId);
+        activeSideloadSourceId = null;
+        if (srcT && srcT.type === 'queue' && srcT.autoFollow) {
+            let pd = parseFloat(srcT.postDelay) || 0;
+            if (pd > 0) {
+                $('play-text').innerText = `Wait ${pd}s...`;
+                setTimeout(() => playNextCue(false), pd*1000);
+            } else playNextCue(false);
+        } else {
+            $('play-text').innerText = 'Next Cue';
+        }
+    }
+};
+
+const audioPlay = () => activeCues.size>0 || activePads.size>0 || activeSideloadCues.size>0;  
+const toggleGlobalPause = () => { 
+    paused=!paused; 
+    if(paused){ 
+        activeCues.forEach(a=>a.pause()); activePads.forEach(a=>a.pause()); activeSideloadCues.forEach(a=>a.pause()); 
+        $('pause-icon').innerText='play_arrow'; 
+    } else { 
+        activeCues.forEach(a=>a.play()); activePads.forEach(a=>a.play()); activeSideloadCues.forEach(a=>a.play()); 
+        $('pause-icon').innerText='pause'; 
+    } manageSmartMic(); 
+};  
 const toggleLock = (f=null) => { locked=(f!==null)?f:!locked; document.body.className=locked?'locked show-progress':'unlocked show-progress'; $('lock-icon').innerText=locked?'lock':'lock_open'; render(); if(locked&&settings.pocketMode){ $('pocket-mode-overlay').style.display='flex'; sessionStorage.setItem('mc_pocket','true'); try{document.documentElement.requestFullscreen();}catch(e){} } else { $('pocket-mode-overlay').style.display='none'; sessionStorage.removeItem('mc_pocket'); try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){} } };  
 const confirmPocketExit = () => { if(!$('pocket-unlock-check').checked){haptic([50,50]); return showAlert("Notice", "Check 'Confirm Unlock' box.");} closeModal('pocket-confirm-modal'); toggleLock(!1); };  
   
