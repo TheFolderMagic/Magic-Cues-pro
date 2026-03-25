@@ -218,12 +218,10 @@ const checkGroupDemotion = () => {
             let parent = tracks[parentIdx];
             if (parent.isCueGroup) {
                 if (sideloadTracks.length === 1) {
-                    // Revert back to a single track instead of a group
                     let remaining = sideloadTracks[0];
-                    remaining.type = parent.type; // Preserve lane placement
+                    remaining.type = parent.type;
                     tracks.splice(parentIdx, 1, remaining);
                 } else if (sideloadTracks.length === 0) {
-                    // Erase entirely if empty
                     tracks.splice(parentIdx, 1);
                 }
                 saveData();
@@ -481,7 +479,20 @@ const exportShow = async () => {
         $('edit-show-name').value = "Exporting, please wait...";
         for (let t of trks) {
             if (t.isExternalShow) {
-                exp.push({ ...t, file: undefined, blobUrl: undefined });
+                let subExp = [];
+                for(let st of t.showData) {
+                    if(st.file) {
+                        let b64 = await new Promise(res => {
+                            let fr = new FileReader();
+                            fr.onload = () => res(fr.result);
+                            fr.readAsDataURL(st.file);
+                        });
+                        subExp.push({ ...st, fileData: b64, file: undefined, blobUrl: undefined });
+                    } else {
+                        subExp.push({ ...st, blobUrl: undefined });
+                    }
+                }
+                exp.push({ ...t, showData: subExp, file: undefined, blobUrl: undefined });
             } else if (t.file) {
                 let b64 = await new Promise(res => {
                     let fr = new FileReader();
@@ -489,6 +500,8 @@ const exportShow = async () => {
                     fr.readAsDataURL(t.file);
                 });
                 exp.push({ ...t, fileData: b64, file: undefined, blobUrl: undefined });
+            } else {
+                exp.push({...t, blobUrl: undefined });
             }
         }
         let blob = new Blob([JSON.stringify(exp)], { type: 'application/json' });
@@ -512,11 +525,21 @@ const importShow = async i => {
     let newTracks = [];
     for (let st of data) {
         if (st.isExternalShow) {
-            newTracks.push({ ...st });
+            let subTracks = [];
+            for (let sst of st.showData) {
+                if (sst.fileData) {
+                    let fetchRes = await fetch(sst.fileData);
+                    let blob = await fetchRes.blob();
+                    subTracks.push({ ...sst, file: blob, fileData: undefined });
+                } else subTracks.push({ ...sst });
+            }
+            newTracks.push({ ...st, showData: subTracks });
         } else if (st.fileData) {
             let fetchRes = await fetch(st.fileData);
             let blob = await fetchRes.blob();
             newTracks.push({ ...st, file: blob, fileData: undefined });
+        } else {
+            newTracks.push({...st});
         }
     }
 
@@ -714,10 +737,14 @@ const openSideload = async (t, autoStart = false) => {
         for (let st of t.showData) {
             if (st.isExternalShow) {
                 sideloadTracks.push({ ...st });
+            } else if (st.file) { // FIX: Make sure direct files are re-linked when a nested list opens!
+                sideloadTracks.push({ ...st, blobUrl: URL.createObjectURL(st.file) });
             } else if (st.fileData) {
                 let fetchRes = await fetch(st.fileData);
                 let blob = await fetchRes.blob();
                 sideloadTracks.push({ ...st, blobUrl: URL.createObjectURL(blob) });
+            } else {
+                sideloadTracks.push({ ...st });
             }
         }
         $('sideload-title').innerText = t.name;
@@ -966,14 +993,15 @@ const initSortables = () => {
             if(currentHover) { currentHover.classList.remove('group-hover-highlight'); currentHover = null; hoverLock = false; }
         },   
         onMove: e => {
-            let target = e.related;
+            // FIX: Find the closest tile container to prevent sub-element hover bugs
+            let target = e.related ? e.related.closest('.tile, .cue-pad') : null;
             if (target !== currentHover) {
                 clearTimeout(hoverTimer);
                 if (currentHover) currentHover.classList.remove('group-hover-highlight');
                 currentHover = target;
                 hoverLock = false;
-                
-                if (target && target.id !== 'sideload-extract-zone' && (target.classList.contains('tile') || target.classList.contains('cue-pad'))) {
+
+                if (target && target.id !== 'sideload-extract-zone') {
                     hoverTimer = setTimeout(() => {
                         if(currentHover) {
                             currentHover.classList.add('group-hover-highlight');
@@ -1002,11 +1030,19 @@ const initSortables = () => {
 
             if(isGroupDrop && targetEl && targetEl.id !== e.item.id) {
                 let targetId = targetEl.id.replace('tile-','').replace('side-','');
-                let dTrack = trkList.find(x => x.id === draggedId);
-                let tTrack = trkList.find(x => x.id === targetId);
+                
+                let dIdx = trkList.findIndex(x => x.id === draggedId);
+                let tIdx = trkList.findIndex(x => x.id === targetId);
 
-                if(dTrack && tTrack) {
+                // FIX: Better array index handling during group merge
+                if(dIdx > -1 && tIdx > -1) {
+                    let dTrack = trkList[dIdx];
+                    let tTrack = trkList[tIdx];
                     haptic([50, 50, 50]);
+
+                    trkList.splice(dIdx, 1);
+                    tIdx = trkList.findIndex(x => x.id === targetId);
+
                     if(tTrack.isCueGroup || tTrack.isExternalShow) {
                         if(!tTrack.showData) tTrack.showData = [];
                         tTrack.showData.push(dTrack);
@@ -1021,13 +1057,9 @@ const initSortables = () => {
                             isExternalShow: true, isCueGroup: true, autoStartShow: false, skip: false,
                             showData: [tTrack, dTrack]
                         };
-                        let tIdx = trkList.findIndex(x => x.id === targetId);
                         trkList.splice(tIdx, 1, newGroup);
                     }
                     
-                    let dIdx = trkList.findIndex(x => x.id === draggedId);
-                    if (dIdx > -1) trkList.splice(dIdx, 1);
-
                     e.item.remove(); 
 
                     if (isSide) { saveSideloadData(); renderSideload(); }
