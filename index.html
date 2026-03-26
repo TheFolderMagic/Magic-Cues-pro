@@ -192,6 +192,9 @@ let defSet = {showProgress:true, theme:'auto', lang:'en-US', uiSize:100, confirm
 let settings = { ...defSet, ...(JSON.parse(localStorage.getItem('mc_settings')) || {}) };  
 let sortQueue, sortGrid, sortSideQueue, sortSideGrid, sortExtract;  
 
+let dragY = 0, dragX = 0;
+document.addEventListener('pointermove', e => { dragY = e.clientY; dragX = e.clientX; }, {passive: true});
+
 let isSideloadActive = false, activeSideloadSourceId = null, sideloadTracks = [], sideloadIdx = 0, activeSideloadCues = new Map(), activeSideloadPads = new Map(), sideloadPaused = false;
 let isSettingSideload = false; 
   
@@ -562,34 +565,27 @@ const toggleMic = () => { micOn=!micOn; if(micOn){ $('speech-debug').style.displ
 const initSortables = () => {  
     [sortQueue, sortGrid, sortSideQueue, sortSideGrid, sortExtract].forEach(s => s && s.destroy());
 
-    let hoverTimer = null, currentHover = null, hoverLock = false, lastTarget = null, enterTime = 0;
+    let hoverTimer = null, currentHover = null, isGrouping = false;
 
     let opt = {   
         group: 'shared', animation: 300, ghostClass: "sortable-ghost", disabled: !settings.enableDragging,   
-        onStart: e=>{ haptic(15); if(e.from.id.includes('sideload')) $('sideload-extract-zone').style.display = 'block'; },   
+        swapThreshold: 0.5,
+        onStart: e=>{ 
+            isGrouping = false;
+            haptic(15); 
+            if(e.from.id.includes('sideload')) $('sideload-extract-zone').style.display = 'block'; 
+        },   
         onChange: e=>{ 
             if(e.to!==e.from) haptic([30,50,30]); else haptic(5); 
-            clearTimeout(hoverTimer); if(currentHover) { currentHover.classList.remove('group-hover-highlight'); currentHover = null; hoverLock = false; }
         },   
         onMove: e => {
             let target = e.related ? e.related.closest('.tile, .cue-pad') : null;
             if (!target || target.id === 'sideload-extract-zone') return;
-            
-            if (target !== lastTarget) {
-                lastTarget = target;
-                enterTime = Date.now();
-            }
 
-            let ev = e.originalEvent; if(!ev) return;
-            let clientY = ev.clientY !== undefined ? ev.clientY : (ev.touches && ev.touches.length > 0 ? ev.touches[0].clientY : null);
-            let clientX = ev.clientX !== undefined ? ev.clientX : (ev.touches && ev.touches.length > 0 ? ev.touches[0].clientX : null);
-            
-            if (clientY === null || clientX === null) return;
-            
             let r = target.getBoundingClientRect();
-            let marginY = r.height * 0.20; 
-            let marginX = r.width * 0.20;
-            let isCenter = clientY > r.top + marginY && clientY < r.bottom - marginY && clientX > r.left + marginX && clientX < r.right - marginX;
+            let marginY = r.height * 0.25; 
+            let marginX = r.width * 0.25;
+            let isCenter = dragY > r.top + marginY && dragY < r.bottom - marginY && dragX > r.left + marginX && dragX < r.right - marginX;
 
             if (isCenter) {
                 if (target !== currentHover) {
@@ -599,24 +595,27 @@ const initSortables = () => {
                     hoverTimer = setTimeout(() => { 
                         if(currentHover){ 
                             currentHover.classList.add('group-hover-highlight'); 
-                            hoverLock = true; 
+                            isGrouping = true; 
                             haptic([20, 30, 20]); 
                         } 
-                    }, 250); 
+                    }, 400); 
                 }
                 return false; 
             } else {
                 clearTimeout(hoverTimer);
                 if (currentHover) { currentHover.classList.remove('group-hover-highlight'); currentHover = null; }
-                hoverLock = false;
-                
-                if (Date.now() - enterTime < 150) return false;
+                isGrouping = false;
             }
         },
         onEnd: e=>{   
-            lastTarget = null;
-            let isGroupDrop = currentHover && currentHover.classList.contains('group-hover-highlight'); let targetEl = currentHover;
-            clearTimeout(hoverTimer); if (currentHover) currentHover.classList.remove('group-hover-highlight'); currentHover = null; hoverLock = false;
+            let isGroupDrop = isGrouping && currentHover && currentHover.classList.contains('group-hover-highlight'); 
+            let targetEl = currentHover;
+            
+            clearTimeout(hoverTimer); 
+            if (currentHover) currentHover.classList.remove('group-hover-highlight'); 
+            currentHover = null; 
+            isGrouping = false;
+            
             if (e.from.id.includes('sideload')) $('sideload-extract-zone').style.display = 'none';
 
             let isSide = e.to.id.includes('sideload'), trkList = isSide ? sideloadTracks : tracks;
@@ -626,14 +625,28 @@ const initSortables = () => {
                 let targetId = targetEl.id.replace('tile-','').replace('side-','');
                 let dIdx = trkList.findIndex(x => x.id === draggedId), tIdx = trkList.findIndex(x => x.id === targetId);
                 if(dIdx > -1 && tIdx > -1) {
-                    let dTrack = trkList.splice(dIdx, 1)[0]; tIdx = trkList.findIndex(x => x.id === targetId); let tTrack = trkList[tIdx]; haptic([50, 50, 50]);
+                    let dTrack = trkList.splice(dIdx, 1)[0]; 
+                    tIdx = trkList.findIndex(x => x.id === targetId); 
+                    let tTrack = trkList[tIdx]; 
+                    haptic([50, 50, 50]);
+                    
                     if(tTrack.isCueGroup || tTrack.isExternalShow) {
-                        if(!tTrack.showData) tTrack.showData = []; tTrack.showData.push(dTrack);
+                        if(!tTrack.showData) tTrack.showData = []; 
+                        tTrack.showData.push(dTrack);
                     } else {
-                        let newGroup = { id: 'id' + Date.now() + Math.random().toString(36).slice(2,7), name: 'Cue Group ' + (tracks.filter(x => x.isCueGroup).length + 1), type: tTrack.type, delay: 0, fadeIn: 0, fadeOut: 0, volume: 1, autoFollow: !1, overlap: 0, postDelay: 0, triggerPhrase: '', globalVoice: !1, isExternalShow: !0, isCueGroup: !0, autoStartShow: !1, skip: !1, showData: [tTrack, dTrack] };
+                        let newGroup = { 
+                            id: 'id' + Date.now() + Math.random().toString(36).slice(2,7), 
+                            name: 'Cue Group ' + (trkList.filter(x => x.isCueGroup).length + 1), 
+                            type: tTrack.type, delay: 0, fadeIn: 0, fadeOut: 0, volume: 1, 
+                            autoFollow: !1, overlap: 0, postDelay: 0, triggerPhrase: '', globalVoice: !1, 
+                            isExternalShow: !0, isCueGroup: !0, autoStartShow: !1, skip: !1, 
+                            showData: [tTrack, dTrack] 
+                        };
                         trkList.splice(tIdx, 1, newGroup);
                     }
-                    e.item.remove(); isSide ? (saveSideloadData(), renderSideload()) : (saveData(), render()); return;
+                    e.item.remove(); 
+                    isSide ? (saveSideloadData(), renderSideload()) : (saveData(), render()); 
+                    return;
                 }
             }
 
@@ -657,6 +670,4 @@ const initSortables = () => {
 if('mediaSession' in navigator) { navigator.mediaSession.setActionHandler('nexttrack', () => { playNextCue(); }); navigator.mediaSession.setActionHandler('play', () => { if(paused) toggleGlobalPause(); else playNextCue(); }); navigator.mediaSession.setActionHandler('pause', () => { if(!paused) toggleGlobalPause(); }); }  
 window.addEventListener('load', () => { if(sessionStorage.getItem('mc_pocket')==='true') setTimeout(()=>toggleLock(!0),500); });  
 document.fonts.ready.then(()=>document.body.style.opacity="1");  
-applySettings(); initDB(); initSpeech();  
-</script>  </body>  
-</html>
+applySettings(); initDB(); initSpeech();
