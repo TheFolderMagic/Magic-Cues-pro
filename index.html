@@ -569,13 +569,14 @@ const initSortables = () => {
 
     let opt = {   
         group: 'shared', animation: 300, ghostClass: "sortable-ghost", disabled: !settings.enableDragging,   
-        swapThreshold: 0.5,
-        onStart: e=>{ 
+        swapThreshold: 0.5, 
+        onStart: e => { 
             isGrouping = false;
+            if (currentHover) { currentHover.classList.remove('group-hover-highlight'); currentHover = null; }
             haptic(15); 
             if(e.from.id.includes('sideload')) $('sideload-extract-zone').style.display = 'block'; 
         },   
-        onChange: e=>{ 
+        onChange: e => { 
             if(e.to!==e.from) haptic([30,50,30]); else haptic(5); 
         },   
         onMove: e => {
@@ -583,9 +584,20 @@ const initSortables = () => {
             if (!target || target.id === 'sideload-extract-zone') return;
 
             let r = target.getBoundingClientRect();
+            let cY = dragY, cX = dragX;
+            if (e.originalEvent) {
+                if (e.originalEvent.touches && e.originalEvent.touches.length > 0) {
+                    cY = e.originalEvent.touches[0].clientY;
+                    cX = e.originalEvent.touches[0].clientX;
+                } else if (e.originalEvent.clientY !== undefined) {
+                    cY = e.originalEvent.clientY;
+                    cX = e.originalEvent.clientX;
+                }
+            }
+
             let marginY = r.height * 0.25; 
             let marginX = r.width * 0.25;
-            let isCenter = dragY > r.top + marginY && dragY < r.bottom - marginY && dragX > r.left + marginX && dragX < r.right - marginX;
+            let isCenter = cY > r.top + marginY && cY < r.bottom - marginY && cX > r.left + marginX && cX < r.right - marginX;
 
             if (isCenter) {
                 if (target !== currentHover) {
@@ -598,7 +610,7 @@ const initSortables = () => {
                             isGrouping = true; 
                             haptic([20, 30, 20]); 
                         } 
-                    }, 400); 
+                    }, 350); 
                 }
                 return false; 
             } else {
@@ -607,7 +619,7 @@ const initSortables = () => {
                 isGrouping = false;
             }
         },
-        onEnd: e=>{   
+        onEnd: e => {   
             let isGroupDrop = isGrouping && currentHover && currentHover.classList.contains('group-hover-highlight'); 
             let targetEl = currentHover;
             
@@ -670,4 +682,6 @@ const initSortables = () => {
 if('mediaSession' in navigator) { navigator.mediaSession.setActionHandler('nexttrack', () => { playNextCue(); }); navigator.mediaSession.setActionHandler('play', () => { if(paused) toggleGlobalPause(); else playNextCue(); }); navigator.mediaSession.setActionHandler('pause', () => { if(!paused) toggleGlobalPause(); }); }  
 window.addEventListener('load', () => { if(sessionStorage.getItem('mc_pocket')==='true') setTimeout(()=>toggleLock(!0),500); });  
 document.fonts.ready.then(()=>document.body.style.opacity="1");  
-applySettings(); initDB(); initSpeech();
+applySettings(); initDB(); initSpeech();  
+</script>  </body>  
+</html>
