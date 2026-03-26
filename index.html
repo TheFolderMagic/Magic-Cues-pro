@@ -185,7 +185,7 @@ details{background:rgba(128,128,128,.1);border-radius:18px;margin-bottom:12px;ov
     <div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10); closeModal('sideload-reset-modal')">Cancel</button><button class="btn-delete" style="flex:1" onclick="haptic([50, 50, 50]); executeSideloadReset()">Reset Show</button></div>  
 </dialog>  <script>  
 const $ = id => document.getElementById(id);  
-let tracks=[], curIdx=0, locked=!1, activeId=null, activeCues=new Map(), activePads=new Map(), paused=!1;  
+let tracks=[], curIdx=0, locked=!1, activeId=null, activeCues=new Map(), activePads=new Map(), paused=!1, wakeLock=null;  
 let db, projectsList=[], curProjId='default', editProjId=null;  
   
 let defSet = {showProgress:true, theme:'auto', lang:'en-US', uiSize:100, confirmReset:false, autoPauseMic:true, pocketMode:true, strongPocketHaptics:false, nfcEnabled:false, enableHaptics:true, enableDragging:true};  
@@ -422,7 +422,7 @@ const deleteTrack = () => {
     else { tracks = tracks.filter(x=>x.id!==activeId); closeModal('settings-modal'); render(); saveData(); }
 };  
   
-const playCue = id => { if(locked)return; haptic(20); let q=tracks.filter(x=>x.type==='queue'), idx=q.findIndex(x=>x.id===id); if(idx>-1){curIdx=idx; playNextCue(true);} };  
+const playCue = id => { haptic(20); let q=tracks.filter(x=>x.type==='queue'), idx=q.findIndex(x=>x.id===id); if(idx>-1){curIdx=idx; playNextCue(true);} };  
 const playNextCue = (L=!1) => { 
     if(isSideloadActive) return playSideloadNextCue(L);
     let q=tracks.filter(x=>x.type==='queue'); while(curIdx < q.length && q[curIdx].skip) curIdx++;
@@ -523,7 +523,26 @@ const closeSideload = () => {
 
 const audioPlay = () => activeCues.size>0 || activePads.size>0 || activeSideloadCues.size>0 || activeSideloadPads.size>0;  
 const toggleGlobalPause = () => { paused=!paused; [activeCues, activePads, activeSideloadCues, activeSideloadPads].forEach(m => m.forEach(a => paused?a.pause():a.play())); $('pause-icon').innerText=paused?'play_arrow':'pause'; manageSmartMic(); };  
-const toggleLock = (f=null) => { locked=(f!==null)?f:!locked; document.body.className=locked?'locked show-progress':'unlocked show-progress'; $('lock-icon').innerText=locked?'lock':'lock_open'; render(); if(locked&&settings.pocketMode){ $('pocket-unlock-check').checked = false; $('pocket-mode-overlay').style.display='flex'; sessionStorage.setItem('mc_pocket','true'); try{document.documentElement.requestFullscreen();}catch(e){} } else { $('pocket-mode-overlay').style.display='none'; sessionStorage.removeItem('mc_pocket'); try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){} } };  
+
+const toggleLock = async (f=null) => { 
+    locked=(f!==null)?f:!locked; 
+    document.body.className=locked?'locked show-progress':'unlocked show-progress'; 
+    $('lock-icon').innerText=locked?'lock':'lock_open'; 
+    render(); 
+    if(locked&&settings.pocketMode){ 
+        $('pocket-unlock-check').checked = false; 
+        $('pocket-mode-overlay').style.display='flex'; 
+        sessionStorage.setItem('mc_pocket','true'); 
+        try{document.documentElement.requestFullscreen();}catch(e){} 
+        try{if("wakeLock" in navigator) wakeLock = await navigator.wakeLock.request("screen");}catch(e){}
+    } else { 
+        $('pocket-mode-overlay').style.display='none'; 
+        sessionStorage.removeItem('mc_pocket'); 
+        try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){} 
+        if(wakeLock){wakeLock.release(); wakeLock=null;}
+    } 
+}; 
+
 const confirmPocketExit = () => { if(!$('pocket-unlock-check').checked){haptic([50,50]); return showAlert("Notice", "Check 'Confirm Unlock' box.");} closeModal('pocket-confirm-modal'); toggleLock(!1); };  
   
 let recognition, isLis=!1, spErr=!1, prLen=0, micOn=!1, spLog=[];  
@@ -543,7 +562,7 @@ const toggleMic = () => { micOn=!micOn; if(micOn){ $('speech-debug').style.displ
 const initSortables = () => {  
     [sortQueue, sortGrid, sortSideQueue, sortSideGrid, sortExtract].forEach(s => s && s.destroy());
 
-    let hoverTimer = null, currentHover = null, hoverLock = false;
+    let hoverTimer = null, currentHover = null, hoverLock = false, lastTarget = null, enterTime = 0;
 
     let opt = {   
         group: 'shared', animation: 300, ghostClass: "sortable-ghost", disabled: !settings.enableDragging,   
@@ -555,6 +574,11 @@ const initSortables = () => {
         onMove: e => {
             let target = e.related ? e.related.closest('.tile, .cue-pad') : null;
             if (!target || target.id === 'sideload-extract-zone') return;
+            
+            if (target !== lastTarget) {
+                lastTarget = target;
+                enterTime = Date.now();
+            }
 
             let ev = e.originalEvent; if(!ev) return;
             let clientY = ev.clientY !== undefined ? ev.clientY : (ev.touches && ev.touches.length > 0 ? ev.touches[0].clientY : null);
@@ -585,9 +609,12 @@ const initSortables = () => {
                 clearTimeout(hoverTimer);
                 if (currentHover) { currentHover.classList.remove('group-hover-highlight'); currentHover = null; }
                 hoverLock = false;
+                
+                if (Date.now() - enterTime < 150) return false;
             }
         },
         onEnd: e=>{   
+            lastTarget = null;
             let isGroupDrop = currentHover && currentHover.classList.contains('group-hover-highlight'); let targetEl = currentHover;
             clearTimeout(hoverTimer); if (currentHover) currentHover.classList.remove('group-hover-highlight'); currentHover = null; hoverLock = false;
             if (e.from.id.includes('sideload')) $('sideload-extract-zone').style.display = 'none';
