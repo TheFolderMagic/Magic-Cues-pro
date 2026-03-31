@@ -283,66 +283,16 @@ const openSet = (id,s=!1) => {
     else h+=`<div class="setting-row"><label>Volume</label><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="haptic(5);updTrk('volume',this.value)"></div>`; 
     h+=`<details><summary onclick="haptic(10)">Voice Triggers</summary><div class="details-content"><div class="mini-row"><label>Phrase</label><input type="text" style="width:140px;margin:0;padding:8px 12px 8px 8px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:rgba(128,128,128,.1)" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div><div class="mini-row"><label>Global</label><input type="checkbox" ${t.globalVoice?'checked':''} onchange="haptic(10);updTrk('globalVoice',this.checked)" style="width:20px;height:20px"></div></div></details>`; 
     if(!t.isExternalShow){ 
-        h+=`<details><summary onclick="haptic(10)">Advanced Settings</summary><div class="details-content">
-            <button class="action-btn" style="padding:12px; margin-top:0px; margin-bottom:12px; width:100%; font-size:14px; font-weight:600; background:var(--input-bg); color:var(--text-main); border:1px solid var(--glass-border); border-radius:12px; justify-content:center;" onclick="haptic(10);openTrimModal('${t.id}')"><span class="material-symbols-rounded" style="font-size:18px">tune</span> Trim & Fades</button>`;
-        
-        let selCol = t.borderColor || '';
-        let colors = ['#ff3b30', '#ff9500', '#ffcc00', '#34c759', '#00c7be', '#32ade6', '#007aff', '#5856d6', '#af52de', '#ff2d55'];
-        let swatches = `<div class="color-swatch ${!selCol?'active':''}" style="background:rgba(128,128,128,0.2); border: 2px dashed var(--text-muted); display:flex; align-items:center; justify-content:center;" onclick="haptic(10);updTrk('borderColor',null);this.parentElement.querySelectorAll('.color-swatch').forEach(el=>el.classList.remove('active'));this.classList.add('active');"><span class="material-symbols-rounded" style="font-size:18px; color:var(--text-main)">format_color_reset</span></div>`;
-        colors.forEach(c => {
-            swatches += `<div class="color-swatch ${selCol===c?'active':''}" style="background:${c}; box-shadow: 0 4px 12px ${c}40;" onclick="haptic(10);updTrk('borderColor','${c}');this.parentElement.querySelectorAll('.color-swatch').forEach(el=>el.classList.remove('active'));this.classList.add('active');"></div>`;
-        });
-        h += `<div class="setting-row" style="flex-direction:column; align-items:flex-start; margin-top:0px; margin-bottom:12px; padding:12px 16px;">
-                <label style="font-size:14px; font-weight:600; margin-bottom:12px;">Cue Color Tag</label>
-                <div style="display:flex; gap:14px; width:100%; overflow-x:auto; padding:4px 4px 12px 4px; scroll-behavior:smooth;" class="no-scrollbar">
-                    ${swatches}
-                </div>
-              </div>`;
-
-        h+=`<details style="margin-bottom:12px; background:rgba(128,128,128,.1); border-radius:18px; overflow:hidden;">
-            <summary onclick="haptic(10)">
-                <div style="display:flex; align-items:center; font-size:14px;">
-                    <span class="material-symbols-rounded" style="font-size:20px;margin-right:8px;color:var(--accent)">edit_note</span>
-                    Director's Notes
-                </div>
-            </summary>
-            <div class="details-content" style="padding:0 16px 16px; display:flex; flex-direction:column; gap:12px;">
-                <textarea id="notes-text" placeholder="Type notes... Press Enter for new sections." oninput="updTrk('notes', this.value)" style="width:100%;height:100px;background:var(--input-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:12px;padding:12px;font-family:inherit;font-size:14px;resize:none;outline:none">${t.notes||''}</textarea>
-                
-                <div class="segmented-control" style="margin-top:0">
-                    <button class="${t.notesTrigger==='start'||!t.notesTrigger?'active':''}" onclick="haptic(10);updNotesTrig(this,'start')">On Start</button>
-                    <button class="${t.notesTrigger==='end'?'active':''}" onclick="haptic(10);updNotesTrig(this,'end')">Near End</button>
-                    <button class="${t.notesTrigger==='after'?'active':''}" onclick="haptic(10);updNotesTrig(this,'after')">On Finish</button>
-                </div>
-                
-                <div class="setting-row" style="padding:12px; background:rgba(0,0,0,0.2); margin:0;">
-                    <label style="font-size:13px; color:var(--text-main)">Duration <span style="color:var(--text-muted); font-weight:400">(0 = Full)</span></label>
-                    <div style="display:flex; align-items:center; gap:6px;">
-                        <input type="number" step="0.5" min="0" value="${t.notesDuration||0}" onchange="haptic(10);updTrk('notesDuration',this.value)" style="width:60px; font-size:14px; padding:6px; text-align:center;">
-                        <span style="font-size:13px; color:var(--text-muted); font-weight:700">s</span>
-                    </div>
-                </div>
-                
-                <div class="setting-row" style="padding:12px; background:rgba(0,0,0,0.2); margin:0;">
-                    <label style="font-size:13px; color:var(--text-main)">Split by Line (Enter)</label>
-                    <input type="checkbox" ${t.notesSplit?'checked':''} onchange="haptic(10);updTrk('notesSplit',this.checked)" style="width:20px;height:20px">
-                </div>
-            </div>
-        </details>`;
-
-        h+=`<details style="margin-bottom:12px; background:rgba(128,128,128,.1); border-radius:18px; overflow:hidden;">
-            <summary onclick="haptic(10)">
-                <div style="display:flex; align-items:center; font-size:14px;">
-                    <span class="material-symbols-rounded" style="font-size:20px;margin-right:8px;color:var(--accent)">all_inclusive</span>
-                    Playback Flow
-                </div>
-            </summary>
-            <div class="details-content" style="padding:0 16px 16px; display:flex; flex-direction:column; gap:12px;">
-                <div class="mini-row"><label>Pre-Delay (s)</label><input type="number" step="0.5" value="${t.delay||0}" onchange="haptic(10);updTrk('delay',this.value)"></div>`; 
-                
-        if(isQ) h+=`<div class="mini-row"><label style="color:var(--accent)">Auto-Follow</label><input type="checkbox" ${t.autoFollow?'checked':''} onchange="haptic(10);updTrk('autoFollow',this.checked);$('af-opts').style.display=this.checked?'block':'none'" style="width:20px;height:20px"></div><div id="af-opts" style="display:${t.autoFollow?'block':'none'}"><div class="segmented-control" style="margin-bottom:12px"><button class="${t.overlap>0||!t.postDelay?'active':''}" onclick="haptic(10);toggleOverlapWait('overlap', this)">Overlap</button><button class="${t.postDelay>0?'active':''}" onclick="haptic(10);toggleOverlapWait('wait', this)">Delay</button></div><div class="mini-row" id="orow" style="display:${t.overlap>0||!t.postDelay?'flex':'none'}"><label>Overlap (s)</label><input type="number" step="0.5" value="${t.overlap||0}" onchange="haptic(10);updTrk('overlap',this.value)"></div><div class="mini-row" id="prow" style="display:${t.postDelay>0?'flex':'none'}"><label>Post-Delay (s)</label><input type="number" step="0.5" value="${t.postDelay||0}" onchange="haptic(10);updTrk('postDelay',this.value)"></div></div>`; 
+        h+=`<details><summary onclick="haptic(10)">Advanced Settings</summary><div class="details-content">`;
+        h+=`<div style="background:rgba(128,128,128,.1);border-radius:18px;margin-bottom:12px;padding:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:space-between" onclick="haptic(10);openTrimModal('${t.id}')"><div style="display:flex;align-items:center;font-size:14px"><span class="material-symbols-rounded" style="font-size:20px;margin-right:8px;color:var(--accent)">tune</span>Trim & Fades</div><span class="material-symbols-rounded" style="font-size:24px;">chevron_right</span></div>`;
+        h+=`<details style="margin-bottom:12px;background:rgba(128,128,128,.1);border-radius:18px;overflow:hidden"><summary onclick="haptic(10)"><div style="display:flex;align-items:center;font-size:14px"><span class="material-symbols-rounded" style="font-size:20px;margin-right:8px;color:var(--accent)">edit_note</span>Director's Notes</div></summary><div class="details-content" style="padding:0 16px 16px;display:flex;flex-direction:column;gap:12px"><textarea id="notes-text" placeholder="Type notes..." oninput="updTrk('notes',this.value)" style="width:100%;height:100px;background:var(--input-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:12px;padding:12px;font-family:inherit;font-size:14px;resize:none;outline:none">${t.notes||''}</textarea><div class="segmented-control" style="margin-top:0"><button class="${t.notesTrigger==='start'||!t.notesTrigger?'active':''}" onclick="haptic(10);updNotesTrig(this,'start')">On Start</button><button class="${t.notesTrigger==='end'?'active':''}" onclick="haptic(10);updNotesTrig(this,'end')">Near End</button><button class="${t.notesTrigger==='after'?'active':''}" onclick="haptic(10);updNotesTrig(this,'after')">On Finish</button></div><div class="setting-row" style="padding:12px;background:rgba(0,0,0,0.2);margin:0"><label style="font-size:13px;color:var(--text-main)">Duration <span style="color:var(--text-muted);font-weight:400">(0=Full)</span></label><div style="display:flex;align-items:center;gap:6px"><input type="number" step="0.5" min="0" value="${t.notesDuration||0}" onchange="haptic(10);updTrk('notesDuration',this.value)" style="width:60px;font-size:14px;padding:6px;text-align:center"><span style="font-size:13px;color:var(--text-muted);font-weight:700">s</span></div></div><div class="setting-row" style="padding:12px;background:rgba(0,0,0,0.2);margin:0"><label style="font-size:13px;color:var(--text-main)">Split by Line</label><input type="checkbox" ${t.notesSplit?'checked':''} onchange="haptic(10);updTrk('notesSplit',this.checked)" style="width:20px;height:20px"></div></div></details>`;
+        h+=`<details style="margin-bottom:12px;background:rgba(128,128,128,.1);border-radius:18px;overflow:hidden"><summary onclick="haptic(10)"><div style="display:flex;align-items:center;font-size:14px"><span class="material-symbols-rounded" style="font-size:20px;margin-right:8px;color:var(--accent)">all_inclusive</span>Timing & Automations</div></summary><div class="details-content" style="padding:0 16px 16px;display:flex;flex-direction:column;gap:12px"><div class="mini-row"><label>Pre-Delay (s)</label><input type="number" step="0.5" value="${t.delay||0}" onchange="haptic(10);updTrk('delay',this.value)"></div>`; 
+        if(isQ) h+=`<div class="mini-row"><label style="color:var(--accent)">Auto-Follow</label><input type="checkbox" ${t.autoFollow?'checked':''} onchange="haptic(10);updTrk('autoFollow',this.checked);$('af-opts').style.display=this.checked?'block':'none'" style="width:20px;height:20px"></div><div id="af-opts" style="display:${t.autoFollow?'block':'none'}"><div class="segmented-control" style="margin-bottom:12px"><button class="${t.overlap>0||!t.postDelay?'active':''}" onclick="haptic(10);toggleOverlapWait('overlap',this)">Overlap</button><button class="${t.postDelay>0?'active':''}" onclick="haptic(10);toggleOverlapWait('wait',this)">Delay</button></div><div class="mini-row" id="orow" style="display:${t.overlap>0||!t.postDelay?'flex':'none'}"><label>Overlap (s)</label><input type="number" step="0.5" value="${t.overlap||0}" onchange="haptic(10);updTrk('overlap',this.value)"></div><div class="mini-row" id="prow" style="display:${t.postDelay>0?'flex':'none'}"><label>Post-Delay (s)</label><input type="number" step="0.5" value="${t.postDelay||0}" onchange="haptic(10);updTrk('postDelay',this.value)"></div></div>`; 
         h+=`</div></details>`;
-        h+=`</div></details>`; 
+        let selCol=t.borderColor||'', colors=['#ff3b30','#ff9500','#ffcc00','#34c759','#00c7be','#32ade6','#007aff','#5856d6','#af52de','#ff2d55'], swatches=`<div class="color-swatch ${!selCol?'active':''}" style="background:rgba(128,128,128,0.2);border:2px dashed var(--text-muted);display:flex;align-items:center;justify-content:center" onclick="haptic(10);updTrk('borderColor',null);this.parentElement.querySelectorAll('.color-swatch').forEach(el=>el.classList.remove('active'));this.classList.add('active')"><span class="material-symbols-rounded" style="font-size:18px;color:var(--text-main)">format_color_reset</span></div>`;
+        colors.forEach(c=>{swatches+=`<div class="color-swatch ${selCol===c?'active':''}" style="background:${c};box-shadow:0 4px 12px ${c}40" onclick="haptic(10);updTrk('borderColor','${c}');this.parentElement.querySelectorAll('.color-swatch').forEach(el=>el.classList.remove('active'));this.classList.add('active')"></div>`;});
+        h+=`<div class="setting-row" style="flex-direction:column;align-items:flex-start;margin-top:0;margin-bottom:12px;padding:12px 16px"><label style="font-size:14px;font-weight:600;margin-bottom:12px">Cue Color Tag</label><div style="display:flex;gap:14px;width:100%;overflow-x:auto;padding:4px 4px 12px 4px;scroll-behavior:smooth" class="no-scrollbar">${swatches}</div></div>`;
+        h+=`</div></details>`;
     } 
     $('modal-content').innerHTML=h; 
     if(!$('settings-modal').open) openModal('settings-modal'); 
