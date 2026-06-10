@@ -15,6 +15,9 @@ jobs:
         with:
           node-version: 20
 
+      - name: Force Git to use HTTPS instead of SSH
+        run: git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+
       - name: Install Capacitor Components
         run: npm install
 
