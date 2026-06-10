@@ -9,6 +9,6 @@
     "@capacitor/cli": "^6.0.0",
     "@capacitor/core": "^6.0.0",
     "@capacitor/haptics": "^6.0.0",
-    "cordova-plugin-nfc": "^1.2.0"
+    "phonegap-nfc": "^1.2.0"
   }
 }
