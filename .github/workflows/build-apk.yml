@@ -51,67 +51,8 @@ jobs:
           }
           '
 
-      - name: Run Jetifier (Translate legacy Cordova imports)
-        run: |
-          npm install jetifier
-          npx jetifier
-
       - name: Inject Web Files Into Android Package
         run: npx cap sync android
-
-      - name: Patch Legacy NFC Plugin Code (Android 14 Compat)
-        run: |
-          node -e '
-          const fs = require("fs");
-          const path = require("path");
-          function patchFolder(dir) {
-            if (!fs.existsSync(dir)) return;
-            const files = fs.readdirSync(dir);
-            for (const file of files) {
-              const fullPath = path.join(dir, file);
-              if (fs.statSync(fullPath).isDirectory()) {
-                patchFolder(fullPath);
-              } else if (file.endsWith(".java")) {
-                let content = fs.readFileSync(fullPath, "utf8");
-                let changed = false;
-                
-                // 1. Patch PendingIntent flags for Android 12+
-                if (content.includes("PendingIntent.getActivity") && !content.includes("FLAG_MUTABLE") && !content.includes("FLAG_IMMUTABLE")) {
-                  content = content.replace(
-                    /PendingIntent\.getActivity\(([^,]+),([^,]+),([^,]+),(\s*)0\s*\)/g,
-                    "PendingIntent.getActivity($1,$2,$3,$4PendingIntent.FLAG_MUTABLE)"
-                  );
-                  changed = true;
-                }
-                if (content.includes("PendingIntent.getBroadcast") && !content.includes("FLAG_MUTABLE") && !content.includes("FLAG_IMMUTABLE")) {
-                  content = content.replace(
-                    /PendingIntent\.getBroadcast\(([^,]+),([^,]+),([^,]+),(\s*)0\s*\)/g,
-                    "PendingIntent.getBroadcast($1,$2,$3,$4PendingIntent.FLAG_MUTABLE)"
-                  );
-                  changed = true;
-                }
-
-                // 2. Comment out deprecated Android Beam APIs removed in Android 14 SDK
-                if (content.includes("setNdefPushMessage")) {
-                  content = content.replace(/.*\.setNdefPushMessage\(.*\);/g, "// $&");
-                  content = content.replace(/.*\.setNdefPushMessageCallback\(.*\);/g, "// $&");
-                  changed = true;
-                }
-                if (content.includes("setBeamPushUris")) {
-                  content = content.replace(/.*\.setBeamPushUris\(.*\);/g, "// $&");
-                  content = content.replace(/.*\.setBeamPushUrisCallback\(.*\);/g, "// $&");
-                  changed = true;
-                }
-
-                if (changed) {
-                  fs.writeFileSync(fullPath, content, "utf8");
-                  console.log("Patched compilation warnings in: " + file);
-                }
-              }
-            }
-          }
-          patchFolder("android/capacitor-cordova-android-plugins");
-          '
 
       - name: Compile Native Debug APK
         run: |
