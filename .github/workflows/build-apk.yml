@@ -37,6 +37,16 @@ jobs:
       - name: Initialize Android System Wrapper
         run: npx cap add android
 
+      - name: Inject NFC Native Bridge
+        run: |
+          PKG=$(node -e "console.log(require('./capacitor.config.json').appId)")
+          PKG_PATH=$(echo "$PKG" | tr '.' '/')
+          DIR="android/app/src/main/java/$PKG_PATH"
+          mkdir -p "$DIR"
+          rm -f "$DIR/MainActivity.java"
+          sed "s/__PACKAGE__/$PKG/g" NfcBridge.kt > "$DIR/NfcBridge.kt"
+          sed "s/__PACKAGE__/$PKG/g" MainActivity.kt > "$DIR/MainActivity.kt"
+
       - name: Configure Android Permissions (Mic, NFC)
         run: |
           node -e '
