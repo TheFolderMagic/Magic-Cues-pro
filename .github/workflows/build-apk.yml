@@ -36,68 +36,23 @@ jobs:
 
       - name: Configure Android Permissions (Mic, NFC)
         run: |
-          node -e "
+          cat << 'EOF' > update_manifest.js
           const fs = require('fs');
           const file = 'android/app/src/main/AndroidManifest.xml';
           let data = fs.readFileSync(file, 'utf8');
-          const permissions = '\n    <uses-permission android:name=\"android.permission.RECORD_AUDIO\" />\n    <uses-permission android:name=\"android.permission.NFC\" />\n    <uses-feature android:name=\"android.hardware.nfc\" android:required=\"false\" />\n';
+          const permissions = `
+              <uses-permission android:name="android.permission.RECORD_AUDIO" />
+              <uses-permission android:name="android.permission.NFC" />
+              <uses-feature android:name="android.hardware.nfc" android:required="false" />
+          `;
           data = data.replace('</manifest>', permissions + '</manifest>');
           fs.writeFileSync(file, data, 'utf8');
-          "
+          EOF
+          node update_manifest.js
+          rm update_manifest.js
 
       - name: Inject Web Files Into Android Package
         run: npx cap sync android
-
-      - name: Compile Native Debug APK
-        run: |
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleDebug
-
-      - name: Deliver Finished APK Package
-        uses: actions/upload-artifact@v4
-        with:
-          name: Magician-App-Build-${{ github.run_number }}
-          path: android/app/build/outputs/apk/debug/app-debug.apk      - name: Configure Android Permissions (Mic, NFC)
-        run: |
-          node -e "
-          const fs = require('fs');
-          const file = 'android/app/src/main/AndroidManifest.xml';
-          let data = fs.readFileSync(file, 'utf8');
-          const permissions = '\n    <uses-permission android:name=\"android.permission.RECORD_AUDIO\" />\n    <uses-permission android:name=\"android.permission.NFC\" />\n    <uses-feature android:name=\"android.hardware.nfc\" android:required=\"false\" />\n';
-          data = data.replace('</manifest>', permissions + '</manifest>');
-          fs.writeFileSync(file, data, 'utf8');
-          "
-
-      - name: Inject Web Files Into Android Package
-        run: npx cap sync android
-
-      - name: Compile Native Debug APK
-        run: |
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleDebug
-
-      - name: Deliver Finished APK Package
-        uses: actions/upload-artifact@v4
-        with:
-          name: Magician-App-Build-${{ github.run_number }}
-          path: android/app/build/outputs/apk/debug/app-debug.apk      - name: Initialize Android System Wrapper
-  run: npx cap add android
-
-- name: Configure Android Permissions (Mic, NFC)
-  run: |
-    node -e "
-    const fs = require('fs');
-    const file = 'android/app/src/main/AndroidManifest.xml';
-    let data = fs.readFileSync(file, 'utf8');
-    const permissions = '\n    <uses-permission android:name=\"android.permission.RECORD_AUDIO\" />\n    <uses-permission android:name=\"android.permission.NFC\" />\n    <uses-feature android:name=\"android.hardware.nfc\" android:required=\"false\" />\n';
-    data = data.replace('</manifest>', permissions + '</manifest>');
-    fs.writeFileSync(file, data, 'utf8');
-    "
-
-- name: Inject Web Files Into Android Package
-  run: npx cap sync android
 
       - name: Compile Native Debug APK
         run: |
@@ -110,4 +65,3 @@ jobs:
         with:
           name: Magician-App-Build-${{ github.run_number }}
           path: android/app/build/outputs/apk/debug/app-debug.apk
-          
