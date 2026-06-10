@@ -51,6 +51,11 @@ jobs:
           }
           '
 
+      - name: Run Jetifier (Translate legacy Cordova imports)
+        run: |
+          npm install jetifier
+          npx jetifier
+
       - name: Inject Web Files Into Android Package
         run: npx cap sync android
 
