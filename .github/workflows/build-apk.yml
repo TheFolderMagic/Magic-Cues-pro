@@ -1,7 +1,7 @@
 name: Build Android APK
 on:
   push:
-    branches: [ main, master ] # Triggers the build every time you push code
+    branches: [ main, master ]
 
 jobs:
   compile-android:
@@ -18,6 +18,13 @@ jobs:
       - name: Install Capacitor Components
         run: npm install
 
+      - name: Prepare Web Assets Directory
+        run: |
+          mkdir -p www
+          cp index.html www/ || true
+          cp manifest.json www/ || true
+          cp -r assets www/ || true
+
       - name: Set up Android Java Compiler
         uses: actions/setup-java@v4
         with:
@@ -33,7 +40,14 @@ jobs:
       - name: Compile Native Debug APK
         run: |
           cd android
+          chmod +x gradlew
           ./gradlew assembleDebug
+
+      - name: Deliver Finished APK Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: Magician-App-Testing-Build
+          path: android/app/build/outputs/apk/debug/app-debug.apk
 
       - name: Deliver Finished APK Package
         uses: actions/upload-artifact@v4
