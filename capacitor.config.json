@@ -1,5 +1,5 @@
 {
   "appId": "com.yourname.magiccues",
   "appName": "Magic Cues",
-  "webDir": "."
+  "webDir": "android/app/src/main/assets/public"
 }
