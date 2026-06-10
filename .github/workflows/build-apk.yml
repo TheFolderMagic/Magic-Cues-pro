@@ -59,6 +59,45 @@ jobs:
       - name: Inject Web Files Into Android Package
         run: npx cap sync android
 
+      - name: Patch Legacy NFC Plugin Code (PendingIntent Flag Fix)
+        run: |
+          node -e '
+          const fs = require("fs");
+          const path = require("path");
+          function patchFolder(dir) {
+            if (!fs.existsSync(dir)) return;
+            const files = fs.readdirSync(dir);
+            for (const file of files) {
+              const fullPath = path.join(dir, file);
+              if (fs.statSync(fullPath).isDirectory()) {
+                patchFolder(fullPath);
+              } else if (file.endsWith(".java")) {
+                let content = fs.readFileSync(fullPath, "utf8");
+                let changed = false;
+                if (content.includes("PendingIntent.getActivity") && !content.includes("FLAG_MUTABLE") && !content.includes("FLAG_IMMUTABLE")) {
+                  content = content.replace(
+                    /PendingIntent\.getActivity\(([^,]+),([^,]+),([^,]+),(\s*)0\s*\)/g,
+                    "PendingIntent.getActivity($1,$2,$3,$4PendingIntent.FLAG_MUTABLE)"
+                  );
+                  changed = true;
+                }
+                if (content.includes("PendingIntent.getBroadcast") && !content.includes("FLAG_MUTABLE") && !content.includes("FLAG_IMMUTABLE")) {
+                  content = content.replace(
+                    /PendingIntent\.getBroadcast\(([^,]+),([^,]+),([^,]+),(\s*)0\s*\)/g,
+                    "PendingIntent.getBroadcast($1,$2,$3,$4PendingIntent.FLAG_MUTABLE)"
+                  );
+                  changed = true;
+                }
+                if (changed) {
+                  fs.writeFileSync(fullPath, content, "utf8");
+                  console.log("Patched PendingIntent inside: " + file);
+                }
+              }
+            }
+          }
+          patchFolder("android/capacitor-cordova-android-plugins");
+          '
+
       - name: Compile Native Debug APK
         run: |
           cd android
