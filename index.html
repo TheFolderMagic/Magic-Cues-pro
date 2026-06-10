@@ -24,7 +24,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:non
 .custom-toggle:checked::after { transform: translateX(20px); }
 html[data-theme="high-vis"] .custom-toggle:checked::after { background: #000; }
 
-details{overflow:hidden}summary{font-weight:600;font-size:15px;cursor:pointer;outline:none;}summary::after{content:'expand_more';font-family:'Material Symbols Rounded';font-size:24px;transition:transform .3s;font-variation-settings:'FILL' 1, 'wght' 400;color:var(--text-muted);}details[open]>summary::after{transform:rotate(180deg)}.details-content{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}.mini-row{display:flex;justify-content:space-between;align-items:center}.mini-row label{font-size:14px;font-weight:500}.danger-zone{margin-top:20px;border-top:1px solid var(--glass-border);padding-top:20px}.btn-delete{width:100%;padding:18px;border-radius:16px;background:rgba(255,69,58,.15);color:var(--danger);font-weight:700;font-size:16px;border:1px solid var(--danger)}.project-item{padding:16px;background:var(--input-bg);border:1px solid var(--glass-border);border-radius:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:pan-y}.project-item.active{border-color:var(--accent);background:var(--accent-glow)}#pocket-mode-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:9998;display:none;align-items:center;justify-content:center}#pocket-exit-btn{background:#111;color:#444;border:2px solid #222;border-radius:50%;width:80px;height:80px;display:flex;align-items:center;justify-content:center}.nfc-pulse{width:80px;height:80px;border-radius:50%;background:var(--accent-glow);margin:20px auto;display:flex;align-items:center;justify-content:center;animation:pulse 1.5s infinite}@keyframes pulse{0%{box-shadow:0 0 0 0 var(--accent-glow)}70%{box-shadow:0 0 0 20px transparent}100%{box-shadow:0 0 0 0 transparent}}#sideload-modal{width:100%;height:100%;max-width:100%;max-height:100%;margin:0;padding:24px;border-radius:0;border:none;box-sizing:border-box;background:var(--bg-top)}#sideload-modal[open]{display:flex;flex-direction:column}#sideload-modal::backdrop{background:#000}
+details{overflow:hidden}summary{font-weight:600;font-size:15px;cursor:pointer;outline:none;}summary::after{content:'expand_more';font-family:'Material Symbols Rounded';font-size:24px;transition:transform .3s;font-variation-settings:'FILL' 1, 'wght' 400;color:var(--text-muted);}details[open]>summary::after{transform:rotate(180deg)}.details-content{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}.mini-row{display:flex;justify-content:space-between;align-items:center}.mini-row label{font-size:14px;font-weight:500}.danger-zone{margin-top:20px;border-top:1px solid var(--glass-border);padding-top:20px}.btn-delete{width:100%;padding:18px;border-radius:16px;background:rgba(255,69,58,.15);color:var(--danger);font-weight:700;font-size:16px;border:1px solid var(--danger)}.project-item{padding:16px;background:var(--input-bg);border:1px solid var(--glass-border);border-radius:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:pan-y}.project-item.active{border-color:var(--accent);background:var(--accent-glow)}#pocket-mode-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:9998;display:none;align-items:center;justify-content:center}#pocket-exit-btn{background:#111;color:#444;border:2px solid #222;border-radius:50%;width:80px;height:80px;display:flex;align-items:center;justify-content:center} .nfc-pulse{width:80px;height:80px;border-radius:50%;background:var(--accent-glow);margin:20px auto;display:flex;align-items:center;justify-content:center;animation:pulse 1.5s infinite}@keyframes pulse{0%{box-shadow:0 0 0 0 var(--accent-glow)}70%{box-shadow:0 0 0 20px transparent}100%{box-shadow:0 0 0 0 transparent}}#sideload-modal{width:100%;height:100%;max-width:100%;max-height:100%;margin:0;padding:24px;border-radius:0;border:none;box-sizing:border-box;background:var(--bg-top)}#sideload-modal[open]{display:flex;flex-direction:column}#sideload-modal::backdrop{background:#000}
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -426,7 +426,15 @@ let hoverTmr=null, curHov=null, isGrp=!1, dragY=0, dragX=0;
 const updPos = e => { if(e.touches?.[0]) {dragY=e.touches[0].clientY; dragX=e.touches[0].clientX;} else {dragY=e.clientY; dragX=e.clientX;} if(curHov) { let r = curHov.getBoundingClientRect(); if(dragY < r.top || dragY > r.bottom || dragX < r.left || dragX > r.right) { curHov.classList.remove('group-hover-highlight'); curHov = null; isGrp = !1; clearTimeout(hoverTmr); } } }; document.addEventListener('pointermove', updPos, {passive:!0}); document.addEventListener('touchmove', updPos, {passive:!0});
 
 let isSideAct=!1, actSideId=null, sideTrks=[], sideIdx=0, actSideCues=new Map(), actSidePads=new Map(), sidePaused=!1, isSetSide=!1; 
-const haptic = p => { if(settings.enableHaptics && navigator.vibrate) navigator.vibrate(p); };  
+const haptic = p => { 
+    if (settings.enableHaptics) {
+        if (window.Android && typeof window.Android.vibrate === 'function') {
+            window.Android.vibrate(JSON.stringify(p));
+        } else if (navigator.vibrate) {
+            navigator.vibrate(p);
+        }
+    } 
+};  
 const showAlert = (t,m) => { $('alert-title').innerText=t; $('alert-msg').innerText=m; openModal('custom-alert-modal'); };  
 const openModal = id => { if(id==='app-settings') buildNfcMenu(); document.body.classList.add('modal-open'); $(id).showModal(); };  
 const closeModal = id => { $(id).close(); if(!document.querySelectorAll('dialog[open]').length) document.body.classList.remove('modal-open'); };  
@@ -577,9 +585,85 @@ const setTheme = t => { document.documentElement.setAttribute('data-theme', t===
 window.matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>settings.theme==='auto'&&setTheme('auto'));  
 
 let nfcR=null, nfcAb=null, nfcWrAb=null, lastNfc=0;   
-const toggleNFC = async e => { if(e){ if(!("NDEFReader" in window)) return showAlert("Error", "NFC is not supported."); try{ if(nfcAb) nfcAb.abort(); nfcAb=new AbortController(); if(!nfcR){ nfcR=new NDEFReader(); nfcR.addEventListener("reading",({message})=>{ if(!settings.nfcEnabled||Date.now()-lastNfc<2000)return; for(const r of message.records){ if(r.recordType==="text"){ let t=new TextDecoder(r.encoding).decode(r.data); lastNfc=Date.now(); if(locked&&settings.pocketMode&&settings.strongPocketHaptics)haptic([100,50,100,50,200]); else haptic([20,30]); if(t==="CUE_NEXT") playNextCue(false, true); else if(t==="CUE_PLAYPAUSE") toggleGlobalPause(); else if(t==="CUE_MIC") toggleMic(); else if(t.startsWith("CUE_PAD_")){ let tk=tracks.find(x=>x.id===t.replace("CUE_PAD_","")); if(tk) tk.isExternalShow?(isSideAct&&actSideId===tk.id?(haptic([30,50]),closeSideload()):(haptic([40,60,40]),openSide(tk,tk.autoStartShow))):playPad(tk); } } } }); } await nfcR.scan({signal:nfcAb.signal}); }catch(err){$('nfc-toggle').checked=!1; updSet('nfcEnabled',!1);} }else if(nfcAb){ nfcAb.abort(); nfcAb=null; } };  
-const programNfcTag = async(c,n) => { if(!("NDEFReader" in window))return showAlert("Error","NFC not supported."); if(nfcWrAb)nfcWrAb.abort(); nfcWrAb=new AbortController(); $('nfc-write-text').innerText=`Programming: ${n}`; openModal('nfc-write-modal'); try{ await new NDEFReader().write(c,{signal:nfcWrAb.signal}); haptic([40,60,40]); closeModal('nfc-write-modal'); openModal('nfc-success-modal'); }catch(e){if(e.name!=='AbortError')showAlert("Failed","Programming failed: "+e);} };  
-const cancelNfcWrite = () => { haptic(10); if(nfcWrAb) nfcWrAb.abort(); closeModal('nfc-write-modal'); };  
+window.onNfcRead = t => {
+    if(!settings.nfcEnabled||Date.now()-lastNfc<2000)return;
+    lastNfc=Date.now();
+    if(locked&&settings.pocketMode&&settings.strongPocketHaptics)haptic([100,50,100,50,200]);
+    else haptic([20,30]);
+    if(t==="CUE_NEXT") playNextCue(false, true);
+    else if(t==="CUE_PLAYPAUSE") toggleGlobalPause();
+    else if(t==="CUE_MIC") toggleMic();
+    else if(t.startsWith("CUE_PAD_")){
+        let tk=tracks.find(x=>x.id===t.replace("CUE_PAD_",""));
+        if(tk) tk.isExternalShow?(isSideAct&&actSideId===tk.id?(haptic([30,50]),closeSideload()):(haptic([40,60,40]),openSide(tk,tk.autoStartShow))):playPad(tk);
+    }
+};
+window.onNfcWriteResult = (success, errMsg) => {
+    closeModal('nfc-write-modal');
+    if(success) {
+        haptic([40,60,40]);
+        openModal('nfc-success-modal');
+    } else {
+        showAlert("Failed", "Programming failed: " + errMsg);
+    }
+};
+const toggleNFC = async e => { 
+    if(e){ 
+        if(window.Android && typeof window.Android.startNFC === 'function') {
+            window.Android.startNFC();
+            return;
+        }
+        if(!("NDEFReader" in window)) return showAlert("Error", "NFC is not supported."); 
+        try{ 
+            if(nfcAb) nfcAb.abort(); 
+            nfcAb=new AbortController(); 
+            if(!nfcR){ 
+                nfcR=new NDEFReader(); 
+                nfcR.addEventListener("reading",({message})=>{ 
+                    for(const r of message.records){ 
+                        if(r.recordType==="text"){ 
+                            let t=new TextDecoder(r.encoding).decode(r.data); 
+                            window.onNfcRead(t);
+                        } 
+                    } 
+                }); 
+            } 
+            await nfcR.scan({signal:nfcAb.signal}); 
+        }catch(err){$('nfc-toggle').checked=!1; updSet('nfcEnabled',!1);} 
+    }else{
+        if(window.Android && typeof window.Android.stopNFC === 'function') {
+            window.Android.stopNFC();
+        }
+        if(nfcAb){ nfcAb.abort(); nfcAb=null; } 
+    } 
+};  
+const programNfcTag = async(c,n) => { 
+    if(window.Android && typeof window.Android.writeNFC === 'function') {
+        $('nfc-write-text').innerText=`Programming: ${n}`; 
+        openModal('nfc-write-modal');
+        window.Android.writeNFC(c);
+        return;
+    }
+    if(!("NDEFReader" in window))return showAlert("Error","NFC not supported."); 
+    if(nfcWrAb)nfcWrAb.abort(); 
+    nfcWrAb=new AbortController(); 
+    $('nfc-write-text').innerText=`Programming: ${n}`; 
+    openModal('nfc-write-modal'); 
+    try{ 
+        await new NDEFReader().write(c,{signal:nfcWrAb.signal}); 
+        haptic([40,60,40]); 
+        closeModal('nfc-write-modal'); 
+        openModal('nfc-success-modal'); 
+    }catch(e){if(e.name!=='AbortError')showAlert("Failed","Programming failed: "+e);} 
+};  
+const cancelNfcWrite = () => { 
+    haptic(10); 
+    if(window.Android && typeof window.Android.cancelWriteNFC === 'function') {
+        window.Android.cancelWriteNFC();
+    }
+    if(nfcWrAb) nfcWrAb.abort(); 
+    closeModal('nfc-write-modal'); 
+};  
 
 const initDB = () => { let r=indexedDB.open('MCPDB',4); r.onupgradeneeded=e=>!e.target.result.objectStoreNames.contains('store')&&e.target.result.createObjectStore('store'); r.onsuccess=e=>{ db=e.target.result; let st=db.transaction('store','readwrite').objectStore('store'); st.get('projectList').onsuccess=res=>{ projectsList=res.target.result||[{id:'default',name:'Main Show'}]; if(!res.target.result) st.put(projectsList,'projectList'); curProjId=localStorage.getItem('mc_curProj')||projectsList[0].id; $('header-title-text').innerText=(projectsList.find(x=>x.id===curProjId)||projectsList[0]).name; st.get('proj_'+curProjId).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:t.file?URL.createObjectURL(t.file):undefined})):[]; render(); }; }; }; };  
 const save = () => db&&db.transaction('store','readwrite').objectStore('store').put(tracks.map(t=>({...t,blobUrl:undefined})), 'proj_'+curProjId);  
@@ -1579,7 +1663,21 @@ const confirmPocketExit = () => { if(!$('pocket-unlock-check').checked){haptic([
   
 let rec, isLis=!1, spErr=!1, prLen=0, micOn=!1, spLog=[];  
 const upSp = t => { if(t&&t.trim()!==""){spLog.push(t);if(spLog.length>3)spLog.shift();} $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">&gt;</span> ')+(isLis?'<span style="animation:pulse 1s infinite">_</span>':''); $('speech-debug').scrollTop=$('speech-debug').scrollHeight; };  
-const initSpeech = () => { window.SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition; if(!window.SpeechRecognition)return; rec=new window.SpeechRecognition(); rec.continuous=!0; rec.interimResults=!0; rec.lang=settings.lang; rec.onstart=()=>{prLen=0;$('mic-btn').className='mic-active';$('mic-icon').innerText='mic';spLog=["Listening..."];upSp("");}; rec.onresult=e=>{ let fl=''; for(let i=e.resultIndex;i<e.results.length;++i)fl+=e.results[i][0].transcript; let nw=fl.substring(prLen); $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">&gt;</span> ')+'<br><span style="color:var(--accent);font-weight:800">&gt;</span> '+fl; $('speech-debug').scrollTop=$('speech-debug').scrollHeight; let ss=nw.toLowerCase().replace(/[.,!?]/g,'').trim(); if(!ss)return; let trg=!1, q=tracks.filter(x=>x.type==='queue'); if(curIdx<q.length&&q[curIdx].triggerPhrase&&!q[curIdx].globalVoice&&ss.includes(q[curIdx].triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);playNextCue();trg=!0;} if(!trg)for(let t of tracks)if(t.globalVoice&&t.triggerPhrase&&ss.includes(t.triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);t.type==='queue'?playCue(t.id):playPad(t);trg=!0;break;} if(trg)prLen=fl.length; }; rec.onerror=()=>{spErr=!0;if(micOn&&!isPly()){isLis=!1;micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';}}; rec.onend=()=>{prLen=0;if(isLis&&micOn&&!spErr)try{rec.start();}catch(e){} spErr=!1;}; };  
+const initSpeech = async () => { 
+    window.SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition; 
+    if(!window.SpeechRecognition)return; 
+    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        try { await navigator.mediaDevices.getUserMedia({ audio: true }); } catch(e){}
+    }
+    rec=new window.SpeechRecognition(); 
+    rec.continuous=!0; 
+    rec.interimResults=!0; 
+    rec.lang=settings.lang; 
+    rec.onstart=()=>{prLen=0;$('mic-btn').className='mic-active';$('mic-icon').innerText='mic';spLog=["Listening..."];upSp("");}; 
+    rec.onresult=e=>{ let fl=''; for(let i=e.resultIndex;i<e.results.length;++i)fl+=e.results[i][0].transcript; let nw=fl.substring(prLen); $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">&gt;</span> ')+'<br><span style="color:var(--accent);font-weight:800">&gt;</span> '+fl; $('speech-debug').scrollTop=$('speech-debug').scrollHeight; let ss=nw.toLowerCase().replace(/[.,!?]/g,'').trim(); if(!ss)return; let trg=!1, q=tracks.filter(x=>x.type==='queue'); if(curIdx<q.length&&q[curIdx].triggerPhrase&&!q[curIdx].globalVoice&&ss.includes(q[curIdx].triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);playNextCue();trg=!0;} if(!trg)for(let t of tracks)if(t.globalVoice&&t.triggerPhrase&&ss.includes(t.triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);t.type==='queue'?playCue(t.id):playPad(t);trg=!0;break;} if(trg)prLen=fl.length; }; 
+    rec.onerror=()=>{spErr=!0;if(micOn&&!isPly()){isLis=!1;micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';}}; 
+    rec.onend=()=>{prLen=0;if(isLis&&micOn&&!spErr)try{rec.start();}catch(e){} spErr=!1;}; 
+};  
 const mngMic = () => { if(!micOn||!rec)return; if(settings.autoPauseMic&&isPly()){isLis=!1;try{rec.stop();}catch(e){}$('mic-btn').className='mic-paused';$('mic-icon').innerText='mic_off';spLog=["Mic paused..."];upSp("");}else if(!isLis){isLis=!0;try{rec.start();}catch(e){}} };  
 const toggleMic = () => { micOn=!micOn; if(micOn){$('speech-debug').style.display='block'; if(settings.autoPauseMic&&isPly()){$('mic-btn').className='mic-paused';spLog=["Mic paused..."];upSp("");}else{isLis=!0;spErr=!1;prLen=0;try{rec.start();}catch(e){}}}else{isLis=!1;try{rec.stop();}catch(e){} micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';$('speech-debug').style.display='none';} };  
   
