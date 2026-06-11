@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"><title>Magic Cues Pro</title><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /><script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script><script src="https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.min.js"></script><script src="https://unpkg.com/wavesurfer.js@7/dist/plugins/regions.min.js"></script><style>,::before,*::after{box-sizing:border-box}:root{--bg-top:#1c1c1e;--bg-bot:#09090b;--glass:rgba(30,30,35,.8);--glass-border:rgba(255,255,255,.1);--accent:#007AFF;--accent-glow:rgba(0,122,255,.3);--text-main:#f4f4f5;--text-muted:#a1a1aa;--danger:#ff453a;--modal-bg:#18181b;--input-bg:#09090b;--nested-glass:rgba(50,45,75,.8);--nested-border:rgba(120,100,255,.2)}html[data-theme="light"]{--bg-top:#f4f4f7;--bg-bot:#e2e2e7;--glass:rgba(255,255,255,.9);--glass-border:rgba(0,0,0,.1);--accent-glow:rgba(0,122,255,.2);--text-main:#1c1c1e;--text-muted:#636366;--modal-bg:#fff;--input-bg:#e2e2e7;--nested-glass:rgba(240,235,250,.9);--nested-border:rgba(100,50,255,.15)}html[data-theme="high-vis"]{--bg-top:#000;--bg-bot:#000;--glass:#000;--glass-border:#ff0;--accent:#ff0;--accent-glow:rgba(255,255,0,.3);--text-main:#fff;--text-muted:#ff0;--modal-bg:#000;--input-bg:#000;--danger:#ff453a;--nested-glass:#000;--nested-border:#0ff}body{background:linear-gradient(180deg,var(--bg-top),var(--bg-bot)) fixed;color:var(--text-main);font-family:'Inter',sans-serif;margin:0;padding:24px 24px 140px;-webkit-user-select:none;opacity:0;transition:opacity .3s}body.modal-open{overflow:hidden}.material-symbols-rounded{font-variation-settings:'FILL' 1,'wght' 400}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px}h1{font-weight:700;font-size:28px;letter-spacing:-1px;margin:0;display:flex;align-items:center;gap:6px;cursor:pointer}h1:active{opacity:.7}h2{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;margin:35px 0 15px 5px;font-weight:800}button{font-family:inherit;cursor:pointer;border:none;outline:none;transition:all .2s;-webkit-tap-highlight-color:transparent}.icon-btn{background:var(--glass);color:var(--text-main);width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;border:1px solid var(--glass-border)}.master-grid{display:grid;grid-template-columns:1fr 64px 64px;gap:12px;margin-bottom:12px}#master-play,#sideload-master-play{background:var(--accent);color:#fff;padding:22px;font-size:18px;font-weight:700;border-radius:20px;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 10px 20px var(--accent-glow)}html[data-theme="high-vis"] #master-play,html[data-theme="high-vis"] #sideload-master-play{color:#000}#pause-btn,#mic-btn,#sideload-pause-btn,#sideload-reset-btn{background:var(--glass);color:var(--text-main);border-radius:20px;border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center}.mic-active{background:var(--danger)!important;color:#fff!important;border-color:var(--danger)!important;box-shadow:0 0 15px rgba(255,69,58,.5)}.mic-paused{background:var(--text-muted)!important;color:#fff!important;border-color:var(--text-muted)!important}#speech-debug{display:none;color:var(--text-muted);font-size:14px;margin-bottom:24px;padding:12px 16px;background:var(--glass);border-radius:12px;border:1px solid var(--glass-border);height:70px;overflow-y:hidden;scroll-behavior:smooth}#speech-text{color:var(--text-main);font-weight:600;line-height:1.4}.action-row{display:flex;gap:10px;margin-bottom:30px}.action-btn{flex:1;background:var(--glass);color:var(--text-main);padding:16px;border-radius:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;border:1px solid var(--glass-border)}#track-list{display:flex;flex-direction:column;gap:12px}.tile,.cue-pad{background:var(--glass);border-radius:20px!important;position:relative;overflow:hidden!important;border:1px solid var(--glass-border);backdrop-filter:blur(10px);outline:none!important;-webkit-tap-highlight-color:transparent}.sortable-ghost{opacity:0.4;background:var(--accent-glow);border-color:var(--accent)}.is-playing{border:1px solid var(--accent)!important;box-shadow:0 0 20px var(--accent-glow)!important;border-radius:20px!important;outline:none!important}html[data-theme="high-vis"] .is-playing{border-color:#ff0!important}.is-skipped{opacity:0.4;text-decoration:line-through}.tile.is-nested-show,.cue-pad.is-nested-show{background:var(--nested-glass);border:1px solid var(--nested-border)}.group-hover-highlight{border:2px dashed var(--accent)!important;box-shadow:0 0 20px var(--accent-glow)!important;transform:scale(1.02);transition:all .2s ease;z-index:10}.tile-content,.cue-pad>span,.pad-settings-trigger,.pad-number{position:relative;z-index:2}.tile-content{padding:22px;display:flex;align-items:center;gap:16px}.tile-info{flex:1;min-width:0}.tile-name-text{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}.progress-fill{position:absolute;top:0;left:0;height:100%;background:var(--accent-glow);width:0%;z-index:1;pointer-events:none;display:none}body.show-progress .is-playing .progress-fill{display:block}#instant-grid,#sideload-instant-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.cue-pad{aspect-ratio:1.5/1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;cursor:pointer}.cue-pad span{font-size:15px;font-weight:700;line-height:1.3}.pad-settings-trigger{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:10px;background:rgba(128,128,128,.2);color:var(--text-main);display:flex;align-items:center;justify-content:center}.pad-number{position:absolute;top:12px;left:12px;font-size:12px;font-weight:800;color:var(--text-muted);opacity:.7}.pad-drag-handle{position:absolute!important;bottom:12px!important;left:12px!important;z-index:3;color:var(--text-muted);opacity:0.6;font-size:24px!important;cursor:grab}dialog{background:var(--modal-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:32px;padding:30px;width:calc(100% - 32px);max-width:400px;margin:auto;box-shadow:0 40px 80px rgba(0,0,0,.8);backdrop-filter:blur(20px);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}dialog::backdrop{background:rgba(0,0,0,.85);backdrop-filter:blur(4px)}input, textarea {-webkit-user-select:auto !important;user-select:auto !important;}.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.modal-title{font-size:22px;font-weight:800}
 
-/* Standardized Settings Menus */
+/* Standardized Settings Menus (Original Unmodified CSS) */
 .setting-row, .menu-nav-row, details { box-sizing: border-box; width: 100%; margin-bottom: 12px; background: rgba(128,128,128,.1); border-radius: 18px; }
 .setting-row, .menu-nav-row, summary { padding: 16px; min-height: 56px; display: flex; align-items: center; justify-content: space-between; box-sizing: border-box; }
 .setting-row label { font-size: 15px; font-weight: 600; }
@@ -34,14 +34,21 @@ details{overflow:hidden}summary{font-weight:600;font-size:15px;cursor:pointer;ou
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-html[data-theme="high-vis"] .action-btn[style*="background: var(--accent)"], html[data-theme="high-vis"] .action-btn[style*="background:var(--accent)"] { color: #000 !important; font-weight: 800; }
+html[data-theme="high-vis"] .action-btn[style*="background: var(--accent)"],
+html[data-theme="high-vis"] .action-btn[style*="background:var(--accent)"] { color: #000 !important; font-weight: 800; }
+
 #waveform-wrapper { background: transparent; border: none; padding: 0; position: relative; height: 80px; display:flex; flex-direction:column; justify-content:center; overflow: hidden; margin: 0 20px 10px;}
 #waveform { width: 100%; height: 80px; position: relative; }
 #waveform ::part(region) { background: var(--accent-glow) !important; border-left: 3px solid var(--accent) !important; border-right: 3px solid var(--accent) !important; z-index: 5 !important; }
 #waveform ::part(region-handle-left), #waveform ::part(region-handle-right) { width: 40px !important; background-color: transparent !important; border: none !important; height: 100% !important; z-index: 6 !important; }
 
-/* Swipable timing container setup */
-.trim-widget-container { position: relative; width: 100%; min-height: 180px; margin-bottom: 5px; display: flex; align-items: center; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+/* Swipeable Widgets */
+.trim-widget-container {
+position: relative; width: 100%; min-height: 180px; margin-bottom: 5px;
+display: flex; align-items: center; overflow-x: auto;
+scroll-snap-type: x mandatory; scroll-behavior: smooth;
+-webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
 .trim-widget-container::-webkit-scrollbar { display: none; }
 .trim-card-wrapper { flex: 0 0 100%; scroll-snap-align: center; padding: 0 20px; box-sizing: border-box; }
 .trim-card { background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; text-align: center; }
@@ -50,14 +57,36 @@ html[data-theme="high-vis"] .action-btn[style*="background: var(--accent)"], htm
 .trim-controls button { background: var(--glass); border: 1px solid var(--glass-border); color: var(--text-main); padding: 10px 15px; border-radius: 12px; height: 44px; font-weight: 600; display:flex; align-items:center; justify-content:center; }
 .trim-controls button:active { background: var(--accent); color: #fff; border-color: var(--accent); }
 html[data-theme="high-vis"] .trim-controls button:active { color: #000; }
-.curve-swiper { flex: 1; height: 44px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px; overflow: hidden; position: relative; cursor: pointer; }
-.curve-swiper::before { content: 'expand_less'; font-family: 'Material Symbols Rounded'; position: absolute; top: 0px; left: 50%; transform: translateX(-50%); font-size: 14px; color: var(--text-muted); opacity: 0.5; pointer-events: none; z-index: 2; transition: opacity 0.2s; }
-.curve-swiper::after { content: 'expand_more'; font-family: 'Material Symbols Rounded'; position: absolute; bottom: 0px; left: 50%; transform: translateX(-50%); font-size: 14px; color: var(--text-muted); opacity: 0.5; pointer-events: none; z-index: 2; transition: opacity 0.2s; }
+
+.curve-swiper {
+flex: 1; height: 44px; background: var(--glass); border: 1px solid var(--glass-border);
+border-radius: 12px; overflow: hidden; position: relative; cursor: pointer;
+}
+.curve-swiper::before {
+content: 'expand_less'; font-family: 'Material Symbols Rounded';
+position: absolute; top: 0px; left: 50%; transform: translateX(-50%);
+font-size: 14px; color: var(--text-muted); opacity: 0.5; pointer-events: none; z-index: 2;
+transition: opacity 0.2s;
+}
+.curve-swiper::after {
+content: 'expand_more'; font-family: 'Material Symbols Rounded';
+position: absolute; bottom: 0px; left: 50%; transform: translateX(-50%);
+font-size: 14px; color: var(--text-muted); opacity: 0.5; pointer-events: none; z-index: 2;
+transition: opacity 0.2s;
+}
 .curve-swiper.at-top::before { opacity: 0 !important; }
 .curve-swiper.at-bottom::after { opacity: 0 !important; }
-.cs-track { height: 100%; width: 100%; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none; -ms-overflow-style: none; }
+
+.cs-track {
+height: 100%; width: 100%; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none; -ms-overflow-style: none;
+}
 .cs-track::-webkit-scrollbar { display: none; }
-.cs-item { height: 100%; width: 100%; display: flex; align-items: center; justify-content: center; scroll-snap-align: center; scroll-snap-stop: always; font-weight: 700; font-size: 15px; color: var(--text-main); user-select: none; }
+.cs-item {
+height: 100%; width: 100%; display: flex; align-items: center; justify-content: center;
+scroll-snap-align: center; scroll-snap-stop: always;
+font-weight: 700; font-size: 15px; color: var(--text-main); user-select: none;
+}
+
 .swipe-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 20px; }
 .swipe-dot { width: 6px; height: 6px; border-radius: 3px; background: var(--glass-border); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); cursor:pointer; }
 .swipe-dot.active { background: var(--accent); width: 16px; }
@@ -65,6 +94,7 @@ html[data-theme="high-vis"] .trim-controls button:active { color: #000; }
 .fc-indicator { position: absolute; right: 15px; top: 20px; color: var(--text-muted); opacity: 0.3; pointer-events: none; z-index: 5; }
 .fc-views { transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); transform: translateY(0); }
 .fc-slider-view, .fc-btn-view { height: 180px; display:flex; flex-direction:column; justify-content:center; }
+
 .color-swatch { width: 40px; height: 40px; border-radius: 12px; border: 2px solid transparent; cursor: pointer; transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1); flex-shrink: 0; box-sizing: border-box; }
 .color-swatch:active { transform: scale(0.85); }
 .color-swatch.active { border-color: var(--text-main); transform: scale(1.1); }
@@ -73,42 +103,61 @@ html[data-theme="high-vis"] .trim-controls button:active { color: #000; }
 .locked .drag-handle, .locked .action-row, .locked .edit-trigger, .locked .pad-settings-trigger, .locked #queue-label { display: none !important; }
 .locked .tile:not(.is-current) { display: none; }
 .locked .is-current { border: 2px solid var(--accent); border-radius: 20px !important; }
+
 .locked .master-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 120px 64px; }
-.locked #master-play, .locked #sideload-master-play { grid-column: 1 / -1; height: 120px; border-radius: 32px; padding: 0 30px; justify-content: flex-start; gap: 20px; overflow: hidden; min-width: 0; }
-.locked #master-play .material-symbols-rounded, .locked #sideload-master-play .material-symbols-rounded { font-size: 48px !important; flex-shrink: 0; }
-.locked #play-text, .locked #sideload-play-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 32px; font-weight: 800; text-align: left; flex: 1; min-width: 0; display: block; }
+.locked #master-play, .locked #sideload-master-play {
+grid-column: 1 / -1; height: 120px; border-radius: 32px; padding: 0 30px;
+justify-content: flex-start; gap: 20px; overflow: hidden; min-width: 0;
+}
+.locked #master-play .material-symbols-rounded, .locked #sideload-master-play .material-symbols-rounded {
+font-size: 48px !important; flex-shrink: 0;
+}
+.locked #play-text, .locked #sideload-play-text {
+white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+font-size: 32px; font-weight: 800; text-align: left; flex: 1;
+min-width: 0; display: block;
+}
 .locked #mic-btn, .locked #pause-btn, .locked #sideload-pause-btn, .locked #sideload-reset-btn { height: 64px; border-radius: 20px; }
-#show-notes-container { display: none; text-align: center; padding: 24px; font-size: 24px; line-height: 1.5; font-weight: 600; color: var(--text-main); background: var(--input-bg); border: 1px solid var(--accent); border-radius: 20px; margin-bottom: 20px; box-shadow: inset 0 0 20px rgba(0, 122, 255, 0.1); }
-.locked #show-notes-container.has-notes { display: flex; align-items: center; justify-content: center; flex-direction: column; }
+
+#show-notes-container {
+display: none; text-align: center; padding: 24px; font-size: 24px; line-height: 1.5; font-weight: 600;
+color: var(--text-main); background: var(--input-bg); border: 1px solid var(--accent);
+border-radius: 20px; margin-bottom: 20px; box-shadow: inset 0 0 20px rgba(0, 122, 255, 0.1);
+}
+.locked #show-notes-container.has-notes {
+display: flex; align-items: center; justify-content: center; flex-direction: column;
+}
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Interactive Onboarding Highlight Animations */
+.tut-step-indicator { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; display: block; }
+.tut-section-badge { display: inline-block; padding: 4px 10px; border-radius: 8px; background: var(--accent-glow); color: var(--accent); font-size: 11px; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+html[data-theme="high-vis"] .tut-section-badge { background: #ff0; color: #000; }
+
+@keyframes tut-glow {
+0% { box-shadow: 0 0 0 0 var(--accent-glow); outline: 2px solid transparent; }
+50% { box-shadow: 0 0 0 10px var(--accent-glow); outline: 2px solid var(--accent); }
+100% { box-shadow: 0 0 0 0 var(--accent-glow); outline: 2px solid transparent; }
+}
+.tut-highlight {
+animation: tut-glow 1.5s infinite !important;
+position: relative !important;
+z-index: 10001 !important;
+}
 </style></head>
- <body class="unlocked show-progress"><header><h1 id="show-title-header" onclick="haptic(15);openProjects()"><span id="header-title-text">Magic Cues</span><span class="material-symbols-rounded" style="font-size:28px">expand_more</span></h1><div style="display:flex;gap:8px"><button class="icon-btn" id="header-settings-btn" onclick="haptic(15);openModal('app-settings')"><span class="material-symbols-rounded">settings</span></button><button class="icon-btn" id="header-lock-btn" onclick="haptic(15);toggleLock()"><span class="material-symbols-rounded" id="lock-icon">lock_open</span></button></div></header><div class="master-grid"><button id="master-play" onclick="playNextCue(false, true)"><span class="material-symbols-rounded">play_arrow</span><span id="play-text">Start Show</span></button><button id="mic-btn" onclick="haptic(15);toggleMic()"><span class="material-symbols-rounded" id="mic-icon">mic_off</span></button><button id="pause-btn" onclick="haptic(15);toggleGlobalPause()"><span class="material-symbols-rounded" id="pause-icon">pause</span></button></div><div id="speech-debug"><div id="speech-text">...</div></div><div class="action-row"><button class="action-btn" id="add-cue-btn" onclick="haptic(15);$('file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button><button class="action-btn" id="reset-show-btn" onclick="haptic([15,30,15]);triggerReset()"><span class="material-symbols-rounded">restart_alt</span> Reset</button></div><input type="file" id="file-input" accept="audio/*,.magic,.json" multiple onchange="handleFiles(this)" style="display:none"><input type="file" id="import-file-input" accept=".magic,.json" style="display:none" onchange="importShow(this)"><input type="file" id="sideload-file-input" accept="audio/*,.magic,.json" multiple onchange="handleSideloadFiles(this)" style="display:none"><div id="queue-container"><h2 id="queue-label">Main Queue</h2><div id="track-list"></div></div> <div id="show-notes-container"><div id="show-notes-text"></div></div> <h2>Instant Cues</h2><div id="instant-grid"></div><div id="pocket-mode-overlay"><button id="pocket-exit-btn" onclick="haptic(15);openModal('pocket-confirm-modal')"><span class="material-symbols-rounded" style="font-size:32px">lock</span></button></div><dialog id="pocket-confirm-modal"><div class="modal-header"><span class="modal-title">Unlock Workspace?</span></div><div style="margin-bottom:25px;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);padding:12px;border-radius:12px"><input type="checkbox" class="custom-toggle" id="pocket-unlock-check"><label style="font-size:15px;font-weight:600">Confirm Unlock</label></div><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('pocket-confirm-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="confirmPocketExit()">Unlock</button></div></dialog><dialog id="custom-alert-modal"><div class="modal-header"><span class="modal-title" id="alert-title">Notice</span></div><p id="alert-msg" style="color:var(--text-muted);margin-bottom:25px;line-height:1.5;"></p><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10);closeModal('custom-alert-modal')">OK</button></dialog><dialog id="sideload-modal"><div class="modal-header"><span class="modal-title" id="sideload-title">Sideload</span><button class="icon-btn" style="width:48px;height:48px;border-radius:16px" onclick="haptic(10);closeSideload()"><span class="material-symbols-rounded">close</span></button></div><div id="sideload-extract-zone" style="padding:16px;text-align:center;border:2px dashed var(--glass-border);border-radius:16px;margin-bottom:15px;display:none;background:rgba(255,255,255,.05);"><span class="material-symbols-rounded" style="font-size:24px;vertical-align:middle;margin-right:8px;color:var(--text-muted)">move_up</span> Drop here to move to Main Show</div><div class="master-grid" style="margin-bottom:20px;"><button id="sideload-master-play" onclick="playSideloadNextCue(false, true)"><span class="material-symbols-rounded">play_arrow</span><span id="sideload-play-text">Start Show</span></button><button id="sideload-pause-btn" onclick="haptic(15);toggleSideloadPause()"><span class="material-symbols-rounded" id="sideload-pause-icon">pause</span></button><button id="sideload-reset-btn" onclick="haptic([15,30,15]);triggerSideloadReset()"><span class="material-symbols-rounded">restart_alt</span></button></div><div class="action-row" style="margin-bottom:15px"><button class="action-btn" onclick="haptic(15);$('sideload-file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button></div><div style="flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;padding:10px 24px 100px;margin:0 -24px;"><h2 style="margin:0 0 10px 5px" id="sideload-queue-label">Queue</h2><div id="sideload-track-list" style="display:flex;flex-direction:column;gap:12px;margin-bottom:25px;"></div><h2 style="margin:0 0 10px 5px">Instant Cues</h2><div id="sideload-instant-grid"></div></div></dialog><dialog id="nfc-write-modal" oncancel="cancelNfcWrite()"><div class="modal-header"><span class="modal-title">Program NFC</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="cancelNfcWrite()" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><div class="nfc-pulse"><span class="material-symbols-rounded" style="font-size:40px;color:var(--accent)">nfc</span></div><p id="nfc-write-text" style="text-align:center;font-weight:600;font-size:16px;margin:20px 0">Hold an NFC chip near your phone...</p><button class="action-btn" style="width:100%;border:none" onclick="cancelNfcWrite()">Cancel</button></dialog><dialog id="nfc-success-modal"><div class="modal-header"><span class="modal-title">Success!</span></div><div style="text-align:center;margin:20px 0"><span class="material-symbols-rounded" style="font-size:60px;color:#34c759">check_circle</span></div><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10);closeModal('nfc-success-modal')">Done</button></dialog><dialog id="projects-modal"><div class="modal-header"><span class="modal-title">My Shows</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('projects-modal')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><div id="projects-list-container" style="max-height:300px;overflow-y:auto;margin-bottom:20px"></div><div style="display:flex;gap:12px"><button class="action-btn" id="show-import-btn" style="flex:1" onclick="haptic(15);$('import-file-input').click()"><span class="material-symbols-rounded">upload</span> Import</button><button class="action-btn" id="show-new-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);closeModal('projects-modal');openModal('new-show-modal')"><span class="material-symbols-rounded">add</span> New</button></div></dialog><dialog id="new-show-modal"><div class="modal-header"><span class="modal-title">Create Show</span></div><input type="text" id="new-show-name" placeholder="Show name..."><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('new-show-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);createNewProject()">Create</button></div></dialog>
+ <body class="unlocked show-progress"><header><h1 onclick="haptic(15);openProjects()"><span id="header-title-text">Magic Cues</span><span class="material-symbols-rounded" style="font-size:28px">expand_more</span></h1><div style="display:flex;gap:8px"><button class="icon-btn" onclick="haptic(15);openModal('app-settings')"><span class="material-symbols-rounded">settings</span></button><button class="icon-btn" onclick="haptic(15);toggleLock()"><span class="material-symbols-rounded" id="lock-icon">lock_open</span></button></div></header><div class="master-grid"><button id="master-play" onclick="playNextCue(false, true)"><span class="material-symbols-rounded">play_arrow</span><span id="play-text">Start Show</span></button><button id="mic-btn" onclick="haptic(15);toggleMic()"><span class="material-symbols-rounded" id="mic-icon">mic_off</span></button><button id="pause-btn" onclick="haptic(15);toggleGlobalPause()"><span class="material-symbols-rounded" id="pause-icon">pause</span></button></div><div id="speech-debug"><div id="speech-text">...</div></div><div class="action-row"><button class="action-btn" onclick="haptic(15);latex
+('file-input').click()"&gt;&lt;span class="material-symbols-rounded"&gt;add_circle&lt;/span&gt; Add Cue&lt;/button&gt;&lt;button class="action-btn" onclick="haptic([15,30,15]);triggerReset()"&gt;&lt;span class="material-symbols-rounded"&gt;restart_alt&lt;/span&gt; Reset&lt;/button&gt;&lt;/div&gt;&lt;input type="file" id="file-input" accept="audio/*,.magic,.json" multiple onchange="handleFiles(this)" style="display:none"&gt;&lt;input type="file" id="import-file-input" accept=".magic,.json" style="display:none" onchange="importShow(this)"&gt;&lt;input type="file" id="sideload-file-input" accept="audio/*,.magic,.json" multiple onchange="handleSideloadFiles(this)" style="display:none"&gt;&lt;div id="queue-container"&gt;&lt;h2 id="queue-label"&gt;Main Queue&lt;/h2&gt;&lt;div id="track-list"&gt;&lt;/div&gt;&lt;/div&gt; &lt;div id="show-notes-container"&gt;&lt;div id="show-notes-text"&gt;&lt;/div&gt;&lt;/div&gt; &lt;h2&gt;Instant Cues&lt;/h2&gt;&lt;div id="instant-grid"&gt;&lt;/div&gt;&lt;div id="pocket-mode-overlay"&gt;&lt;button id="pocket-exit-btn" onclick="haptic(15);openModal('pocket-confirm-modal')"&gt;&lt;span class="material-symbols-rounded" style="font-size:32px"&gt;lock&lt;/span&gt;&lt;/button&gt;&lt;/div&gt;&lt;dialog id="pocket-confirm-modal"&gt;&lt;div class="modal-header"&gt;&lt;span class="modal-title"&gt;Unlock Workspace?&lt;/span&gt;&lt;/div&gt;&lt;div style="margin-bottom:25px;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);padding:12px;border-radius:12px"&gt;&lt;input type="checkbox" class="custom-toggle" id="pocket-unlock-check"&gt;&lt;label style="font-size:15px;font-weight:600"&gt;Confirm Unlock&lt;/label&gt;&lt;/div&gt;&lt;div style="display:flex;gap:12px"&gt;&lt;button class="action-btn" style="border:none" onclick="haptic(10);closeModal('pocket-confirm-modal')"&gt;Cancel&lt;/button&gt;&lt;button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="confirmPocketExit()"&gt;Unlock&lt;/button&gt;&lt;/div&gt;&lt;/dialog&gt;&lt;dialog id="custom-alert-modal"&gt;&lt;div class="modal-header"&gt;&lt;span class="modal-title" id="alert-title"&gt;Notice&lt;/span&gt;&lt;/div&gt;&lt;p id="alert-msg" style="color:var(--text-muted);margin-bottom:25px;line-height:1.5;"&gt;&lt;/p&gt;&lt;button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10);closeModal('custom-alert-modal')"&gt;OK&lt;/button&gt;&lt;/dialog&gt;&lt;dialog id="sideload-modal"&gt;&lt;div class="modal-header"&gt;&lt;span class="modal-title" id="sideload-title"&gt;Sideload&lt;/span&gt;&lt;button class="icon-btn" style="width:48px;height:48px;border-radius:16px" onclick="haptic(10);closeSideload()"&gt;&lt;span class="material-symbols-rounded"&gt;close&lt;/span&gt;&lt;/button&gt;&lt;/div&gt;&lt;div id="sideload-extract-zone" style="padding:16px;text-align:center;border:2px dashed var(--glass-border);border-radius:16px;margin-bottom:15px;display:none;background:rgba(255,255,255,.05);"&gt;&lt;span class="material-symbols-rounded" style="font-size:24px;vertical-align:middle;margin-right:8px;color:var(--text-muted)"&gt;move_up&lt;/span&gt; Drop here to move to Main Show&lt;/div&gt;&lt;div class="master-grid" style="margin-bottom:20px;"&gt;&lt;button id="sideload-master-play" onclick="playSideloadNextCue(false, true)"&gt;&lt;span class="material-symbols-rounded"&gt;play_arrow&lt;/span&gt;&lt;span id="sideload-play-text"&gt;Start Show&lt;/span&gt;&lt;/button&gt;&lt;button id="sideload-pause-btn" onclick="haptic(15);toggleSideloadPause()"&gt;&lt;span class="material-symbols-rounded" id="sideload-pause-icon"&gt;pause&lt;/span&gt;&lt;/button&gt;&lt;button id="sideload-reset-btn" onclick="haptic([15,30,15]);triggerSideloadReset()"&gt;&lt;span class="material-symbols-rounded"&gt;restart_alt&lt;/span&gt;&lt;/button&gt;&lt;/div&gt;&lt;div class="action-row" style="margin-bottom:15px"&gt;&lt;button class="action-btn" onclick="haptic(15);
 
-<dialog id="edit-show-modal">
-<div class="modal-header">
-<span class="modal-title">Edit Show</span>
-<button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('edit-show-modal')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button>
-</div>
-<input type="text" id="edit-show-name">
-<button class="action-btn" id="show-export-btn" style="width:100%;margin-bottom:12px" onclick="haptic(15);exportShow()"><span class="material-symbols-rounded">download</span> Export File</button>
-<button class="action-btn" id="show-dup-btn" style="width:100%;margin-bottom:20px;background:rgba(0,122,255,.15);color:var(--accent);border:1px solid var(--accent)" onclick="haptic(15);duplicateShow()"><span class="material-symbols-rounded">content_copy</span> Duplicate Show</button>
-<div style="display:flex;gap:12px;margin-bottom:12px">
-<button class="action-btn" style="border:none" onclick="haptic(10);closeModal('edit-show-modal')">Cancel</button>
-<button class="action-btn" id="show-save-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);saveShowEdit()">Save</button>
-</div>
-<button class="btn-delete" id="show-delete-btn" onclick="haptic([30,50,30]);deleteShow()">Delete Show</button>
-</dialog>
+('sideload-file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button></div><div style="flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;padding:10px 24px 100px;margin:0 -24px;"><h2 style="margin:0 0 10px 5px" id="sideload-queue-label">Queue</h2><div id="sideload-track-list" style="display:flex;flex-direction:column;gap:12px;margin-bottom:25px;"></div><h2 style="margin:0 0 10px 5px">Instant Cues</h2><div id="sideload-instant-grid"></div></div></dialog><dialog id="nfc-write-modal" oncancel="cancelNfcWrite()"><div class="modal-header"><span class="modal-title">Program NFC</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="cancelNfcWrite()" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><div class="nfc-pulse"><span class="material-symbols-rounded" style="font-size:40px;color:var(--accent)">nfc</span></div><p id="nfc-write-text" style="text-align:center;font-weight:600;font-size:16px;margin:20px 0">Hold an NFC chip near your phone...</p><button class="action-btn" style="width:100%;border:none" onclick="cancelNfcWrite()">Cancel</button></dialog><dialog id="nfc-success-modal"><div class="modal-header"><span class="modal-title">Success!</span></div><div style="text-align:center;margin:20px 0"><span class="material-symbols-rounded" style="font-size:60px;color:#34c759">check_circle</span></div><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10);closeModal('nfc-success-modal')">Done</button></dialog><dialog id="projects-modal"><div class="modal-header"><span class="modal-title">My Shows</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('projects-modal')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><div id="projects-list-container" style="max-height:300px;overflow-y:auto;margin-bottom:20px"></div><div style="display:flex;gap:12px"><button class="action-btn" style="flex:1" onclick="haptic(15);$`('import-file-input').click()"><span class="material-symbols-rounded">upload</span> Import</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);closeModal('projects-modal');openModal('new-show-modal')"><span class="material-symbols-rounded">add</span> New</button></div></dialog><dialog id="new-show-modal"><div class="modal-header"><span class="modal-title">Create Show</span></div><input type="text" id="new-show-name" placeholder="Show name..."><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('new-show-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);createNewProject()">Create</button></div></dialog><dialog id="edit-show-modal"><div class="modal-header"><span class="modal-title">Edit Show</span></div><input type="text" id="edit-show-name"><button class="action-btn" style="width:100%;margin-bottom:12px" onclick="haptic(15);exportShow()"><span class="material-symbols-rounded">download</span> Export File</button><button class="action-btn" style="width:100%;margin-bottom:20px;background:rgba(0,122,255,.15);color:var(--accent);border:1px solid var(--accent)" onclick="haptic(15);duplicateShow()"><span class="material-symbols-rounded">content_copy</span> Duplicate Show</button><div style="display:flex;gap:12px;margin-bottom:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('edit-show-modal')" autofocus>Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);saveShowEdit()">Save</button></div><button class="btn-delete" onclick="haptic([30,50,30]);deleteShow()">Delete Show</button></dialog><dialog id="cue-menu-modal"><div class="modal-header"><span class="modal-title">Cue Options</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('cue-menu-modal')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><input type="text" id="rename-cue-input" placeholder="Name"><div style="display:flex;gap:12px"><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);saveCueRename()">Rename</button></div><div class="action-row" style="margin-bottom:15px"><button class="action-btn" onclick="haptic(15);toggleCueSkip()"><span class="material-symbols-rounded" id="skip-cue-icon">block</span> <span id="skip-cue-text">Skip Cue</span></button><button class="action-btn" onclick="haptic(15);duplicateCue()"><span class="material-symbols-rounded">content_copy</span> Duplicate</button></div><div class="action-row" style="margin-bottom:0"><button class="action-btn" onclick="haptic(15);createGroupFromMenu()"><span class="material-symbols-rounded">folder</span> Create Group</button></div></dialog>
 
-<dialog id="cue-menu-modal"><div class="modal-header"><span class="modal-title">Cue Options</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('cue-menu-modal')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><input type="text" id="rename-cue-input" placeholder="Name"><div style="display:flex;gap:12px;margin-bottom:12px"><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);saveCueRename()">Rename</button></div><div class="action-row" style="margin-bottom:15px"><button class="action-btn" id="ctx-skip-btn" onclick="haptic(15);toggleCueSkip()"><span class="material-symbols-rounded" id="skip-cue-icon">block</span> <span id="skip-cue-text">Skip Cue</span></button><button class="action-btn" id="ctx-dup-btn" onclick="haptic(15);duplicateCue()"><span class="material-symbols-rounded">content_copy</span> Duplicate</button></div><div class="action-row" style="margin-bottom:0"><button class="action-btn" id="ctx-group-btn" style="width:100%" onclick="haptic(15);createGroupFromMenu()"><span class="material-symbols-rounded">folder</span> Create Group</button></div></dialog>
-
-<!-- App Settings -->
+<!-- Clean & Coherent App Settings -->
 <dialog id="app-settings">
 <div class="modal-header">
 <span class="modal-title">App Settings</span>
 <button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('app-settings')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button>
 </div>
 
-<div class="setting-row" id="app-theme-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
+<div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
 <label>Theme</label>
 <div class="segmented-control" id="theme-controls">
 <button id="btn-auto" onclick="haptic(10);setTheme('auto')">Auto</button>
@@ -118,7 +167,7 @@ html[data-theme="high-vis"] .trim-controls button:active { color: #000; }
 </div>
 </div>
 
-<div class="setting-row" id="app-lang-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
+<div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
 <label>Speech Language</label>
 <div class="segmented-control" id="lang-controls">
 <button id="lang-en" class="active" onclick="haptic(10);setLang('en-US')">English</button>
@@ -126,12 +175,12 @@ html[data-theme="high-vis"] .trim-controls button:active { color: #000; }
 </div>
 </div>
 
-<div class="setting-row" id="app-size-row">
+<div class="setting-row">
 <label style="flex-shrink:0; margin-right:15px;">UI Size</label>
 <input type="range" min="50" max="150" step="25" id="ui-size-slider" oninput="this.style.setProperty('--v', ((this.value-50)/100)*100+'%'); haptic(10);updSet('uiSize',this.value);applyUISize()" style="max-width:140px; margin-left:auto;">
 </div>
 
-<div class="menu-nav-row" id="app-settings-fades-btn" onclick="haptic(10);closeModal('app-settings');openGlobalFadesModal()">
+<div class="menu-nav-row" onclick="haptic(10);closeModal('app-settings');openGlobalFadesModal()">
 Fade In / Out
 <span class="material-symbols-rounded">chevron_right</span>
 </div>
@@ -149,7 +198,7 @@ Advanced Settings
 <div class="mini-row"><label>Pocket Mode</label><input type="checkbox" class="custom-toggle" id="pocket-toggle" onchange="haptic(10);updSet('pocketMode',this.checked)"></div>
 <div class="mini-row"><label>Strong Pocket Haptics</label><input type="checkbox" class="custom-toggle" id="strong-pocket-haptics-toggle" onchange="haptic(10);updSet('strongPocketHaptics',this.checked)"></div>
 <div class="mini-row"><label>NFC Tag Reader</label><input type="checkbox" class="custom-toggle" id="nfc-toggle" onchange="haptic(10);updSet('nfcEnabled',this.checked);toggleNFC(this.checked)"></div>
-<div class="nested-nav-row" style="border-top: 1px solid var(--glass-border); padding: 16px 0;" onclick="haptic(10); closeModal('app-settings'); setTimeout(() => openTutorial(0), 100)">
+<div class="nested-nav-row" style="border-top: 1px solid var(--glass-border); padding: 16px 0;" onclick="haptic(10); closeModal('app-settings'); openTutorial(0)">
 <span>Interactive Guide</span>
 <span class="material-symbols-rounded" style="color:var(--accent)">play_circle</span>
 </div>
@@ -384,11 +433,27 @@ Advanced Settings
 <div style="display:flex; gap:10px; padding: 0 20px 20px;"><button class="action-btn" style="border:none; padding:12px" onclick="closeTrimModal()">Cancel</button><button class="action-btn" style="flex:1; background:var(--accent); color:#fff; border:none; padding:12px" onclick="saveTrim()">Save</button></div>
 </dialog>
 
-<!-- Script inclusion loaded externally -->
-<script src="tutorial.js" defer></script>
+<!-- Interactive Floating Onboarding Guide Bar -->
+<div id="tutorial-bar" style="position: fixed; bottom: 24px; left: 24px; right: 24px; background: var(--modal-bg); border: 2px solid var(--accent); border-radius: 24px; padding: 20px; z-index: 10000; box-shadow: 0 20px 50px rgba(0,0,0,0.6); display: none; flex-direction: column; gap: 12px; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);">
+<div style="display: flex; justify-content: space-between; align-items: flex-start;">
+<div>
+<span class="tut-step-indicator" id="tut-bar-step">Step 1 of 8</span>
+<span class="tut-section-badge" id="tut-bar-badge">Basic Understanding</span>
+<h4 id="tut-bar-title" style="margin: 4px 0 0 0; font-size: 16px; font-weight: 700;">Welcome to Magic Cues</h4>
+</div>
+<button class="icon-btn" style="width: 32px; height: 32px; border-radius: 10px; background: rgba(128,128,128,0.15); border: none;" onclick="skipTutorial()">
+<span class="material-symbols-rounded" style="font-size: 16px;">close</span>
+</button>
+</div>
+<p id="tut-bar-text" style="margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-muted); font-weight: 500;"></p>
+<div style="display: flex; justify-content: flex-end; gap: 8px;" id="tut-bar-actions">
+<button class="action-btn" id="tut-bar-prev" style="padding: 8px 16px; font-size: 13px; border-radius: 10px; flex: none; width: auto;" onclick="prevTutStep()">Back</button>
+<button class="action-btn" id="tut-bar-next" style="padding: 8px 16px; font-size: 13px; background: var(--accent); color: #fff; border-radius: 10px; flex: none; width: auto;" onclick="nextTutStep()">Next</button>
+</div>
+</div>
 
 <script>
- const $ = id => document.getElementById(id);
+ const `$ = id => document.getElementById(id);
  let tracks=[], curIdx=0, locked=!1, actId=null, activeCues=new Map(), activePads=new Map(), paused=!1, wakeLock=null;
  let db, projectsList=[], curProjId='default', editProjId=null;
  let defSet = {
@@ -417,16 +482,19 @@ navigator.vibrate(p);
 }
 }
 };
- const showAlert = (t,m) => { $('alert-msg').innerText=m; openModal('custom-alert-modal'); };
+ const showAlert = (t,m) => { ('alert-msg').innerText=m; openModal('custom-alert-modal'); };
  const openModal = id => {
 if(id==='app-settings') buildNfcMenu();
 document.body.classList.add('modal-open');
-$(id).showModal();
-};
+latex
+(id).showModal(); if (tutActive && tutStep === 6 && id === 'app-settings') { openTutorial(7); } }; const closeModal = id =&gt; { 
 
-const closeModal = id => {
-$(id).close();
-$(id).querySelectorAll('details').forEach(d => d.removeAttribute('open'));
+(id).close();
+// Auto-close nested details summaries in settings
+$`(id).querySelectorAll('details').forEach(d => d.removeAttribute('open'));
+if (tutActive && tutStep === 3 && id === 'settings-modal') {
+openTutorial(4);
+}
 if(!document.querySelectorAll('dialog[open]').length) document.body.classList.remove('modal-open');
 };
 
@@ -443,7 +511,7 @@ updateGCurveUI('out', settings.globalFadeOutCurve || 'linear');
 $('gf-in-skip-chk').checked = settings.gfInSkip !== false; $('gf-in-pause-chk').checked = settings.gfInPause !== false;
 $('gf-out-skip-chk').checked = settings.gfOutSkip !== false; $('gf-out-pause-chk').checked = settings.gfOutPause !== false;
 
-$('gf-swipe-container').scrollLeft = 0; swpGF(0); openModal('global-fades-modal'); }; const manGFade = (type, val) => { haptic(15); let v = Math.max(0, parseFloat(val) || 0); updSet(type === 'in' ? 'globalFadeIn' : 'globalFadeOut', v); $(type === 'in' ? 'gf-in-input' : 'gf-out-input').value = v.toFixed(1);
+$('gf-swipe-container').scrollLeft = 0; swpGF(0); openModal('global-fades-modal'); }; const manGFade = (type, val) =&gt; { haptic(15); let v = Math.max(0, parseFloat(val) || 0); updSet(type === 'in' ? 'globalFadeIn' : 'globalFadeOut', v); $(type === 'in' ? 'gf-in-input' : 'gf-out-input').value = v.toFixed(1);
 };
 const nudgeGFade = (type, amt) => {
 haptic(5);
@@ -456,12 +524,15 @@ updSet(type === 'in' ? 'globalFadeInCurve' : 'globalFadeOutCurve', curve);
 if (!fromScroll) updateGCurveUI(type, curve);
 };
 const updateGCurveUI = (type, curve) => {
-let track = $(`gf-cs-track-${type}`); let swiper = $(`gf-curve-swiper-${type}`); if (!track) return; let curves = ['linear', 'logarithmic', 'exponential']; let idx = curves.indexOf(curve); if (idx === -1) idx = 0; track.scrollTo({ top: idx * 44, behavior: 'smooth' }); if(swiper) { swiper.classList.toggle('at-top', idx === 0); swiper.classList.toggle('at-bottom', idx === curves.length - 1); } }; let gfCsTimers = {in: null, out: null}; const handleGCurveScroll = (e, type) => { let track = e.target; let swiper = $(`gf-curve-swiper-${type}`); let idx = Math.round(track.scrollTop / track.clientHeight); let curves = ['linear', 'logarithmic', 'exponential']; if(swiper) { swiper.classList.toggle('at-top', idx === 0); swiper.classList.toggle('at-bottom', idx === curves.length - 1); } clearTimeout(gfCsTimers[type]); gfCsTimers[type] = setTimeout(() => { let current = settings[type === 'in' ? 'globalFadeInCurve' : 'globalFadeOutCurve'] || 'linear'; if(curves[idx] && current !== curves[idx]) { setGCurve(type, curves[idx], true); } }, 50); }; const cycleGCurve = (type) => { let current = settings[type === 'in' ? 'globalFadeInCurve' : 'globalFadeOutCurve'] || 'linear'; let curves = ['linear', 'logarithmic', 'exponential']; let nextIdx = (curves.indexOf(current) + 1) % curves.length; setGCurve(type, curves[nextIdx], false); }; const swpGF = (idx) => { let tc = $('gf-swipe-container');
+let track = $(gf-cs-track-(gf-curve-swiper-${type}); if (!track) return; let curves = ['linear', 'logarithmic', 'exponential']; let idx = curves.indexOf(curve); if (idx === -1) idx = 0; track.scrollTo({ top: idx * 44, behavior: 'smooth' }); if(swiper) { swiper.classList.toggle('at-top', idx === 0); swiper.classList.toggle('at-bottom', idx === curves.length - 1); } }; let gfCsTimers = {in: null, out: null}; const handleGCurveScroll = (e, type) =&gt; { let track = e.target; let swiper =$(gf-curve-swiper-${type}); let idx = Math.round(track.scrollTop / track.clientHeight); let curves = ['linear', 'logarithmic', 'exponential']; if(swiper) { swiper.classList.toggle('at-top', idx === 0); swiper.classList.toggle('at-bottom', idx === curves.length - 1); } clearTimeout(gfCsTimers[type]); gfCsTimers[type] = setTimeout(() =&gt; { let current = settings[type === 'in' ? 'globalFadeInCurve' : 'globalFadeOutCurve'] || 'linear'; if(curves[idx] && current !== curves[idx]) { setGCurve(type, curves[idx], true); } }, 50); }; const cycleGCurve = (type) =&gt; { let current = settings[type === 'in' ? 'globalFadeInCurve' : 'globalFadeOutCurve'] || 'linear'; let curves = ['linear', 'logarithmic', 'exponential']; let nextIdx = (curves.indexOf(current) + 1) % curves.length; setGCurve(type, curves[nextIdx], false); }; const swpGF = (idx) =&gt; { let tc =$('gf-swipe-container');
 tc.scrollTo({ left: tc.clientWidth * idx, behavior: 'smooth' });
 };
 document.addEventListener('DOMContentLoaded', () => {
-let tc = $('gf-swipe-container'); if(tc) { tc.addEventListener('scroll', () => { let idx = Math.round(tc.scrollLeft / tc.clientWidth); if(idx !== gfTab) { gfTab = idx; $('gf-dot-0').classList.toggle('active', idx === 0);
-$('gf-dot-1').classList.toggle('active', idx === 1);
+let tc = latex
+('gf-swipe-container'); if(tc) { tc.addEventListener('scroll', () =&gt; { let idx = Math.round(tc.scrollLeft / tc.clientWidth); if(idx !== gfTab) { gfTab = idx; 
+
+('gf-dot-0').classList.toggle('active', idx === 0);
+$`('gf-dot-1').classList.toggle('active', idx === 1);
 }
 }, {passive:true});
 }
@@ -470,7 +541,7 @@ $('gf-dot-1').classList.toggle('active', idx === 1);
 const hideShowNotes = () => {
 clearInterval(currentNoteInt);
 clearTimeout(currentNoteTimeout);
-let c = $('show-notes-container');
+let c = `$('show-notes-container');
 if(c) {
 c.classList.remove('has-notes');
 delete c.dataset.owner;
@@ -478,7 +549,7 @@ delete c.dataset.owner;
 };
 
 const displayShowNote = (tObj, trackDuration) => {
-let text = (tObj.notes || '').trim(), container = $('show-notes-text');
+let text = (tObj.notes || '').trim(), container = ('show-notes-text');
 hideShowNotes();
 if (!text) return;
 
@@ -512,11 +583,16 @@ currentNoteTimeout = setTimeout(() => hideShowNotes(), duration * 1000);
 }
 };
 
-const chkGrpDemote = () => { if(isSideAct && actSideId && sideTrks.length<=1){ let pi=tracks.findIndex(x=>x.id===actSideId); if(pi>-1){ let p=tracks[pi]; if(p.isCueGroup){ if(sideTrks.length===1){ let r=sideTrks[0]; r.type=p.type; tracks.splice(pi,1,r); }else tracks.splice(pi,1); save(); closeSideload(); render(); return !0; } } } return !1; };
-const buildNfcMenu = () => { let h=`<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_NEXT', 'Next Cue')"><span class="material-symbols-rounded">nfc</span> Program 'Next Cue'</button><button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PLAYPAUSE', 'Play/Pause')"><span class="material-symbols-rounded">nfc</span> Program 'Toggle Mic'</button>`; tracks.filter(t=>t.type==='pad').forEach(p=>h+=`<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PAD_${p.id}', '${p.name.replace(/'/g,"\\'")}')"><span class="material-symbols-rounded">nfc</span> Program '${p.name}'</button>`);$('nfc-dynamic-list').innerHTML=h; };
- const setLang = l => { settings.lang=l; updSet('lang',l); document.querySelectorAll('#lang-controls button').forEach(b=>b.classList.remove('active')); $(l==='en-US'?'lang-en':'lang-de').classList.add('active'); if(rec) rec.lang=l; }; const updSet = (k,v) => { settings[k]=v; localStorage.setItem('mc_settings', JSON.stringify(settings)); }; const applyUISize = () => { document.body.style.zoom = (settings.uiSize || 100) + '%'; }; const applySettings = () => { setTheme(settings.theme); setLang(settings.lang); ['progress','confirm-reset','auto-pause-mic','haptics','dragging','pocket','strong-pocket-haptics','nfc'].forEach(k=>{let p=k.replace(/-([a-z])/g,g=>g[1].toUpperCase()); $(`${k}-toggle`).checked=settings[p==='progress'?'showProgress':p==='nfc'?'nfcEnabled':p==='haptics'?'enableHaptics':p==='dragging'?'enableDragging':p];}); document.body.classList.toggle('show-progress',settings.showProgress); applyUISize();$('ui-size-slider').value=settings.uiSize||100; if(settings.nfcEnabled) setTimeout(()=>toggleNFC(true),1000); initSortables(); };
+const chkGrpDemote = () => { if(isSideAct && actSideId && sideTrks.length<=1){ let pi=tracks.findIndex(x=>x.id===actSideId); if(pi>-1){ let p=tracks[pi]; if(p.isCueGroup){ if(sideTrks.length===1){ r=sideTrks[0]; r.type=p.type; tracks.splice(pi,1,r); }else tracks.splice(pi,1); save(); closeSideload(); render(); return !0; } } } return !1; };
+const buildNfcMenu = () => { let h=<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_NEXT', 'Next Cue')"&gt;&lt;span class="material-symbols-rounded"&gt;nfc&lt;/span&gt; Program 'Next Cue'&lt;/button&gt;&lt;button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PLAYPAUSE', 'Play/Pause')"&gt;&lt;span class="material-symbols-rounded"&gt;nfc&lt;/span&gt; Program 'Toggle Mic'&lt;/button>; tracks.filter(t=>t.type==='pad').forEach(p=>h+=<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PAD_${p.id}', '${p.name.replace(/'/g,"\\'")}')"&gt;&lt;span class="material-symbols-rounded"&gt;nfc&lt;/span&gt; Program '${p.name}'</button>);$('nfc-dynamic-list').innerHTML=h; };
+ const setLang = l => { settings.lang=l; updSet('lang',l); document.querySelectorAll('#lang-controls button').forEach(b=>b.classList.remove('active')); latex
+(l==='en-US'?'lang-en':'lang-de').classList.add('active'); if(rec) rec.lang=l; }; const updSet = (k,v) =&gt; { settings[k]=v; localStorage.setItem('mc_settings', JSON.stringify(settings)); }; const applyUISize = () =&gt; { document.body.style.zoom = (settings.uiSize || 100) + '%'; }; const applySettings = () =&gt; { setTheme(settings.theme); setLang(settings.lang); ['progress','confirm-reset','auto-pause-mic','haptics','dragging','pocket','strong-pocket-haptics','nfc'].forEach(k=&gt;{let p=k.replace(/-([a-z])/g,g=&gt;g[1].toUpperCase()); 
 
-window.onNfcRead = t => {
+(${k}-toggle).checked=settings[p==='progress'?'showProgress':p==='nfc'?'nfcEnabled':p==='haptics'?'enableHaptics':p==='dragging'?'enableDragging':p];}); document.body.classList.toggle('show-progress',settings.showProgress); applyUISize();$('ui-size-slider').value=settings.uiSize||100; (btn-${t==='high-vis'?'vis':t}`).classList.add('active'); updSet('theme',t); };
+ window.matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>settings.theme==='auto'&&setTheme('auto'));
+
+let nfcR=null, nfcAb=null, nfcWrAb=null, lastNfc=0;
+ window.onNfcRead = t => {
 if(!settings.nfcEnabled||Date.now()-lastNfc<2000)return;
 lastNfc=Date.now();
 if(locked&&settings.pocketMode&&settings.strongPocketHaptics)haptic([100,50,100,50,200]);
@@ -561,7 +637,7 @@ window.onNfcRead(t.trim());
 } catch(err){}
 },
 () => {},
-err => { $('nfc-toggle').checked = !1; updSet('nfcEnabled', !1); } ); return; } if(window.Android && typeof window.Android.startNFC === 'function') { window.Android.startNFC(); return; } if(!("NDEFReader" in window)) return showAlert("Error", "NFC is not supported."); try{ if(nfcAb) nfcAb.abort(); nfcAb=new AbortController(); if(!nfcR){ nfcR=new NDEFReader(); nfcR.addEventListener("reading",({message})=>{ for(const r of message.records){ if(r.recordType==="text"){ let t=new TextDecoder(r.encoding).decode(r.data); window.onNfcRead(t); } } }); } await nfcR.scan({signal:nfcAb.signal}); }catch(err){$('nfc-toggle').checked=!1; updSet('nfcEnabled',!1);}
+err => { $('nfc-toggle').checked = !1; updSet('nfcEnabled', !1); } ); return; } if(window.Android && typeof window.Android.startNFC === 'function') { window.Android.startNFC(); return; } if(!("NDEFReader" in window)) return showAlert("Error", "NFC is not supported."); try{ if(nfcAb) nfcAb.abort(); nfcAb=new AbortController(); if(!nfcR){ nfcR=new NDEFReader(); nfcR.addEventListener("reading",({message})=&gt;{ for(const r of message.records){ if(r.recordType==="text"){ let t=new TextDecoder(r.encoding).decode(r.data); window.onNfcRead(t); } } }); } await nfcR.scan({signal:nfcAb.signal}); }catch(err){$('nfc-toggle').checked=!1; updSet('nfcEnabled',!1);}
 }else{
 if(window.nfc && typeof window.nfc.removeNdefListener === 'function') {
 window.nfc.removeNdefListener();
@@ -574,9 +650,10 @@ if(nfcAb){ nfcAb.abort(); nfcAb=null; }
 };
  const programNfcTag = async(c,n) => {
 if(window.nfc && typeof window.nfc.write === 'function') {
-$('nfc-write-text').innerText=`Programming: ${n}`; openModal('nfc-write-modal'); let record = window.ndef ? window.ndef.textRecord(c) : { tnf: 1, type: [84], id: [], payload: [2, 101, 110, ...[...c].map(x=>x.charCodeAt(0))] }; window.nfc.write( [record], () => { window.onNfcWriteResult(true, ""); }, err => { window.onNfcWriteResult(false, err); } ); return; } if(window.Android && typeof window.Android.writeNFC === 'function') { 
+$('nfc-write-text').innerText=Programming: latex
+{n}`; openModal('nfc-write-modal'); let record = window.ndef ? window.ndef.textRecord(c) : { tnf: 1, type: [84], id: [], payload: [2, 101, 110, ...[...c].map(x=&gt;x.charCodeAt(0))] }; window.nfc.write( [record], () =&gt; { window.onNfcWriteResult(true, ""); }, err =&gt; { window.onNfcWriteResult(false, err); } ); return; } if(window.Android && typeof window.Android.writeNFC === 'function') { 
 
-$('nfc-write-text').innerText=`Programming: ${n}`; openModal('nfc-write-modal'); window.Android.writeNFC(c); return; } if(!("NDEFReader" in window))return showAlert("Error","NFC not supported."); if(nfcWrAb)nfcWrAb.abort(); nfcWrAb=new AbortController();$('nfc-write-text').innerText=`Programming: ${n}`;
+('nfc-write-text').innerText=Programming: ${n}; openModal('nfc-write-modal'); window.Android.writeNFC(c); return; } if(!("NDEFReader" in window))return showAlert("Error","NFC not supported."); if(nfcWrAb)nfcWrAb.abort(); nfcWrAb=new AbortController();$('nfc-write-text').innerText=Programming: ${n}`;
 openModal('nfc-write-modal');
 try{
 await new NDEFReader().write(c,{signal:nfcWrAb.signal});
@@ -594,7 +671,7 @@ if(nfcWrAb) nfcWrAb.abort();
 closeModal('nfc-write-modal');
 };
 
-const initDB = () => { let r=indexedDB.open('MCPDB',4); r.onupgradeneeded=e=>!e.target.result.objectStoreNames.contains('store')&&e.target.result.createObjectStore('store'); r.onsuccess=e=>{ db=e.target.result; let st=db.transaction('store','readwrite').objectStore('store'); st.get('projectList').onsuccess=res=>{ projectsList=res.target.result||[{id:'default',name:'Main Show'}]; if(!res.target.result) st.put(projectsList,'projectList'); curProjId=localStorage.getItem('mc_curProj')||projectsList[0].id; $('header-title-text').innerText=(projectsList.find(x=>x.id===curProjId)||projectsList[0]).name; st.get('proj_'+curProjId).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:t.file?URL.createObjectURL(t.file):undefined})):[]; render(); }; }; }; };
+const initDB = () => { let r=indexedDB.open('MCPDB',4); r.onupgradeneeded=e=>!e.target.result.objectStoreNames.contains('store')&&e.target.result.createObjectStore('store'); r.onsuccess=e=>{ db=e.target.result; let st=db.transaction('store','readwrite').objectStore('store'); st.get('projectList').onsuccess=res=>{ projectsList=res.target.result||[{id:'default',name:'Main Show'}]; if(!res.target.result) st.put(projectsList,'projectList'); curProjId=localStorage.getItem('mc_curProj')||projectsList[0].id; `$('header-title-text').innerText=(projectsList.find(x=>x.id===curProjId)||projectsList[0]).name; st.get('proj_'+curProjId).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:t.file?URL.createObjectURL(t.file):undefined})):[]; render(); }; }; }; };
  const save = () => db&&db.transaction('store','readwrite').objectStore('store').put(tracks.map(t=>({...t,blobUrl:undefined})), 'proj_'+curProjId);
  const saveSide = () => { if(actSideId){ let p=tracks.find(x=>x.id===actSideId); if(p){ p.showData=sideTrks.map(t=>({...t,blobUrl:undefined})); save(); } } };
 
@@ -608,38 +685,36 @@ cLng=!0;
 aMenuId=id;
 isSideMenu=s;
 let t=(s?sideTrks:tracks).find(x=>x.id===id);
-let typeText = t.isCueGroup ? 'Group' : (t.isExternalShow ? 'Show' : 'Cue');
-$('skip-cue-text').innerText=t.skip?`Unskip ${typeText}`:`Skip ${typeText}`;
-$('skip-cue-icon').innerText=t.skip?'play_circle':'block';
-openModal('cue-menu-modal');
-setTimeout(() => $('rename-cue-input').blur(), 10);
+('skip-cue-text').innerText=t.skip?Unskip ${typeText}:Skip ${typeText};
+('rename-cue-input').blur(), 10);
+if (tutActive && tutStep === 1) {
+openTutorial(2);
+}
 },600);
 };
 const ccCuePrs = () => clearTimeout(cuePTm);
 const clickCue = (id,s) => { if(cLng||locked)return; let tl=s?sideTrks:tracks, t=tl.find(x=>x.id===id); if(!t)return; t.type==='queue'?(s?(sideIdx=sideTrks.filter(x=>x.type==='queue').findIndex(x=>x.id===id),playSideloadNextCue(!0, true)):playCue(id)):(s?playSidePad(t):playPad(t)); };
 const updMenu = () => { isSideMenu?(saveSide(),renderSide()):(save(),render()); closeModal('cue-menu-modal'); };
-const saveCueRename = () => { let t=(isSideMenu?sideTrks:tracks).find(x=>x.id===aMenuId); if(t){ t.name=$('rename-cue-input').value||'Unnamed Cue'; updMenu(); } };
+const saveCueRename = () => { let t=(isSideMenu?sideTrks:tracks).find(x=>x.id===aMenuId); if(t){ t.name=$`('rename-cue-input').value||'Unnamed Cue'; updMenu(); } };
 const toggleCueSkip = () => { let t=(isSideMenu?sideTrks:tracks).find(x=>x.id===aMenuId); if(t){ t.skip=!t.skip; updMenu(); } };
 const duplicateCue = () => { let l=isSideMenu?sideTrks:tracks, i=l.findIndex(x=>x.id===aMenuId); if(i>-1){ let n=JSON.parse(JSON.stringify(l[i])); n.id='id'+Date.now(); n.name+=' (Copy)'; l.splice(i+1,0,n); updMenu(); } };
 const createGroupFromMenu = () => { let l=isSideMenu?sideTrks:tracks, i=l.findIndex(x=>x.id===aMenuId); if(i>-1){ let t=l[i], n={id:'id'+Date.now(), name:'Cue Group '+(tracks.filter(x=>x.isCueGroup).length+1), type:t.type, delay:0, fadeIn:0, fadeOut:0, volume:1, autoFollow:!1, overlap:0, postDelay:0, triggerPhrase:'', globalVoice:!1, isExternalShow:!0, isCueGroup:!0, autoStartShow:!1, skip:!1, showData:[t]}; l.splice(i,1,n); updMenu(); } };
 
-const getHTML = (t,i,s,c,p) => { let m=t.triggerPhrase?`<span class="material-symbols-rounded" style="color:var(--text-muted);font-size:14px;margin-left:4px;vertical-align:middle">mic</span>${t.globalVoice?'<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;margin-left:2px;vertical-align:middle">public</span>':''}`:''; let bg=t.isBackground?`<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;margin-left:4px;vertical-align:middle">all_inclusive</span>`:''; let si=t.isExternalShow?`<span class="material-symbols-rounded" style="opacity:0.6;font-size:16px;margin-left:6px;vertical-align:middle">${t.isCueGroup?'folder':'layers'}</span>`:''; let ns=t.isExternalShow?'is-nested-show':'', sk=t.skip?'is-skipped':'', pr=s?'side-':'', ev=`oncontextmenu="return false;" onpointerdown="stCuePrs(event,'${t.id}',${s})" onpointerup="ccCuePrs()" onpointerleave="ccCuePrs()" onpointercancel="ccCuePrs()"`; let bCol=t.borderColor?`style="border-color:${t.borderColor};"`:''; return t.type==='queue'?`<div id="${pr}tile-${t.id}" class="tile ${ns} ${c?'is-current':''} ${p?'is-playing':''}" ${bCol}><div class="progress-fill" id="${pr}prog-${t.id}"></div><div class="tile-content"><span class="material-symbols-rounded drag-handle">drag_indicator</span><div class="tile-info" style="cursor:pointer" ${ev} onclick="clickCue('${t.id}',${s})"><span class="tile-name-text ${sk}">${i}. ${t.name}${m}${bg}${si}</span></div><button class="icon-btn edit-trigger" id="${pr}edit-${t.id}" style="width:40px;height:40px" onclick="event.stopPropagation();haptic(10);openSet('${t.id}',${s})"><span class="material-symbols-rounded" style="font-size:20px">settings</span></button></div></div>` : `<div id="${pr}tile-${t.id}" class="cue-pad ${ns} ${p?'is-playing':''}" ${bCol} ${ev} onclick="if(!event.target.closest('.pad-settings-trigger,.drag-handle'))clickCue('${t.id}',${s})"><div class="progress-fill" id="${pr}prog-${t.id}"></div><span class="material-symbols-rounded drag-handle pad-drag-handle">drag_indicator</span><div class="pad-number">${i}</div><span class="${sk}">${t.name}${m}${bg}${si}</span><div class="pad-settings-trigger edit-trigger" id="${pr}edit-${t.id}" onclick="event.stopPropagation();haptic(10);openSet('${t.id}',${s})"><span class="material-symbols-rounded" style="font-size:18px">settings</span></div></div>`; };
-const drwLst = (l,qI,pI,s) => { let q='',p='',qi=1,pi=1; l.forEach((t,i)=>{t.type==='queue'?q+=getHTML(t,qi++,s,s?i===sideIdx:i===curIdx,(s?actSideCues:activeCues).has(t.id)):p+=getHTML(t,pi++,s,!1,(s?actSidePads:activePads).has(t.id));}); $(qI).innerHTML=q; $(pI).innerHTML=p; };
+const getHTML = (t,i,s,c,p) => { let m=t.triggerPhrase?<span class="material-symbols-rounded" style="color:var(--text-muted);font-size:14px;margin-left:4px;vertical-align:middle"&gt;mic&lt;/span&gt;${t.globalVoice?'<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;margin-left:2px;vertical-align:middle">public</span>':''}:''; let bg=t.isBackground?<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;margin-left:4px;vertical-align:middle">all_inclusive</span>:''; let si=t.isExternalShow?<span class="material-symbols-rounded" style="opacity:0.6;font-size:16px;margin-left:6px;vertical-align:middle">{t.id}',{t.borderColor};":''; return t.type==='queue'?<div id="{t.id}" class="tile {c?'is-current':''} {bCol}><div class="progress-fill" id="{t.id}"></div><div class="tile-content"><span class="material-symbols-rounded drag-handle">drag_indicator</span><div class="tile-info" style="cursor:pointer" {t.id}',{sk}">{t.name}{bg}{t.id}',{pr}tile-{ns} {bCol} {t.id}',{pr}prog-{i}</div><span class="{t.name}{bg}{t.id}',latex
+{s})"&gt;&lt;span class="material-symbols-rounded" style="font-size:18px"&gt;settings&lt;/span&gt;&lt;/div&gt;&lt;/div>`; }; const drwLst = (l,qI,pI,s) =&gt; { let q='',p='',qi=1,pi=1; l.forEach((t,i)=&gt;{t.type==='queue'?q+=getHTML(t,qi++,s,s?i===sideIdx:i===curIdx,(s?actSideCues:activeCues).has(t.id)):p+=getHTML(t,pi++,s,!1,(s?actSidePads:activePads).has(t.id));}); 
+
+(qI).innerHTML=q; $`(pI).innerHTML=p; };
 const render = () => drwLst(tracks,'track-list','instant-grid',!1);
 const renderSide = () => drwLst(sideTrks,'sideload-track-list','sideload-instant-grid',!0);
 
-const mkTrk = (f,d) => ({id:'id'+Date.now()+Math.random().toString(36).slice(2),name:f?f.name.replace(/\.[^/.]+$/,""):"★ Loaded Audio Cue",type:'queue',delay:0,fadeIn:0,fadeOut:0,volume:1,autoFollow:!1,overlap:0,postDelay:0,triggerPhrase:'',globalVoice:!1,isExternalShow:!!d,isCueGroup:!1,showData:d,autoStartShow:!1,skip:!1,trimStart:0,trimEnd:0,borderColor:null,notes:'',notesTrigger:'start',notesDuration:0,notesSplit:!1,isBackground:!1,bgLoop:!0,duckVol:0.3,duckTime:1.0,unduckTime:1.0,duckCurve:'linear',fadeInCurve:'linear',fadeOutCurve:'linear',stopsBg:!1});
+const mkTrk = (f,d) => ({id:'id'+Date.now()+Math.random().toString(36).slice(2),name:f?f.name.replace(/.[^/.]+`$/,""):"★ Demo Performance Track",type:'queue',delay:0,fadeIn:0,fadeOut:0,volume:1,autoFollow:!1,overlap:0,postDelay:0,triggerPhrase:'',globalVoice:!1,isExternalShow:!!d,isCueGroup:!1,showData:d,autoStartShow:!1,skip:!1,trimStart:0,trimEnd:0,borderColor:null,notes:'',notesTrigger:'start',notesDuration:0,notesSplit:!1,isBackground:!1,bgLoop:!0,duckVol:0.3,duckTime:1.0,unduckTime:1.0,duckCurve:'linear',fadeInCurve:'linear',fadeOutCurve:'linear',stopsBg:!1});
 const hFiles = async (i,l,r,s) => { for(let f of Array.from(i.files)){ if(f.name.endsWith('.magic')||f.name.endsWith('.json')) l.push(mkTrk(f,JSON.parse(await f.text()))); else{ let b=new Blob([await f.arrayBuffer()],{type:f.type}), t=mkTrk(f,null); t.blobUrl=URL.createObjectURL(b); t.file=b; l.push(t); } } r(); s(); i.value=''; };
 const handleFiles = i => hFiles(i,tracks,render,save); const handleSideloadFiles = i => hFiles(i,sideTrks,renderSide,saveSide);
 
-const exportShow = async () => { let p=projectsList.find(x=>x.id===editProjId); if(!p)return; db.transaction('store').objectStore('store').get('proj_'+p.id).onsuccess=async r=>{ let ex=[]; $('edit-show-name').value="Exporting..."; for(let t of(r.target.result||[])){ if(t.isExternalShow){ let se=[]; for(let st of t.showData){ if(st.file) se.push({...st,fileData:await new Promise(res=>{let fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(st.file);}),file:undefined}); else se.push({...st}); } ex.push({...t,showData:se}); }else if(t.file) ex.push({...t,fileData:await new Promise(res=>{let fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(t.file);}),file:undefined}); else ex.push({...t}); } let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(ex)],{type:'application/json'})); a.download=p.name+'.magic'; a.click(); $('edit-show-name').value=p.name; }; };
-const importShow = async i => { let f=i.files[0]; if(!f)return; let d=JSON.parse(await f.text()), id=Date.now().toString(), name=f.name.replace(/\.[^/.]+$/,""); projectsList.push({id,name}); let nt=[]; for(let st of d){ if(st.isExternalShow){ let sub=[]; for(let sst of st.showData){ if(sst.fileData)sub.push({...sst,file:await(await fetch(sst.fileData)).blob(),fileData:undefined}); else sub.push({...sst}); } nt.push({...st,showData:sub}); }else if(st.fileData) nt.push({...st,file:await(await fetch(st.fileData)).blob(),fileData:undefined}); else nt.push({...st}); } let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('store').put(nt,'proj_'+id); tx.oncomplete = () => { i.value=''; closeModal('projects-modal'); swPrj(id); }; };
+const exportShow = async () => { let p=projectsList.find(x=>x.id===editProjId); if(!p)return; db.transaction('store').objectStore('store').get('proj_'+p.id).onsuccess=async r=>{ let ex=[]; ('edit-show-name').value=p.name; }; };
+const importShow = async i => { let f=i.files[0]; if(!f)return; let d=JSON.parse(await f.text()), id=Date.now().toString(), name=f.name.replace(/.[^/.]+$`/,""); projectsList.push({id,name}); let nt=[]; for(let st of d){ if(st.isExternalShow){ let sub=[]; for(let sst of st.showData){ if(sst.fileData)sub.push({...sst,file:await(await fetch(sst.fileData)).blob(),fileData:undefined}); else sub.push({...sst}); } nt.push({...st,showData:sub}); }else if(st.fileData) nt.push({...st,file:await(await fetch(st.fileData)).blob(),fileData:undefined}); else nt.push({...st}); } let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('store').put(nt,'proj_'+id); tx.oncomplete = () => { i.value=''; closeModal('projects-modal'); swPrj(id); }; };
 
-let pTm, dLng=!1; const sPrs=id=>{dLng=!1; pTm=setTimeout(()=>{haptic(30); dLng=!0; editProjId=id; $('edit-show-name').value=projectsList.find(x=>x.id===id).name; openModal('edit-show-modal');},600);}; const cPrs=()=>clearTimeout(pTm); const clPrj=id=>{cPrs(); if(!dLng){haptic(15);swPrj(id);}}; const openProjects = () => { 
-
-$('projects-list-container').innerHTML=projectsList.map(p=>`<div class="project-item ${p.id===curProjId?'active':''}" oncontextmenu="return false;" onpointerdown="sPrs('${p.id}')" onpointerup="cPrs()" onpointerleave="cPrs()" onclick="clPrj('${p.id}')"><span style="font-weight:700">${p.name}</span>${p.id===curProjId?'<span class="material-symbols-rounded">check_circle</span>':''}</div>`).join(''); openModal('projects-modal'); }; const createNewProject = () => { let n=$('new-show-name').value.trim(); if(!n)return; let id=Date.now().toString(); projectsList.push({id,name:n}); db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList'); closeModal('new-show-modal'); $('new-show-name').value=''; swPrj(id); }; const saveShowEdit = () => { let n=$('edit-show-name').value.trim(); if(n&&editProjId){ let p=projectsList.find(x=>x.id===editProjId); if(p)p.name=n; db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList'); if(editProjId===curProjId) $('header-title-text').innerText=n; } closeModal('edit-show-modal'); openProjects(); }; const duplicateShow = () => { let p=projectsList.find(x=>x.id===editProjId); if(!p)return; let id=Date.now().toString(); projectsList.push({id,name:p.name+" (Copy)"}); let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('store').get('proj_'+editProjId).onsuccess=r=>{ let cp=JSON.parse(JSON.stringify(r.target.result||[])); cp.forEach(t=>{t.id='id'+Date.now()+Math.random().toString(36).slice(2); let o=(r.target.result||[]).find(x=>x.name===t.name); if(o&&o.file)t.file=o.file;}); db.transaction('store','readwrite').objectStore('store').put(cp,'proj_'+id); closeModal('edit-show-modal'); openProjects(); }; }; const deleteShow = () => { if(projectsList.length<=1)return showAlert("Notice","Cannot delete last show."); projectsList=projectsList.filter(x=>x.id!==editProjId); let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('store').delete('proj_'+editProjId); closeModal('edit-show-modal'); curProjId===editProjId?swPrj(projectsList[0].id):openProjects(); }; const swPrj = id => { if(curProjId===id)return; executeReset(); tracks.forEach(t=>t.blobUrl&&URL.revokeObjectURL(t.blobUrl)); curProjId=id; localStorage.setItem('mc_curProj',id); 
-
-$('header-title-text').innerText=projectsList.find(x=>x.id===id).name; closeModal('projects-modal'); db.transaction('store').objectStore('store').get('proj_'+id).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:t.file?URL.createObjectURL(t.file):undefined})):[]; render(); }; };
+let pTm, dLng=!1; const sPrs=id=>{dLng=!1; pTm=setTimeout(()=>{haptic(30); dLng=!0; editProjId=id; $('edit-show-name').value=projectsList.find(x=&gt;x.id===id).name; openModal('edit-show-modal');},600);}; const cPrs=()=&gt;clearTimeout(pTm); const clPrj=id=&gt;{cPrs(); if(!dLng){haptic(15);swPrj(id);}}; const openProjects = () =&gt; { $('projects-list-container').innerHTML=projectsList.map(p=><div class="project-item${p.id===curProjId?'active':''}" oncontextmenu="return false;" onpointerdown="sPrs('{p.id}')"><span style="font-weight:700">{p.id===curProjId?'<span class="material-symbols-rounded">check_circle</span>':''}</div>).join(''); openModal('projects-modal'); if (tutActive && tutStep === 0) { openTutorial(1); } }; const createNewProject = () =&gt; { let n=$('new-show-name').value.trim(); if(!n)return; let id=Date.now().toString(); projectsList.push({id,name:n}); db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList'); closeModal('new-show-modal'); $('new-show-name').value=''; swPrj(id); }; const saveShowEdit = () =&gt; { let n=$('edit-show-name').value.trim(); if(n&&editProjId){ let p=projectsList.find(x=>x.id===editProjId); if(p)p.name=n; db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList'); if(editProjId===curProjId) $('header-title-text').innerText=n; } closeModal('edit-show-modal'); openProjects(); }; const duplicateShow = () =&gt; { let p=projectsList.find(x=&gt;x.id===editProjId); if(!p)return; let id=Date.now().toString(); projectsList.push({id,name:p.name+" (Copy)"}); let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('store').get('proj_'+editProjId).onsuccess=r=&gt;{ let cp=JSON.parse(JSON.stringify(r.target.result||[])); cp.forEach(t=&gt;{t.id='id'+Date.now()+Math.random().toString(36).slice(2); let o=(r.target.result||[]).find(x=&gt;x.name===t.name); if(o&&o.file)t.file=o.file;}); db.transaction('store','readwrite').objectStore('store').put(cp,'proj_'+id); closeModal('edit-show-modal'); openProjects(); }; }; const deleteShow = () =&gt; { if(projectsList.length&lt;=1)return showAlert("Notice","Cannot delete last show."); projectsList=projectsList.filter(x=&gt;x.id!==editProjId); let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('store').delete('proj_'+editProjId); closeModal('edit-show-modal'); curProjId===editProjId?swPrj(projectsList[0].id):openProjects(); }; const swPrj = id =&gt; { if(curProjId===id)return; executeReset(); tracks.forEach(t=&gt;t.blobUrl&&URL.revokeObjectURL(t.blobUrl)); curProjId=id; localStorage.setItem('mc_curProj',id); $('header-title-text').innerText=projectsList.find(x=>x.id===id).name; closeModal('projects-modal'); db.transaction('store').objectStore('store').get('proj_'+id).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:t.file?URL.createObjectURL(t.file):undefined})):[]; render(); }; };
 
 // --- GLOBAL AUDIO UTILS ---
 let audioCtx = null;
@@ -672,8 +747,8 @@ let steps = 20;
 for(let i=1; i<=steps; i++) {
 let x = i/steps;
 let val;
-if (targetVol > currVol) val = currVol + (targetVol - currVol) * Math.log10(1 + 9 * x);
-else { let p = 1 - x; val = targetVol + (currVol - targetVol) * Math.log10(1 + 9 * p); }
+if (targetVol > currVol) val = currVol + (targetVol - currVol) * Math.log10(1 + 9x);
+else { let p = 1 - x; val = targetVol + (currVol - targetVol) * Math.log10(1 + 9p); }
 g.linearRampToValueAtTime(val, startTime + (duration * x));
 }
 } else if (curveType === 'exponential') {
@@ -719,20 +794,20 @@ a._pauseTm = setTimeout(() => { a.pause(); }, fTime * 1000);
 a.pause();
 }
 };
-
+// ----------------------------
 const triggerReset = () => settings.confirmReset?openModal('reset-modal'):executeReset();
  const executeReset = () => {
 if(isSideAct)closeSideload(); closeModal('reset-modal'); curIdx=0; clearInterval(mainDelayInt); hideShowNotes();
-[activeCues, activePads, actSideCues, actSidePads].forEach(m => m.forEach((a, id) => {
+[activeCues, activePads].forEach(m => m.forEach((a, id) => {
 let trk = tracks.find(x=>x.id===id);
 stopAudioWithFade(a, trk, 'reset');
 }));
-activeCues.clear(); activePads.clear(); paused=!1; $('play-text').innerText='Start Show'; evalDucking(); render(); mngMic();
+activeCues.clear(); activePads.clear(); paused=!1; `$('play-text').innerText='Start Show'; evalDucking(); render(); mngMic();
 };
 
 const toggleOverlapWait = (mode, btn) => {
 let w = mode === 'wait';
-$('orow').style.display = w ? 'none' : 'flex'; $('prow').style.display = w ? 'flex' : 'none';
+('prow').style.display = w ? 'flex' : 'none';
 updTrk(w ? 'overlap' : 'postDelay', 0);
 let sc = btn.closest('.segmented-control');
 if(sc) { sc.querySelectorAll('button').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
@@ -752,74 +827,78 @@ if(!t) return;
 let isQ = t.type === 'queue';
 
 let h = ``;
-h += `<div class="setting-row" id="automation-delay-row" style="flex-direction:column;align-items:flex-start; min-height:auto;"> <label style="margin-bottom:8px;font-size:15px;font-weight:600">Pre-Delay (Seconds)</label> <input type="number" step="0.5" min="0" max="60" value="${t.delay||0}" onchange="haptic(10);updTrk('delay',this.value)" style="width:100%;text-align:left;">
+h += <div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;"&gt; &lt;label style="margin-bottom:8px;font-size:15px;font-weight:600"&gt;Pre-Delay (Seconds)&lt;/label&gt; &lt;input type="number" step="0.5" min="0" max="60" value="${t.delay||0}" onchange="haptic(10);updTrk('delay',this.value)" style="width:100%;text-align:left;">
 </div>`;
 
 if(isQ) {
-h += `<div class="setting-row" id="automation-follow-row" style="flex-direction:column;align-items:flex-start; min-height:auto;"> <div style="width:100%;display:flex;justify-content:space-between;align-items:center;"> <label style="font-size:15px;font-weight:600">Auto-Follow</label> <input type="checkbox" class="custom-toggle" ${t.autoFollow?'checked':''} onchange="haptic(10);updTrk('autoFollow',this.checked);openTimingModal('${id}',${s})">
-</div></div>`; if(t.autoFollow) { h +=`<div class="segmented-control" style="margin-top:12px; margin-bottom:12px;">
-<button class="${t.overlap>0||!t.postDelay?'active':''}" onclick="haptic(10);toggleOverlapWait('overlap',this)" style="font-size:14px">Overlap</button> <button class="${t.postDelay>0?'active':''}" onclick="haptic(10);toggleOverlapWait('wait',this)" style="font-size:14px">Delay</button>
+h += <div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;"&gt; &lt;div style="width:100%;display:flex;justify-content:space-between;align-items:center;"&gt; &lt;label style="font-size:15px;font-weight:600"&gt;Auto-Follow&lt;/label&gt; &lt;input type="checkbox" class="custom-toggle"${t.autoFollow?'checked':''} onchange="haptic(10);updTrk('autoFollow',this.checked);openTimingModal('{s})">
+</div>; if(t.autoFollow) { h +=<div class="segmented-control" style="margin-top:12px; margin-bottom:12px;">
+<button class="{t.postDelay>0?'active':''}" onclick="haptic(10);toggleOverlapWait('wait',this)" style="font-size:14px">Delay</button>
 </div>
-<div class="mini-row" id="orow" style="display:${t.overlap>0||!t.postDelay?'flex':'none'}; width:100%;"> <label style="font-size:14px;font-weight:500">Overlap (s)</label> <input type="number" step="0.5" value="${t.overlap||0}" onchange="haptic(10);updTrk('overlap',this.value)">
+<div class="mini-row" id="orow" style="display:{t.overlap||0}" onchange="haptic(10);updTrk('overlap',this.value)">
 </div>
-<div class="mini-row" id="prow" style="display:${t.postDelay>0?'flex':'none'}; width:100%;"> <label style="font-size:14px;font-weight:500">Post-Delay (s)</label> <input type="number" step="0.5" value="${t.postDelay||0}" onchange="haptic(10);updTrk('postDelay',this.value)">
-</div>`; } h +=``;
+<div class="mini-row" id="prow" style="display:{t.postDelay||0}" onchange="haptic(10);updTrk('postDelay',this.value)">
+</div>; } h +=`;
 }
 
-h += `<div class="setting-row" id="automation-stopbg-row" style="width:100%;display:flex;justify-content:space-between;align-items:center;"> <label style="font-size:15px;font-weight:600">Stop BG Audio on Play</label> <input type="checkbox" class="custom-toggle"${t.stopsBg?'checked':''} onchange="haptic(10);updTrk('stopsBg',this.checked)">
+h += <div class="setting-row" style="width:100%;display:flex;justify-content:space-between;align-items:center;"&gt; &lt;label style="font-size:15px;font-weight:600"&gt;Stop BG Audio on Play&lt;/label&gt; &lt;input type="checkbox" class="custom-toggle" ${t.stopsBg?'checked':''} onchange="haptic(10);updTrk('stopsBg',this.checked)">
 </div>`;
 
-h += `<div class="setting-row" id="automation-bg-row" style="flex-direction:column;align-items:flex-start; min-height:auto;"> <div style="width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"> <label style="font-size:15px;font-weight:600">Background Mode</label> <input type="checkbox" class="custom-toggle" ${t.isBackground?'checked':''} onchange="haptic(10);updTrk('isBackground',this.checked);openTimingModal('${id}',${s})">
+h += &lt;div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;"&gt; &lt;div style="width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"&gt; &lt;label style="font-size:15px;font-weight:600"&gt;Background Mode&lt;/label&gt; &lt;input type="checkbox" class="custom-toggle"${t.isBackground?'checked':''} onchange="haptic(10);updTrk('isBackground',this.checked);openTimingModal('{s})">
 </div>
 </div>
 `;
 
 if (t.isBackground) {
-h += `<div class="setting-row" style="width:100%;display:flex;justify-content:space-between;align-items:center;"> <label style="font-size:15px;font-weight:600">Loop Track Infinitely</label> <input type="checkbox" class="custom-toggle"${t.bgLoop!==false?'checked':''} onchange="haptic(10);updTrk('bgLoop',this.checked)">
+h += <div class="setting-row" style="width:100%;display:flex;justify-content:space-between;align-items:center;"&gt; &lt;label style="font-size:15px;font-weight:600"&gt;Loop Track Infinitely&lt;/label&gt; &lt;input type="checkbox" class="custom-toggle" ${t.bgLoop!==false?'checked':''} onchange="haptic(10);updTrk('bgLoop',this.checked)">
 </div>`;
 
-h += `<div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto; margin-bottom:12px;"> <div style="width:100%;display:flex;justify-content:space-between;margin-bottom:8px;"><label style="font-size:15px;font-weight:600">Ducking Volume</label><span id="duck-vol-text" style="font-weight:700;color:var(--accent)">${Math.round((t.duckVol??0.3)*100)}%</span></div>
-<input type="range" id="duck-vol-sld" min="0" max="1" step="0.05" value="${t.duckVol??0.3}" oninput="this.style.setProperty('--v', this.value*100+'%'); $('duck-vol-text').innerText=Math.round(this.value*100)+'%'; let tr=(isSetSide?sideTrks:tracks).find(x=>x.id===actId); if(tr){tr.duckVol=parseFloat(this.value); evalDucking();}" onchange="haptic(10);updTrk('duckVol',this.value)" style="width:100%; --v:${(t.duckVol??0.3)*100}%"> </div> <div style="display:flex; gap:12px; width:100%;"> <div class="setting-row" style="flex:1; flex-direction:column;align-items:flex-start; padding:12px; margin-bottom:0; min-height:auto;"> <label style="margin-bottom:8px; font-size:14px; font-weight:600;">Fade-Down (s)</label> <input type="number" id="duck-time-input" step="0.5" min="0" value="${t.duckTime??1.0}" onchange="haptic(10);updTrk('duckTime',this.value)" style="width:100%;text-align:center;">
+h += <div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto; margin-bottom:12px;"&gt; &lt;div style="width:100%;display:flex;justify-content:space-between;margin-bottom:8px;"&gt;&lt;label style="font-size:15px;font-weight:600"&gt;Ducking Volume&lt;/label&gt;&lt;span id="duck-vol-text" style="font-weight:700;color:var(--accent)"&gt;${Math.round((t.duckVol??0.3)100)}%</span></div>
+<input type="range" id="duck-vol-sld" min="0" max="1" step="0.05" value="{t.duckVol??0.3}" oninput="this.style.setProperty('--v', this.value*100+'%'); ('duck-vol-text').innerText=Math.round(this.value100)+'%'; let tr=(isSetSide?sideTrks:tracks).find(x=>x.id===actId); if(tr){tr.duckVol=parseFloat(this.value); evalDucking();}" onchange="haptic(10);updTrk('duckVol',this.value)" style="width:100%; --v:{t.duckTime??1.0}" onchange="haptic(10);updTrk('duckTime',this.value)" style="width:100%;text-align:center;">
 </div>
 <div class="setting-row" style="flex:1; flex-direction:column;align-items:flex-start; padding:12px; margin-bottom:0; min-height:auto;">
 <label style="margin-bottom:8px; font-size:14px; font-weight:600;">Fade-Up (s)</label>
-<input type="number" id="unduck-time-input" step="0.5" min="0" value="${t.unduckTime??1.0}" onchange="haptic(10);updTrk('unduckTime',this.value)" style="width:100%;text-align:center;"> </div> </div>`;
+<input type="number" id="unduck-time-input" step="0.5" min="0" value="('timing-content').innerHTML = h;
+if (tutActive && tutStep === 6) {
+openTutorial(7);
 }
-$('timing-content').innerHTML = h;
-if(!$('timing-modal').open) openModal('timing-modal');
+if (!$`('timing-modal').open) openModal('timing-modal');
 };
 
 const openSet = (id,s=!1) => {
 actId=id; isSetSide=s;
 let t=(s?sideTrks:tracks).find(x=>x.id===id), isQ=t.type==='queue';
-let h=`<div class="setting-row" id="cue-type-selector-row" style="flex-direction:column;align-items:flex-start; min-height:auto; padding-bottom:20px"><label style="font-size:15px;font-weight:600">Cue Type</label><div class="segmented-control"><button class="${isQ?'active':''}" onclick="haptic(10);updTrk('type','queue')" style="font-size:14px">Main</button><button class="${!isQ?'active':''}" onclick="haptic(10);updTrk('type','pad')" style="font-size:14px">Instant</button></div></div>`;
+let h=<div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto; padding-bottom:20px"&gt;&lt;label style="font-size:15px;font-weight:600"&gt;Cue Type&lt;/label&gt;&lt;div class="segmented-control"&gt;&lt;button class="${isQ?'active':''}" onclick="haptic(10);updTrk('type','queue')" style="font-size:14px">Main</button><button class="${!isQ?'active':''}" onclick="haptic(10);updTrk('type','pad')" style="font-size:14px"&gt;Instant&lt;/button&gt;&lt;/div&gt;&lt;/div>;
 
-if(t.isExternalShow) h+=`<div class="setting-row"><label style="font-size:15px;font-weight:600">Auto-Start</label><input type="checkbox" class="custom-toggle" ${t.autoStartShow?'checked':''} onchange="haptic(10);updTrk('autoStartShow',this.checked)"></div>`; else h+=`<div class="setting-row" id="cue-volume-slider-row"><label style="font-size:15px;font-weight:600">Volume</label><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="this.style.setProperty('--v', this.value*100+'%'); haptic(5);updTrk('volume',this.value)" style="flex:1; margin-left:15px; --v:${(t.volume??1)*100}%"></div>`;
+if(t.isExternalShow) h+=<div class="setting-row"&gt;&lt;label style="font-size:15px;font-weight:600"&gt;Auto-Start&lt;/label&gt;&lt;input type="checkbox" class="custom-toggle"${t.autoStartShow?'checked':''} onchange="haptic(10);updTrk('autoStartShow',this.checked)"></div>; else h+=<div class="setting-row"><label style="font-size:15px;font-weight:600">Volume</label><input type="range" min="0" max="1" step="0.05" value="{(t.volume??1)*100}%"></div>`;
 
-h+=`<details id="cue-voice-details" ontoggle="evalTutorialStep()"><summary onclick="haptic(10)">Voice Triggers</summary><div class="details-content" style="padding:0 16px 16px;"><div class="mini-row"><label style="font-size:14px; font-weight:500;">Phrase</label><input type="text" style="width:140px;margin:0;padding:8px 12px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--input-bg); border-radius:10px; border:1px solid var(--glass-border); color:var(--text-main);" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div><div class="mini-row"><label style="font-size:14px; font-weight:500;">Global</label><input type="checkbox" class="custom-toggle" ${t.globalVoice?'checked':''} onchange="haptic(10);updTrk('globalVoice',this.checked)"></div></div></details>`;
+h+=<details onselect="haptic(10)"&gt;&lt;summary onclick="haptic(10)"&gt;Voice Triggers&lt;/summary&gt;&lt;div class="details-content" style="padding:0 16px 16px;"&gt;&lt;div class="mini-row"&gt;&lt;label style="font-size:14px; font-weight:500;"&gt;Phrase&lt;/label&gt;&lt;input type="text" style="width:140px;margin:0;padding:8px 12px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--input-bg); border-radius:10px; border:1px solid var(--glass-border); color:var(--text-main);" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div><div class="mini-row"><label style="font-size:14px; font-weight:500;">Global</label><input type="checkbox" class="custom-toggle" ${t.globalVoice?'checked':''} onchange="haptic(10);updTrk('globalVoice',this.checked)"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/details>;
 
 if(!t.isExternalShow){
-h+=`<details id="cue-advanced-details" ontoggle="evalTutorialStep()"> <summary onclick="haptic(10)">Advanced Settings</summary> <div class="details-content" style="padding:0; display:flex; flex-direction:column; gap:0;">`;
+h+=<details id="tut-cue-adv-details" ontoggle="checkTutDetailsExpand()"&gt; &lt;summary onclick="haptic(10)"&gt;Advanced Settings&lt;/summary&gt; &lt;div class="details-content" style="padding:0; display:flex; flex-direction:column; gap:0;">;
 
-h+=`<div class="nested-nav-row" style="border-top:none;" onclick="haptic(10);closeModal('settings-modal');openTrimModal('${t.id}')">
-<span>Trim & Fades</span>
+h+=<div class="nested-nav-row" style="border-top:none;" onclick="haptic(10);openTrimModal('${t.id}')">
+Trim & Fades
 <span class="material-symbols-rounded">chevron_right</span>
 </div>`;
 
-h+=`<details style="background:transparent; margin:0; border-radius:0; border-top:1px solid var(--glass-border);"> <summary onclick="haptic(10)">Director's Notes</summary> <div class="details-content" style="padding:0 16px 16px;display:flex;flex-direction:column;gap:12px"> <textarea id="notes-text" placeholder="Type notes..." oninput="updTrk('notes',this.value)" style="width:100%;height:100px;background:var(--input-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:12px;padding:12px;font-family:inherit;font-size:14px;resize:none;outline:none">${t.notes||''}</textarea>
-<div class="segmented-control" style="margin-top:0"><button class="${t.notesTrigger==='start'||!t.notesTrigger?'active':''}" onclick="haptic(10);updNotesTrig(this,'start')" style="font-size:14px">On Start</button><button class="${t.notesTrigger==='end'?'active':''}" onclick="haptic(10);updNotesTrig(this,'end')" style="font-size:14px">Near End</button><button class="${t.notesTrigger==='after'?'active':''}" onclick="haptic(10);updNotesTrig(this,'after')" style="font-size:14px">On Finish</button></div> <div class="setting-row" style="padding:12px; margin:0; min-height:auto;"><label style="font-size:14px;color:var(--text-main);font-weight:500">Duration <span style="color:var(--text-muted);font-weight:400">(0=Full)</span></label><div style="display:flex;align-items:center;gap:6px"><input type="number" step="0.5" min="0" value="${t.notesDuration||0}" onchange="haptic(10);updTrk('notesDuration',this.value)" style="width:60px;font-size:14px;padding:6px;text-align:center"><span style="font-size:13px;color:var(--text-muted);font-weight:700">s</span></div></div>
-<div class="setting-row" style="padding:12px; margin:0; min-height:auto;"><label style="font-size:14px;color:var(--text-main);font-weight:500">Split by Line</label><input type="checkbox" class="custom-toggle" ${t.notesSplit?'checked':''} onchange="haptic(10);updTrk('notesSplit',this.checked)"></div> <!-- Dynamic interactive binding triggers --> </div> </details>`;
+h+=<details style="background:transparent; margin:0; border-radius:0; border-top:1px solid var(--glass-border);"&gt; &lt;summary onclick="haptic(10)"&gt;Director's Notes&lt;/summary&gt; &lt;div class="details-content" style="padding:0 16px 16px;display:flex;flex-direction:column;gap:12px"&gt; &lt;textarea id="notes-text" placeholder="Type notes..." oninput="updTrk('notes',this.value)" style="width:100%;height:100px;background:var(--input-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:12px;padding:12px;font-family:inherit;font-size:14px;resize:none;outline:none"&gt;${t.notes||''}</textarea>
+<div class="segmented-control" style="margin-top:0"><button class="{t.notesTrigger==='end'?'active':''}" onclick="haptic(10);updNotesTrig(this,'end')" style="font-size:14px">Near End</button><button class="{t.notesDuration||0}" onchange="haptic(10);updTrk('notesDuration',this.value)" style="width:60px;font-size:14px;padding:6px;text-align:center"><span style="font-size:13px;color:var(--text-muted);font-weight:700">s</span></div></div>
+<div class="setting-row" style="padding:12px; margin:0; min-height:auto;"><label style="font-size:14px;color:var(--text-main);font-weight:500">Split by Line</label><input type="checkbox" class="custom-toggle" ${t.notesSplit?'checked':''} onchange="haptic(10);updTrk('notesSplit',this.checked)"&gt;&lt;/div&gt; &lt;/div&gt; &lt;/details>;
 
-h+=`<div class="nested-nav-row" onclick="haptic(10);closeModal('settings-modal');openTimingModal('${t.id}', ${s})"> <span>Timing & Automations</span> <span class="material-symbols-rounded">chevron_right</span> </div>`;
+h+=<div class="nested-nav-row" onclick="haptic(10);closeModal('settings-modal');openTimingModal('${t.id}', ${s})"&gt; Timing & Automations &lt;span class="material-symbols-rounded"&gt;chevron_right&lt;/span&gt; &lt;/div>;
 
-h+=`</div></details>`;
+h+=</div&gt;&lt;/details>;
 
 let selCol=t.borderColor||'', colors=['#ff3b30','#ff9500','#ffcc00','#34c759','#00c7be','#32ade6','#007aff','#5856d6','#af52de','#ff2d55'];
-let swatches=`<div class="color-swatch ${!selCol?'active':''}" style="background:rgba(128,128,128,0.2);border:2px dashed var(--text-muted);display:flex;align-items:center;justify-content:center;box-sizing:border-box;border-radius:12px;width:40px;height:40px;flex-shrink:0;" onclick="haptic(10);updTrk('borderColor',null);this.parentElement.querySelectorAll('.color-swatch').forEach(el=>el.classList.remove('active'));this.classList.add('active')"><span class="material-symbols-rounded" style="font-size:20px;color:var(--text-main)">format_color_reset</span></div>`; colors.forEach(c=>{swatches+=`<div class="color-swatch ${selCol===c?'active':''}" style="background:${c};box-shadow:0 4px 12px ${c}40;box-sizing:border-box;border-radius:12px;width:40px;height:40px;flex-shrink:0;" onclick="haptic(10);updTrk('borderColor','${c}');this.parentElement.querySelectorAll('.color-swatch').forEach(el=>el.classList.remove('active'));this.classList.add('active')"></div>`;});
+let swatches=<div class="color-swatch${!selCol?'active':''}" style="background:rgba(128,128,128,0.2);border:2px dashed var(--text-muted);display:flex;align-items:center;justify-content:center;box-sizing:border-box;border-radius:12px;width:40px;height:40px;flex-shrink:0;" onclick="haptic(10);updTrk('borderColor',null);this.parentElement.querySelectorAll('.color-swatch').forEach(el=>el.classList.remove('active'));this.classList.add('active')"><span class="material-symbols-rounded" style="font-size:20px;color:var(--text-main)">format_color_reset</span></div>; colors.forEach(c=&gt;{swatches+=<div class="color-swatch {c};box-shadow:0 4px 12px {c}');this.parentElement.querySelectorAll('.color-swatch').forEach(el=>el.classList.remove('active'));this.classList.add('active')"></div>`;});
 
-h+=`<div style="display:flex; flex-direction:column; align-items:flex-start; margin-top:20px; margin-bottom:12px;"> <label style="font-size:15px;font-weight:600;margin-bottom:12px;margin-left:5px; color:var(--text-main);">Cue Color Tag</label> <div style="display:flex;gap:14px;width:100%;overflow-x:auto;padding:4px 4px 12px 4px;scroll-behavior:smooth" class="no-scrollbar">${swatches}</div>
-</div>`; } $('modal-content').innerHTML=h;
-if(!$('settings-modal').open) openModal('settings-modal');
+h+=<div style="display:flex; flex-direction:column; align-items:flex-start; margin-top:20px; margin-bottom:12px;"&gt; &lt;label style="font-size:15px;font-weight:600;margin-bottom:12px;margin-left:5px; color:var(--text-main);"&gt;Cue Color Tag&lt;/label&gt; &lt;div style="display:flex;gap:14px;width:100%;overflow-x:auto;padding:4px 4px 12px 4px;scroll-behavior:smooth" class="no-scrollbar"&gt;${swatches}</div>
+</div>; }$('modal-content').innerHTML=h;
+if (tutActive && tutStep === 2 && id === 'tut-dummy-id') {
+openTutorial(3);
+}
+if(!$`('settings-modal').open) openModal('settings-modal');
 };
 
 let ws = null, wsRegions = null, tempTrimStart = 0, tempTrimEnd = 0, tempCutStart = 0, tempCutEnd = 0, trTab = 0;
@@ -835,13 +914,12 @@ updVisFade();
 };
 
 window.updateFadeCurveUI = (type, curve) => {
-let track = $(`cs-track-${type}`); let swiper = $(`curve-swiper-${type}`);
+let track = $(cs-track-(curve-swiper-${type}`);
 if(!track) return;
 let curves = ['linear', 'logarithmic', 'exponential'];
 let idx = curves.indexOf(curve);
 if (idx === -1) idx = 0;
 track.scrollTo({ top: idx * 44, behavior: 'smooth' });
-
 if(swiper) {
 swiper.classList.toggle('at-top', idx === 0);
 swiper.classList.toggle('at-bottom', idx === curves.length - 1);
@@ -851,7 +929,7 @@ swiper.classList.toggle('at-bottom', idx === curves.length - 1);
 let csTimers = {in: null, out: null};
 window.handleCurveScroll = (e, type) => {
 let track = e.target;
-let swiper = $(`curve-swiper-${type}`);
+let swiper = $(curve-swiper-${type});
 let idx = Math.round(track.scrollTop / track.clientHeight);
 let curves = ['linear', 'logarithmic', 'exponential'];
 
@@ -876,13 +954,13 @@ setFadeCurve(type, curves[nextIdx], false);
 };
 
 const swpTr = (idx) => {
-let tc = $('trim-swipe-container');
+let tc = `$('trim-swipe-container');
 tc.scrollTo({ left: tc.clientWidth * idx, behavior: 'smooth' });
 };
 
 const initFadeSwipes = () => {
 ['tc-start', 'tc-end', 'fc-in', 'fc-out'].forEach(id => {
-let el = $(id); if(!el) return;
+let el = $`(id); if(!el) return;
 let views = el.querySelector('.fc-views');
 let sy = 0, sx = 0, isSwp = false, isAnim = false;
 el.addEventListener('touchstart', e => {
@@ -923,7 +1001,7 @@ el.addEventListener('touchend', () => isSwp = false);
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-let tc = $('trim-swipe-container');
+let tc = `$('trim-swipe-container');
 tc.addEventListener('scroll', () => {
 let idx = Math.round(tc.scrollLeft / tc.clientWidth);
 if(idx !== trTab) {
@@ -936,15 +1014,21 @@ initFadeSwipes();
 
 const updVisFade = () => {
 if(!ws)return;
-let dur=ws.getDuration(), fi=parseFloat($('trim-fade-in').value)||0, fo=parseFloat($('trim-fade-out').value)||0, m=tempTrimEnd-tempTrimStart;
-if(fi>m){fi=m;$('trim-fade-in').value=fi.toFixed(1);$('trim-fade-in-sld').value=fi;$('fi-val-sld').innerText=fi.toFixed(1)+'s';} if(fo>m){fo=m;$('trim-fade-out').value=fo.toFixed(1);$('trim-fade-out-sld').value=fo;$('fo-val-sld').innerText=fo.toFixed(1)+'s';}
-$('trim-fade-in-sld').max=m.toFixed(1); $('trim-fade-out-sld').max=m.toFixed(1);
-let fInV=$('fade-in-vis'), fOutV=$('fade-out-vis'), dimL=$('dim-left-vis'), dimR=$('dim-right-vis');
+let dur=ws.getDuration(), fi=parseFloat(('trim-fade-out').value)||0, m=tempTrimEnd-tempTrimStart;
+if(fi>m){fi=m;('trim-fade-in-sld').value=fi;latex
+('fi-val-sld').innerText=fi.toFixed(1)+'s';} if(fo&gt;m){fo=m;
+
+('trim-fade-out').value=fo.toFixed(1);('fo-val-sld').innerText=fo.toFixed(1)+'s';}
+('trim-fade-out-sld').max=m.toFixed(1);
+let fInV=('fade-out-vis'), dimL=('dim-right-vis');
 
 if(!dimL){
 dimL=document.createElement('div'); dimL.id='dim-left-vis';
 dimL.style.cssText='position:absolute; top:0; bottom:0; left:0; background:rgba(0,0,0,0.6); backdrop-filter:grayscale(100%); pointer-events:none; z-index:3;';
-$('waveform').appendChild(dimL); } if(!dimR){ dimR=document.createElement('div'); dimR.id='dim-right-vis'; dimR.style.cssText='position:absolute; top:0; bottom:0; right:0; background:rgba(0,0,0,0.6); backdrop-filter:grayscale(100%); pointer-events:none; z-index:3;'; $('waveform').appendChild(dimR);
+latex
+('waveform').appendChild(dimL); } if(!dimR){ dimR=document.createElement('div'); dimR.id='dim-right-vis'; dimR.style.cssText='position:absolute; top:0; bottom:0; right:0; background:rgba(0,0,0,0.6); backdrop-filter:grayscale(100%); pointer-events:none; z-index:3;'; 
+
+('waveform').appendChild(dimR);
 }
 
 let inPath = tempFadeInCurve === 'exponential' ? 'M 0,100 Q 80,100 100,0' :
@@ -955,7 +1039,10 @@ tempFadeInCurve === 'logarithmic' ? 'M 0,100 Q 20,0 100,0 L 100,100 Z' : 'M 0,10
 if(!fInV){
 fInV=document.createElement('div'); fInV.id='fade-in-vis';
 fInV.style.cssText='position:absolute; bottom:0; height:100%; pointer-events:none; z-index:4;';
-$('waveform').appendChild(fInV); } fInV.innerHTML=`<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:100%;"><path d="${inPath}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
+latex
+('waveform').appendChild(fInV); } fInV.innerHTML=`<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:100%;"&gt;&lt;path d="
+
+{inFill}" fill="var(--accent)" opacity="0.15"/><path d="${inPath}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/&gt;&lt;/svg>;
 
 let outPath = tempFadeOutCurve === 'exponential' ? 'M 0,0 Q 20,100 100,100' :
 tempFadeOutCurve === 'logarithmic' ? 'M 0,0 Q 80,0 100,100' : 'M 0,0 L 100,100';
@@ -965,14 +1052,14 @@ tempFadeOutCurve === 'logarithmic' ? 'M 0,0 Q 80,0 100,100 L 0,100 Z' : 'M 0,0 L
 if(!fOutV){
 fOutV=document.createElement('div'); fOutV.id='fade-out-vis';
 fOutV.style.cssText='position:absolute; bottom:0; height:100%; pointer-events:none; z-index:4;';
-$('waveform').appendChild(fOutV); } fOutV.innerHTML=`<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:100%;" ><path d="${outFill}" fill="var(--accent)" opacity="0.15"/><path d="${outPath}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
+$('waveform').appendChild(fOutV); } fOutV.innerHTML=<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:100%;"><path d="{outPath}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
 
-let sPct=(tempTrimStart/dur*100), ePct=(tempTrimEnd/dur*100);
+let sPct=(tempTrimStart/dur100), ePct=(tempTrimEnd/dur100);
 dimL.style.width=sPct+'%';
 dimR.style.width=(100-ePct)+'%';
 fInV.style.left=sPct+'%';
-fInV.style.width=(fi/dur*100)+'%';
-let outW=(fo/dur*100);
+fInV.style.width=(fi/dur100)+'%';
+let outW=(fo/dur100);
 fOutV.style.left=(ePct - outW)+'%';
 fOutV.style.width=outW+'%';
 };
@@ -982,13 +1069,13 @@ let t = (isSetSide ? sideTrks : tracks).find(x => x.id === id);
 if (!t || !t.blobUrl) return;
 
 tempCutStart = 0; tempCutEnd = 0;
-$('cut-start-input').value = '0.00'; $('cut-end-input').value = '0.00';
+('cut-end-input').value = '0.00';
 
-$('trim-loading').style.display = 'block'; $('waveform').innerHTML = '';
-$('trim-play-icon').innerText = 'play_arrow'; $('trim-fade-in').value = (t.fadeIn||0).toFixed(1);
-$('trim-fade-out').value = (t.fadeOut||0).toFixed(1); $('trim-fade-in-sld').value = t.fadeIn||0;
-$('trim-fade-out-sld').value = t.fadeOut||0; $('fi-val-sld').innerText = (t.fadeIn||0).toFixed(1)+'s';
-$('fo-val-sld').innerText = (t.fadeOut||0).toFixed(1)+'s'; tempFadeInCurve = t.fadeInCurve || 'linear'; tempFadeOutCurve = t.fadeOutCurve || 'linear'; updateFadeCurveUI('in', tempFadeInCurve); updateFadeCurveUI('out', tempFadeOutCurve); $('trim-swipe-container').scrollLeft = 0;
+('waveform').innerHTML = '';
+('trim-fade-in').value = (t.fadeIn||0).toFixed(1);
+('trim-fade-in-sld').value = t.fadeIn||0;
+('fi-val-sld').innerText = (t.fadeIn||0).toFixed(1)+'s';
+('trim-swipe-container').scrollLeft = 0;
 swpTr(0);
 openModal('trim-modal');
 
@@ -998,45 +1085,48 @@ wsRegions = ws.registerPlugin(WaveSurfer.Regions.create());
 
 ws.on('ready', () => {
 let dur = ws.getDuration();
-$('trim-loading').style.display = 'none'; tempTrimStart = t.trimStart || 0; tempTrimEnd = t.trimEnd || dur; $('trim-time-start-input').value = tempTrimStart.toFixed(2);
-$('trim-time-end-input').value = tempTrimEnd.toFixed(2);
-
-$('trim-fade-out-sld').style.setProperty('--v', ((t.fadeOut||0)/tempTrimEnd)*100+'%');
+('trim-time-start-input').value = tempTrimStart.toFixed(2);
+$`('trim-time-end-input').value = tempTrimEnd.toFixed(2);
+$('trim-fade-in-sld').style.setProperty('--v', ((t.fadeIn||0)/tempTrimEnd)*100+'%'); $('trim-fade-out-sld').style.setProperty('--v', ((t.fadeOut||0)/tempTrimEnd)*100+'%');
 
 let region = wsRegions.addRegion({ start: tempTrimStart, end: tempTrimEnd, color: 'transparent', drag: false, resize: true, minLength: 0.1 });
 region.on('update', () => {
 tempTrimStart = region.start;
 tempTrimEnd = region.end;
-$('trim-time-end-input').value = tempTrimEnd.toFixed(2);
+$('trim-time-start-input').value = tempTrimStart.toFixed(2); $('trim-time-end-input').value = tempTrimEnd.toFixed(2);
 updVisFade();
 });
 
 // Cut Region Markers (Hidden by Default)
 tempCutStart = 0;
 tempCutEnd = dur;
-$('cut-end-input').value = dur.toFixed(2);
+$('cut-start-input').value = '0.00'; $('cut-end-input').value = dur.toFixed(2);
 
 rCutStart = wsRegions.addRegion({ id: 'cut-start', start: tempCutStart, end: tempCutStart + 0.05, color: 'rgba(255, 69, 58, 0.8)', drag: true, resize: false });
 rCutEnd = wsRegions.addRegion({ id: 'cut-end', start: tempCutEnd - 0.05, end: tempCutEnd, color: 'rgba(255, 150, 58, 0.8)', drag: true, resize: false });
 
 rCutStart.element.style.display = 'none';
 rCutEnd.element.style.display = 'none';
-
-rCutStart.on('update', () => { tempCutStart = rCutStart.start; 
-$('cut-start-input').value = tempCutStart.toFixed(2); }); rCutEnd.on('update', () => { tempCutEnd = rCutEnd.end; 
-
-$('cut-end-input').value = tempCutEnd.toFixed(2); });
+rCutStart.on('update', () => { tempCutStart = rCutStart.start; $('cut-start-input').value = tempCutStart.toFixed(2); }); rCutEnd.on('update', () =&gt; { tempCutEnd = rCutEnd.end; $('cut-end-input').value = tempCutEnd.toFixed(2); });
 
 updVisFade();
 });
-ws.on('finish', () => $('trim-play-icon').innerText = 'play_arrow');
-ws.on('play', () => $('trim-play-icon').innerText = 'pause');
+ws.on('finish', () => $('trim-play-icon').innerText = 'play_arrow'); ws.on('pause', () =&gt; $('trim-play-icon').innerText = 'play_arrow');
+ws.on('play', () => `$('trim-play-icon').innerText = 'pause');
+if (tutActive && tutStep === 4) {
+openTutorial(5);
+}
 };
 
-const manTrim = (type, val) => { if(!ws||!wsRegions)return; haptic(15); let v=parseFloat(val), r=wsRegions.getRegions()[0], dur=ws.getDuration(); if(type==='start'){if(v<0)v=0; if(v>=r.end)v=r.end-0.1; r.setOptions({start:v}); tempTrimStart=v; $('trim-time-start-input').value=v.toFixed(2);}else{if(v>dur)v=dur; if(v<=r.start)v=r.start+0.1; r.setOptions({end:v}); tempTrimEnd=v; $('trim-time-end-input').value=v.toFixed(2);} updVisFade(); };
-const nudgeTrim = (type, amount) => { if(!ws || !wsRegions) return; haptic(5); let r = wsRegions.getRegions()[0], dur = ws.getDuration(); if(type === 'start') { let v = Math.max(0, Math.min(r.start + amount, r.end - 0.1)); r.setOptions({start: v}); tempTrimStart = v; $('trim-time-start-input').value = v.toFixed(2); } else { let v = Math.max(r.start + 0.1, Math.min(r.end + amount, dur)); r.setOptions({end: v}); tempTrimEnd = v; $('trim-time-end-input').value = v.toFixed(2); } updVisFade(); };
-const setTrimPos = (type) => { if(!ws || !wsRegions) return; haptic(15); let t = ws.getCurrentTime(), r = wsRegions.getRegions()[0]; if(type === 'start') { if(t >= r.end) t = Math.max(0, r.end - 0.1); r.setOptions({start: t}); tempTrimStart = t; } else { if(t <= r.start) t = Math.min(ws.getDuration(), r.start + 0.1); r.setOptions({end: t}); tempTrimEnd = t; } $('trim-time-start-input').value = tempTrimStart.toFixed(2); $('trim-time-end-input').value = tempTrimEnd.toFixed(2); updVisFade(); };
+const manTrim = (type, val) => { if(!ws||!wsRegions)return; haptic(15); let v=parseFloat(val), r=wsRegions.getRegions()[0], dur=ws.getDuration(); if(type==='start'){if(v<0)v=0; if(v>=r.end)v=r.end-0.1; r.setOptions({start:v}); tempTrimStart=v; latex
+('trim-time-start-input').value=v.toFixed(2);}else{if(v&gt;dur)v=dur; if(v&lt;=r.start)v=r.start+0.1; r.setOptions({end:v}); tempTrimEnd=v; 
 
+('trim-time-end-input').value=v.toFixed(2);} updVisFade(); };
+const nudgeTrim = (type, amount) => { if(!ws || !wsRegions) return; haptic(5); let r = wsRegions.getRegions()[0], dur = ws.getDuration(); if(type === 'start') { let v = Math.max(0, Math.min(r.start + amount, r.end - 0.1)); r.setOptions({start: v}); tempTrimStart = v; latex
+('trim-time-start-input').value = v.toFixed(2); } else { let v = Math.max(r.start + 0.1, Math.min(r.end + amount, dur)); r.setOptions({end: v}); tempTrimEnd = v; 
+
+('trim-time-end-input').value = v.toFixed(2); } updVisFade(); };
+const setTrimPos = (type) => { if(!ws || !wsRegions) return; haptic(15); let t = ws.getCurrentTime(), r = wsRegions.getRegions()[0]; if(type === 'start') { if(t >= r.end) t = Math.max(0, r.end - 0.1); r.setOptions({start: t}); tempTrimStart = t; } else { if(t <= r.start) t = Math.min(ws.getDuration(), r.start + 0.1); r.setOptions({end: t}); tempTrimEnd = t; } ('trim-time-end-input').value = tempTrimEnd.toFixed(2); updVisFade(); };
 const manCut = (type, val) => {
 if(!ws) return;
 haptic(15);
@@ -1044,7 +1134,10 @@ let dur = ws.getDuration();
 let v = Math.max(0, Math.min(dur, parseFloat(val)));
 if (type === 'start') {
 tempCutStart = v;
-$('cut-start-input').value = v.toFixed(2); if(rCutStart) { rCutStart.setOptions({start: v, end: v + 0.05}); rCutStart.element.style.display = (v > 0 && v < dur) ? 'block' : 'none'; } } else { tempCutEnd = v; $('cut-end-input').value = v.toFixed(2);
+latex
+('cut-start-input').value = v.toFixed(2); if(rCutStart) { rCutStart.setOptions({start: v, end: v + 0.05}); rCutStart.element.style.display = (v &gt; 0 && v &lt; dur) ? 'block' : 'none'; } } else { tempCutEnd = v; 
+
+('cut-end-input').value = v.toFixed(2);
 if(rCutEnd) {
 rCutEnd.setOptions({start: Math.max(0, v - 0.05), end: v});
 rCutEnd.element.style.display = (v > 0 && v < dur) ? 'block' : 'none';
@@ -1115,22 +1208,25 @@ isSetSide ? saveSide() : save();
 isSetSide ? renderSide() : render();
 
 tempTrimEnd = validCuts[0];
-$('trim-time-end-input').value = tempTrimEnd.toFixed(2);
+$`('trim-time-end-input').value = tempTrimEnd.toFixed(2);
 let r = wsRegions.getRegions().find(x => x.id !== 'cut-start' && x.id !== 'cut-end');
 if (r) r.setOptions({end: tempTrimEnd});
 
 tempCutStart = 0; tempCutEnd = dur;
-$('cut-end-input').value = dur.toFixed(2);
+$('cut-start-input').value = '0.00'; $('cut-end-input').value = dur.toFixed(2);
 if(rCutStart) rCutStart.element.style.display = 'none';
 if(rCutEnd) rCutEnd.element.style.display = 'none';
 updVisFade();
 
-showAlert("Success", `Track split into ${validCuts.length + 1} sections successfully!`);
+showAlert("Success", Track split into${validCuts.length + 1} sections successfully!`);
 };
 
-const updFadeVals = (type, val) => { let m=tempTrimEnd-tempTrimStart; if(val>m)val=m; if(val<0)val=0; val=parseFloat(val.toFixed(1)); let sld=$(type==='in'?'trim-fade-in-sld':'trim-fade-out-sld'); $(type==='in'?'trim-fade-in':'trim-fade-out').value=val.toFixed(1); sld.value=val; sld.max=m.toFixed(1); sld.style.setProperty('--v', (val/m*100)+'%'); $(type==='in'?'fi-val-sld':'fo-val-sld').innerText=val.toFixed(1)+'s'; updVisFade(); }; const sldInp = (e, type) => { let v=parseFloat(e.target.value), old=parseFloat($(type==='in'?'trim-fade-in':'trim-fade-out').value); if(v!==old){if(v===0||v===parseFloat(e.target.max))haptic([20,30]); else haptic(5); updFadeVals(type, v);} };
+const updFadeVals = (type, val) => { let m=tempTrimEnd-tempTrimStart; if(val>m)val=m; if(val<0)val=0; val=parseFloat(val.toFixed(1)); let sld=(type==='in'?'trim-fade-in':'trim-fade-out').value=val.toFixed(1); sld.value=val; sld.max=m.toFixed(1); sld.style.setProperty('--v', (val/m*100)+'%'); latex
+(type==='in'?'fi-val-sld':'fo-val-sld').innerText=val.toFixed(1)+'s'; updVisFade(); }; const sldInp = (e, type) =&gt; { let v=parseFloat(e.target.value), old=parseFloat(
+
+(type==='in'?'trim-fade-in':'trim-fade-out').value); if(v!==old){if(v===0||v===parseFloat(e.target.max))haptic([20,30]); else haptic(5); updFadeVals(type, v);} };
 const manFade = (type, val) => { haptic(15); updFadeVals(type, parseFloat(val)); };
-const nudgeFade = (type, amt) => { haptic(5); updFadeVals(type, (parseFloat($(type==='in'?'trim-fade-in':'trim-fade-out').value)||0) + amt); };
+const nudgeFade = (type, amt) => { haptic(5); updFadeVals(type, (parseFloat($`(type==='in'?'trim-fade-in':'trim-fade-out').value)||0) + amt); };
 
 const closeTrimModal = () => {
 haptic(10);
@@ -1142,7 +1238,19 @@ if (v.firstElementChild !== sld) { v.insertBefore(sld, v.firstElementChild); }
 closeModal('trim-modal');
 };
 const playTrimRegion = () => { if(!ws||!wsRegions)return; if(ws.isPlaying()) ws.pause(); else { let r=wsRegions.getRegions().find(x => x.id !== 'cut-start' && x.id !== 'cut-end'); if(r) r.play(); else ws.play(); } };
-const saveTrim = () => { haptic(15); updTrk('trimStart', tempTrimStart); updTrk('trimEnd', tempTrimEnd); updTrk('fadeIn', parseFloat(('trim-fade-out').value)||0); updTrk('fadeInCurve', tempFadeInCurve); updTrk('fadeOutCurve', tempFadeOutCurve); closeTrimModal(); openSet(actId, isSetSide); };
+const saveTrim = () => {
+haptic(15);
+updTrk('trimStart', tempTrimStart);
+updTrk('trimEnd', tempTrimEnd);
+updTrk('fadeIn', parseFloat($('trim-fade-in').value)||0); updTrk('fadeOut', parseFloat($('trim-fade-out').value)||0);
+updTrk('fadeInCurve', tempFadeInCurve);
+updTrk('fadeOutCurve', tempFadeOutCurve);
+closeTrimModal();
+openSet(actId, isSetSide);
+if (tutActive && tutStep === 5) {
+openTutorial(6);
+}
+};
 
 const updTrk = (k,v) => {
 let t=(isSetSide?sideTrks:tracks).find(x=>x.id===actId);
@@ -1168,7 +1276,10 @@ isSetSide ? (sideTrks = sideTrks.filter(x => x.id !== actId), closeModal('settin
 };
 
 let mainDelayInt=null, sideloadDelayInt=null;
-const doDelayCountdown = (delay, textEl, isSide, cb) => { let r=Math.ceil(delay); textEl.innerText = `${r}s...`; if(isSide)clearInterval(sideloadDelayInt); else clearInterval(mainDelayInt); let intv=setInterval(()=>{r--; if(r<=0){if(isSide)clearInterval(sideloadDelayInt); else clearInterval(mainDelayInt); cb();}else $(textEl).innerText=`${r}s...`;},1000); if(isSide)sideloadDelayInt=intv; else mainDelayInt=intv; };
+const doDelayCountdown = (delay, textEl, isSide, cb) => { let r=Math.ceil(delay); $(textEl).innerText=latex
+{r}s...`; if(isSide)clearInterval(sideloadDelayInt); else clearInterval(mainDelayInt); let intv=setInterval(()=&gt;{r--; if(r&lt;=0){if(isSide)clearInterval(sideloadDelayInt); else clearInterval(mainDelayInt); cb();}else 
+
+(textEl).innerText=${r}s...`;},1000); if(isSide)sideloadDelayInt=intv; else mainDelayInt=intv; };
 
 const evalDucking = () => {
 if (!audioCtx) return;
@@ -1210,7 +1321,7 @@ const playCue = id => { haptic(20); let i=tracks.filter(x=>x.type==='queue').fin
  const playNextCue = (L=!1, manual=!1) => {
 if(manual) hideShowNotes();
 if(isSideAct)return playSideloadNextCue(L, manual);
-let q=tracks.filter(x=>x.type==='queue'); while(curIdx<q.length&&q[curIdx].skip)curIdx++; if(curIdx>=q.length)return $('play-text').innerText='End of Show';
+let q=tracks.filter(x=>x.type==='queue'); while(curIdx<q.length&&q[curIdx].skip)curIdx++; if(curIdx>=q.length)return `$('play-text').innerText='End of Show';
 if(!L)haptic(25); let t=q[curIdx++]; clearInterval(mainDelayInt); let pAud = preUnlockAudio(t.blobUrl);
 t.delay>0&&!L? doDelayCountdown(t.delay, 'play-text', !1, ()=>rAud(t,L,!1, pAud)) : rAud(t,L,!1, pAud); render();
 };
@@ -1236,7 +1347,6 @@ m.delete(bgId);
 s ? renderSide() : render();
 }
 
-s?(sidePaused=!1,$('sideload-pause-icon').innerText='pause'):(paused=!1,$('pause-icon').innerText='pause');
 if(!L){
 if (!t.isBackground) {
 let toDelete = [];
@@ -1260,7 +1370,7 @@ stopAudioWithFade(oldA, oldTrk, 'skip');
 if(t.isExternalShow){ s?showAlert("Notice","Nested skipped"):openSide(t,t.autoStartShow); return; }
 let a=pA||new Audio(t.blobUrl); if(!pA) setupAudioNode(a); a.isRealPlay = true; acts.set(t.id,a);
 
-s?(sidePaused=!1,$('sideload-pause-icon').innerText='pause'):(paused=!1,$('pause-icon').innerText='pause');
+s?(sidePaused=!1,('pause-icon').innerText='pause');
 
 let useGlobalIn = parseFloat(settings.globalFadeIn) > 0 && settings.gfInSkip !== false && wasInterrupted;
 let fInTime = t.fadeIn > 0 ? parseFloat(t.fadeIn) : (useGlobalIn ? parseFloat(settings.globalFadeIn) : 0);
@@ -1284,7 +1394,7 @@ let out=!1, af=!1, ov=t.overlap||0, pd=t.postDelay||0;
 
 a.ontimeupdate=()=>{
 let d=t.trimEnd||a.duration||0; if(!d)return;
-let p=$(s?'side-prog-'+t.id:'prog-'+t.id); if(p)p.style.width=Math.max(0,Math.min(100,(a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100))+'%';
+let p=$`(s?'side-prog-'+t.id:'prog-'+t.id); if(p)p.style.width=Math.max(0,Math.min(100,(a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100))+'%';
 
 if(t.notes && t.notesTrigger !== 'after') {
 let cTime = a.currentTime - (t.trimStart || 0);
@@ -1325,7 +1435,7 @@ textEl.style.animation = 'fadeIn 0.3s ease';
 }
 a._showingNote = true;
 } else if (a._showingNote) {
-if ($('show-notes-container').dataset.owner === t.id) hideShowNotes();
+if (`$('show-notes-container').dataset.owner === t.id) hideShowNotes();
 a._showingNote = false;
 }
 }
@@ -1340,14 +1450,14 @@ a.pause(); let fn=a.onended; if(fn){a.onended=null;fn();}
 }
 }
 };
-a.play().catch(()=>{}); s?($('sideload-play-text').innerText=t.name):($('play-text').innerText=t.name); s||mngMic(); if(locked&&settings.pocketMode&&settings.strongPocketHaptics)navigator.vibrate?.([150,100,250]); evalDucking();
+a.play().catch(()=>{}); $`(s?'sideload-play-text':'play-text').innerText=t.name; s||mngMic(); if(locked&&settings.pocketMode&&settings.strongPocketHaptics)navigator.vibrate?.([150,100,250]); evalDucking();
 a.onended=()=>{
 let fn=a.onended; if(!fn)return;
 a.onended=null;
 a.ontimeupdate=null;
 
 if (a._showingNote) {
-if ($('show-notes-container').dataset.owner === t.id) hideShowNotes(); a._showingNote = false; } if(t.notes && t.notesTrigger === 'after') displayShowNote(t, t.notesDuration || 10); if(t.autoFollow&&!af){ af=!0; pd>0? doDelayCountdown(pd, s?'sideload-play-text':'play-text', s, ()=>s?playSideloadNextCue(!1):playNextCue(!1)) : s?playSideloadNextCue(!1):playNextCue(!1); } acts.delete(t.id); evalDucking(); if(!acts.size){ let q=(s?sideTrks:tracks).filter(x=>x.type==='queue'), nx=s?sideIdx:curIdx; while(nx<q.length&&q[nx].skip)nx++; $(s?'sideload-play-text':'play-text').innerText=nx<q.length?'Next Cue':(s?'':'End of Show'); s&&nx>=q.length&&closeSideload(); }
+if ($('show-notes-container').dataset.owner === t.id) hideShowNotes(); a._showingNote = false; } if(t.notes && t.notesTrigger === 'after') displayShowNote(t, t.notesDuration || 10); if(t.autoFollow&&!af){ af=!0; pd&gt;0? doDelayCountdown(pd, s?'sideload-play-text':'play-text', s, ()=&gt;s?playSideloadNextCue(!1):playNextCue(!1)) : s?playSideloadNextCue(!1):playNextCue(!1); } acts.delete(t.id); evalDucking(); if(!acts.size){ let q=(s?sideTrks:tracks).filter(x=&gt;x.type==='queue'), nx=s?sideIdx:curIdx; while(nx&lt;q.length&&q[nx].skip)nx++; $(s?'sideload-play-text':'play-text').innerText=nx<q.length?'Next Cue':(s?'':'End of Show'); s&&nx>=q.length&&closeSideload(); }
 s?renderSide():(render(),mngMic());
 };
 s?renderSide():render();
@@ -1373,12 +1483,12 @@ acts.delete(t.id); evalDucking(); s?renderSide():(render(),mngMic()); return;
 }
 let a=new Audio(t.blobUrl); setupAudioNode(a); a.isRealPlay = true; a.currentTime=t.trimStart||0; a.volume=t.volume??1; acts.set(t.id,a); s?renderSide():render();
 a.ontimeupdate=()=>{
-let d=t.trimEnd||a.duration; let p=$(s?'side-prog-'+t.id:'prog-'+t.id); if(p)p.style.width=Math.max(0,Math.min(100,(a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100))+'%'; if(a.currentTime>=d){ if(t.isBackground && (t.bgLoop !== false)){ a.currentTime=t.trimStart||0; } else { a.pause();acts.delete(t.id);evalDucking();s?renderSide():(render(),mngMic()); } } }; s?(sidePaused=!1,$('sideload-pause-icon').innerText='pause'):(paused=!1,$('pause-icon').innerText='pause');
+let d=t.trimEnd||a.duration; let p=$(s?'side-prog-'+t.id:'prog-'+t.id); if(p)p.style.width=Math.max(0,Math.min(100,(a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100))+'%'; if(a.currentTime&gt;=d){ if(t.isBackground && (t.bgLoop !== false)){ a.currentTime=t.trimStart||0; } else { a.pause();acts.delete(t.id);evalDucking();s?renderSide():(render(),mngMic()); } } }; s?(sidePaused=!1,$('sideload-pause-icon').innerText='pause'):(paused=!1,`$('pause-icon').innerText='pause');
 a.play().catch(()=>{}); s||mngMic(); if(locked&&settings.pocketMode&&settings.strongPocketHaptics)navigator.vibrate?.([150,100,250]); evalDucking();
 };
 const playPad = t => pPad(t,!1); const playSidePad = t => pPad(t,!0);
 
-const openSide = async (t,a=!1) => { if(isSideAct)return; isSideAct=!0; actSideId=t.id; sideIdx=0; sidePaused=!1; sideTrks=[]; actSidePads.clear(); actSideCues.clear(); $('sideload-play-text').innerText='Loading...'; $('sideload-track-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--text-muted)">Loading...</div>'; openModal('sideload-modal'); try{ for(let s of t.showData){ if(s.isExternalShow||(!s.file&&!s.fileData))sideTrks.push({...s}); else sideTrks.push({...s,blobUrl:URL.createObjectURL(s.file||await(await fetch(s.fileData)).blob())}); } $('sideload-title').innerText=t.name; $('sideload-play-text').innerText='Start Show'; $('sideload-pause-icon').innerText='pause'; renderSide(); if(a)playSideloadNextCue(); }catch(e){showAlert("Error","Failed.");closeSideload();} };
+const openSide = async (t,a=!1) => { if(isSideAct)return; isSideAct=!0; actSideId=t.id; sideIdx=0; sidePaused=!1; sideTrks=[]; actSidePads.clear(); actSideCues.clear(); ('sideload-track-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--text-muted)">Loading...</div>'; openModal('sideload-modal'); try{ for(let s of t.showData){ if(s.isExternalShow||(!s.file&&!s.fileData))sideTrks.push({...s}); else sideTrks.push({...s,blobUrl:URL.createObjectURL(s.file||await(await fetch(s.fileData)).blob())}); } ('sideload-play-text').innerText='Start Show'; $`('sideload-pause-icon').innerText='pause'; renderSide(); if(a)playSideloadNextCue(); }catch(e){showAlert("Error","Failed.");closeSideload();} };
 const toggleSideloadPause = () => {
 sidePaused=!sidePaused;
 let now = audioCtx ? audioCtx.currentTime : 0;
@@ -1394,7 +1504,6 @@ cType = trk.fadeOutCurve || 'linear';
 fTime = parseFloat(settings.globalFadeOut);
 cType = settings.globalFadeOutCurve || 'linear';
 }
-
 if(a.gainNode && audioCtx && fTime > 0 && !a.paused) {
 a._lastVol = a.gainNode.gain.value;
 a.gainNode.gain.cancelScheduledValues(now);
@@ -1426,17 +1535,16 @@ a.gainNode.gain.value = a._isDucked && trk?.isBackground ? (trk.duckVol??0.3) : 
 }
 }
 }));
-$('sideload-pause-icon').innerText=sidePaused?'play_arrow':'pause'; if(!sidePaused) evalDucking(); }; const triggerSideloadReset = () => settings.confirmReset?openModal('sideload-reset-modal'):executeSideloadReset(); const executeSideloadReset = () => { haptic([50,50,50]); closeModal('sideload-reset-modal'); clearInterval(sideloadDelayInt); hideShowNotes(); [actSideCues,actSidePads].forEach(m=>m.forEach((a, id)=>{ let trk = sideTrks.find(x=>x.id===id); stopAudioWithFade(a, trk, 'reset'); })); actSideCues.clear(); actSidePads.clear(); sideIdx=0; sidePaused=!1; $('sideload-play-text').innerText='Start Show'; $('sideload-pause-icon').innerText='pause'; evalDucking(); renderSide(); }; const closeSideload = () => { isSideAct=!1; clearInterval(sideloadDelayInt); hideShowNotes(); [actSideCues,actSidePads].forEach(m=>m.forEach((a, id)=>{ let trk = sideTrks.find(x=>x.id===id); stopAudioWithFade(a, trk, 'reset'); })); actSideCues.clear(); actSidePads.clear(); sideTrks.forEach(s=>s.blobUrl&&URL.revokeObjectURL(s.blobUrl)); sideTrks=[]; closeModal('sideload-modal'); render(); if(actSideId){ let s=tracks.find(x=>x.id===actSideId); actSideId=null; if(s&&s.type==='queue'&&s.autoFollow){ let pd=s.postDelay||0; if(pd>0)doDelayCountdown(pd,'play-text',!1,()=>playNextCue(!1)); else playNextCue(!1); }else $('play-text').innerText=curIdx<tracks.filter(x=>x.type==='queue').length?'Next Cue':'End of Show'; } evalDucking();
+$('sideload-pause-icon').innerText=sidePaused?'play_arrow':'pause'; if(!sidePaused) evalDucking(); }; const triggerSideloadReset = () =&gt; settings.confirmReset?openModal('sideload-reset-modal'):executeSideloadReset(); const executeSideloadReset = () =&gt; { haptic([50,50,50]); closeModal('sideload-reset-modal'); clearInterval(sideloadDelayInt); hideShowNotes(); [actSideCues,actSidePads].forEach(m=&gt;m.forEach((a, id)=&gt;{ let trk = sideTrks.find(x=&gt;x.id===id); stopAudioWithFade(a, trk, 'reset'); })); actSideCues.clear(); actSidePads.clear(); sideIdx=0; sidePaused=!1; $('sideload-play-text').innerText='Start Show'; $('sideload-pause-icon').innerText='pause'; evalDucking(); renderSide(); }; const closeSideload = () =&gt; { isSideAct=!1; clearInterval(sideloadDelayInt); hideShowNotes(); [actSideCues,actSidePads].forEach(m=&gt;m.forEach((a, id)=&gt;{ let trk = sideTrks.find(x=&gt;x.id===id); stopAudioWithFade(a, trk, 'reset'); })); actSideCues.clear(); actSidePads.clear(); sideTrks.forEach(s=&gt;s.blobUrl&&URL.revokeObjectURL(s.blobUrl)); sideTrks=[]; closeModal('sideload-modal'); render(); if(actSideId){ let s=tracks.find(x=&gt;x.id===actSideId); actSideId=null; if(s&&s.type==='queue'&&s.autoFollow){ let pd=s.postDelay||0; if(pd&gt;0)doDelayCountdown(pd,'play-text',!1,()=&gt;playNextCue(!1)); else playNextCue(!1); }else $('play-text').innerText=curIdx<tracks.filter(x=>x.type==='queue').length?'Next Cue':'End of Show'; } evalDucking();
 };
 
 const isPly = () => activeCues.size||activePads.size||actSideCues.size||actSidePads.size;
  const toggleGlobalPause = () => {
-if (!isPly()) return;
+if (!isPly()) return; // Reverted play-pause toggles when inactive
 paused=!paused;
 let now = audioCtx ? audioCtx.currentTime : 0;
 [activeCues,activePads,actSideCues,actSidePads].forEach(m=>m.forEach((a, id)=>{
 let trk = [...tracks, ...sideTrks].find(x=>x.id===id);
-
 if(paused){
 let fTime = 0, cType = 'linear';
 if (trk && trk.fadeOut > 0) {
@@ -1478,22 +1586,37 @@ a.gainNode.gain.value = a._isDucked && trk?.isBackground ? (trk.duckVol??0.3) : 
 }
 }
 }));
-$('pause-icon').innerText=paused?'play_arrow':'pause';
+`$('pause-icon').innerText=paused?'play_arrow':'pause';
 mngMic();
 if(!paused) evalDucking();
 };
 
-const toggleLock = async (f=null) => { locked=f!==null?f:!locked; document.body.className=`${locked?'locked':'unlocked'} show-progress`;$('lock-icon').innerText=locked?'lock':'lock_open'; render(); if(locked&&settings.pocketMode){ $('pocket-mode-overlay').style.display='flex'; sessionStorage.setItem('mc_pocket','true'); try{document.documentElement.requestFullscreen(); if("wakeLock" in navigator)wakeLock=await navigator.wakeLock.request("screen");}catch(e){} }else{ $('pocket-mode-overlay').style.display='none'; sessionStorage.removeItem('mc_pocket'); try{document.exitFullscreen(); if(wakeLock){wakeLock.release();wakeLock=null;}}catch(e){} } }; const confirmPocketExit = () => { if(!document.getElementById('pocket-unlock-check').checked){haptic([50,50]);return showAlert("Notice","Check box.");} closeModal('pocket-confirm-modal'); toggleLock(!1); };
+const toggleLock = async (f=null) => { locked=f!==null?f:!locked; document.body.className=${locked?'locked':'unlocked'} show-progress;$('lock-icon').innerText=locked?'lock':'lock_open'; render(); if(locked&&settings.pocketMode){ ('pocket-mode-overlay').style.display='flex'; sessionStorage.setItem('mc_pocket','true'); try{document.documentElement.requestFullscreen(); if("wakeLock" in navigator)wakeLock=await navigator.wakeLock.request("screen");}catch(e){} }else{ latex
+('pocket-mode-overlay').style.display='none'; sessionStorage.removeItem('mc_pocket'); try{document.exitFullscreen(); if(wakeLock){wakeLock.release();wakeLock=null;}}catch(e){} } }; const confirmPocketExit = () =&gt; { if(!
+
+('pocket-unlock-check').checked){haptic([50,50]);return showAlert("Notice","Check box.");} closeModal('pocket-confirm-modal'); toggleLock(!1); };
 
 let rec, isLis=!1, spErr=!1, prLen=0, micOn=!1, spLog=[];
- const upSp = t => { if(t&&t.trim()!==""){spLog.push(t);if(spLog.length>3)spLog.shift();} $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">></span> ')+(isLis?'<span style="animation:pulse 1s infinite">_</span>':''); $('speech-debug').scrollTop=$('speech-debug').scrollHeight; }; const initSpeech = async () => { window.SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition; if(!window.SpeechRecognition)return; if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) { try { let stream = await navigator.mediaDevices.getUserMedia({ audio: true }); stream.getTracks().forEach(track => track.stop()); } catch(e){} } rec=new window.SpeechRecognition(); rec.continuous=!0; rec.interimResults=!0; rec.lang=settings.lang; rec.onstart=()=>{prLen=0;$('mic-btn').className='mic-active';$('mic-icon').innerText='mic';spLog=["Listening..."];upSp("");}; rec.onresult=e=>{ let fl=''; for(let i=e.resultIndex;i<e.results.length;++i)fl+=e.results[i][0].transcript; let nw=fl.substring(prLen); $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">></span> ')+'<br><span style="color:var(--accent);font-weight:800">></span> '+fl; $('speech-debug').scrollTop=$('speech-debug').scrollHeight; let ss=nw.toLowerCase().replace(/[.,!?]/g,'').trim(); if(!ss)return; let trg=!1, q=tracks.filter(x=>x.type==='queue'); if(curIdx<q.length&&q[curIdx].triggerPhrase&&!q[curIdx].globalVoice&&ss.includes(q[curIdx].triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);playNextCue();trg=!0;} if(!trg)for(let t of tracks)if(t.globalVoice&&t.triggerPhrase&&ss.includes(t.triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);t.type==='queue'?playCue(t.id):playPad(t);trg=!0;break;} if(trg)prLen=fl.length; }; rec.onerror=()=>{spErr=!0;if(micOn&&!isPly()){isLis=!1;micOn=!1;('mic-icon').innerText='mic_off';}}; rec.onend=()=>{prLen=0;if(isLis&&micOn&&!spErr)try{rec.start();}catch(e){} spErr=!1;}; };
+ const upSp = t => { if(t&&t.trim()!==""){spLog.push(t);if(spLog.length>3)spLog.shift();} ('speech-debug').scrollTop=latex
+('speech-debug').scrollHeight; }; const initSpeech = async () =&gt; { window.SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition; if(!window.SpeechRecognition)return; if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) { try { let stream = await navigator.mediaDevices.getUserMedia({ audio: true }); stream.getTracks().forEach(track =&gt; track.stop()); } catch(e){} } rec=new window.SpeechRecognition(); rec.continuous=!0; rec.interimResults=!0; rec.lang=settings.lang; rec.onstart=()=&gt;{prLen=0;
+
+('mic-btn').className='mic-active';latex
+('mic-icon').innerText='mic';spLog=["Listening..."];upSp("");}; rec.onresult=e=&gt;{ let fl=''; for(let i=e.resultIndex;i&lt;e.results.length;++i)fl+=e.results[i][0].transcript; let nw=fl.substring(prLen); 
+
+('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">></span> ')+'<br><span style="color:var(--accent);font-weight:800">></span> '+fl; ('speech-debug').scrollHeight; let ss=nw.toLowerCase().replace(/[.,!?]/g,'').trim(); if(!ss)return; let trg=!1, q=tracks.filter(x=>x.type==='queue'); if(curIdx<q.length&&q[curIdx].triggerPhrase&&!q[curIdx].globalVoice&&ss.includes(q[curIdx].triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);playNextCue();trg=!0;} if(!trg)for(let t of tracks)if(t.globalVoice&&t.triggerPhrase&&ss.includes(t.triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);t.type==='queue'?playCue(t.id):playPad(t);trg=!0;break;} if(trg)prLen=fl.length; };
+rec.onerror=()=>{spErr=!0;if(micOn&&!isPly()){isLis=!1;micOn=!1;('mic-icon').innerText='mic_off';}};
+rec.onend=()=>{prLen=0;if(isLis&&micOn&&!spErr)try{rec.start();}catch(e){} spErr=!1;};
+};
  const mngMic = () => { if(!micOn||!rec)return; if(settings.autoPauseMic&&isPly()){isLis=!1;try{rec.stop();}catch(e){}('mic-icon').innerText='mic_off';spLog=["Mic paused..."];upSp("");}else if(!isLis){isLis=!0;try{rec.start();}catch(e){}} };
- const toggleMic = () => { micOn=!micOn; if(micOn){$('speech-debug').style.display='block'; if(settings.autoPauseMic&&isPly()){$('mic-btn').className='mic-paused';spLog=["Mic paused..."];upSp("");}else{isLis=!0;spErr=!1;prLen=0;try{rec.start();}catch(e){}}}else{isLis=!1;try{rec.stop();}catch(e){} micOn=!1;$('mic-icon').innerText='mic_off';$('speech-debug').style.display='none';} };
+ const toggleMic = () => { micOn=!micOn; if(micOn){latex
+('speech-debug').style.display='block'; if(settings.autoPauseMic&&isPly()){
+
+('mic-btn').className='mic-paused';spLog=["Mic paused..."];upSp("");}else{isLis=!0;spErr=!1;prLen=0;try{rec.start();}catch(e){}}}else{isLis=!1;try{rec.stop();}catch(e){} micOn=!1;('mic-icon').innerText='mic_off';$`('speech-debug').style.display='none';} };
 
 const initSortables = () => {
  [sortQueue,sortGrid,sortSideQueue,sortSideGrid,sortExtract].forEach(s=>s&&s.destroy());
 let opt = { group:'shared', animation:250, ghostClass:"sortable-ghost", disabled:!settings.enableDragging, swapThreshold:0.65,
-onStart: e => { isGrp=!1; curHov=null; clearTimeout(hoverTmr); haptic(15); if(e.from.id.includes('sideload'))$('sideload-extract-zone').style.display='block'; }, onChange: e => haptic(e.to!==e.from?[30,50,30]:5), onMove: e => { if(e.related?.id==='sideload-extract-zone') return !0; let t=e.related; if(!t) { clearTimeout(hoverTmr); if(curHov){curHov.classList.remove('group-hover-highlight');curHov=null;} isGrp=!1; return !0; } let r=t.getBoundingClientRect(); let inY=dragY>r.top+r.height*0.25 && dragY<r.bottom-r.height*0.25; let inX=t.classList.contains('cue-pad')?(dragX>r.left+r.width*0.25 && dragX<r.right-r.width*0.25):(dragX>r.left && dragX<r.right); if(inY&&inX) { if(curHov!==t){ clearTimeout(hoverTmr); if(curHov)curHov.classList.remove('group-hover-highlight'); curHov=t; isGrp=!1; hoverTmr=setTimeout(()=>{ if(curHov===t){ curHov.classList.add('group-hover-highlight'); isGrp=!0; haptic([20,30,20]); } }, 350); } return !1; } else { clearTimeout(hoverTmr); if(curHov){curHov.classList.remove('group-hover-highlight');curHov=null;} isGrp=!1; return !0; } }, onEnd: e => { let isGd=isGrp&&curHov?.classList.contains('group-hover-highlight'), tEl=curHov; if(isGd && tEl) { let r = tEl.getBoundingClientRect(); if(dragY < r.top || dragY > r.bottom || dragX < r.left || dragX > r.right) { isGd = false; } } clearTimeout(hoverTmr); if(curHov)curHov.classList.remove('group-hover-highlight'); curHov=null; isGrp=!1; if(e.from.id.includes('sideload'))$('sideload-extract-zone').style.display='none';
+onStart: e => { isGrp=!1; curHov=null; clearTimeout(hoverTmr); haptic(15); if(e.from.id.includes('sideload'))$('sideload-extract-zone').style.display='block'; }, onChange: e =&gt; haptic(e.to!==e.from?[30,50,30]:5), onMove: e =&gt; { if(e.related?.id==='sideload-extract-zone') return !0; let t=e.related; if(!t) { clearTimeout(hoverTmr); if(curHov){curHov.classList.remove('group-hover-highlight');curHov=null;} isGrp=!1; return !0; } let r=t.getBoundingClientRect(); let inY=dragY&gt;r.top+r.height*0.25 && dragY&lt;r.bottom-r.height*0.25; let inX=t.classList.contains('cue-pad')?(dragX&gt;r.left+r.width*0.25 && dragX&lt;r.right-r.width*0.25):(dragX&gt;r.left && dragX&lt;r.right); if(inY&&inX) { if(curHov!==t){ clearTimeout(hoverTmr); if(curHov)curHov.classList.remove('group-hover-highlight'); curHov=t; isGrp=!1; hoverTmr=setTimeout(()=&gt;{ if(curHov===t){ curHov.classList.add('group-hover-highlight'); isGrp=!0; haptic([20,30,20]); } }, 350); } return !1; } else { clearTimeout(hoverTmr); if(curHov){curHov.classList.remove('group-hover-highlight');curHov=null;} isGrp=!1; return !0; } }, onEnd: e =&gt; { let isGd=isGrp&&curHov?.classList.contains('group-hover-highlight'), tEl=curHov; if(isGd && tEl) { let r = tEl.getBoundingClientRect(); if(dragY &lt; r.top || dragY &gt; r.bottom || dragX &lt; r.left || dragX &gt; r.right) { isGd = false; } } clearTimeout(hoverTmr); if(curHov)curHov.classList.remove('group-hover-highlight'); curHov=null; isGrp=!1; if(e.from.id.includes('sideload'))$('sideload-extract-zone').style.display='none';
 let dId=e.item.id.replace('tile-','').replace('side-','');
 if(isGd&&tEl&&tEl.id!==e.item.id){
 let tId=tEl.id.replace('tile-','').replace('side-',''), fS=e.from.id.includes('sideload'), fL=fS?sideTrks:tracks, tS=tEl.id.startsWith('side-'), tL=tS?sideTrks:tracks, dI=fL.findIndex(x=>x.id===dId), tI=tL.findIndex(x=>x.id===tId);
@@ -1506,19 +1629,156 @@ tS?saveSide():save(); fS!==tS&&(fS?saveSide():save()); render(); renderSide(); r
 let fS=e.from.id.includes('sideload'), tS=e.to.id.includes('sideload'), fL=fS?sideTrks:tracks, tL=tS?sideTrks:tracks;
 if(fL!==tL){ let dI=fL.findIndex(x=>x.id===dId); if(dI>-1) tL.push(fL.splice(dI,1)[0]); }
 haptic(e.to!==e.from?[40,60,40]:15); let t=tL.find(x=>x.id===dId); if(t)t.type=e.to.id.includes('grid')?'pad':'queue';
-let qIds=Array.from($(tS?'sideload-track-list':'track-list').children).map(el=>el.id.replace('tile-','').replace('side-','')), pIds=Array.from($(tS?'sideload-instant-grid':'instant-grid').children).map(el=>el.id.replace('tile-','').replace('side-',''));
+let qIds=Array.from($(tS?'sideload-track-list':'track-list').children).map(el=&gt;el.id.replace('tile-','').replace('side-','')), pIds=Array.from($(tS?'sideload-instant-grid':'instant-grid').children).map(el=>el.id.replace('tile-','').replace('side-',''));
 let sL=[...tL.filter(x=>x.type==='queue').sort((a,b)=>qIds.indexOf(a.id)-qIds.indexOf(b.id)), ...tL.filter(x=>x.type==='pad').sort((a,b)=>pIds.indexOf(a.id)-pIds.indexOf(b.id))];
  tS?(sideTrks=sL,saveSide(),renderSide()):(tracks=sL,save(),render()); fL!==tL&&(fS?(saveSide(),renderSide()):(save(),render()));
 }
  };
  sortQueue=new Sortable($('track-list'),{...opt,handle:'.drag-handle'}); sortGrid=new Sortable($('instant-grid'),{...opt,handle:'.drag-handle',filter:".pad-settings-trigger",preventOnFilter:!1}); sortSideQueue=new Sortable($('sideload-track-list'),{...opt,handle:'.drag-handle'}); sortSideGrid=new Sortable($('sideload-instant-grid'),{...opt,handle:'.drag-handle',filter:".pad-settings-trigger",preventOnFilter:!1});
-sortExtract=new Sortable($('sideload-extract-zone'),{group:'shared',onAdd:e=>{haptic([40,60,40]);let id=e.item.id.replace('side-','').replace('tile-',''), i=sideTrks.findIndex(x=>x.id===id); if(i>-1){let t=sideTrks.splice(i,1)[0];t.type='queue';tracks.push(t);!chkGrpDemote()&&(saveSide(),renderSide());save();render();} e.item.remove();$('sideload-extract-zone').style.display='none';}});
+sortExtract=new Sortable($('sideload-extract-zone'),{group:'shared',onAdd:e=&gt;{haptic([40,60,40]);let id=e.item.id.replace('side-','').replace('tile-',''), i=sideTrks.findIndex(x=&gt;x.id===id); if(i&gt;-1){let t=sideTrks.splice(i,1)[0];t.type='queue';tracks.push(t);!chkGrpDemote()&&(saveSide(),renderSide());save();render();} e.item.remove();$('sideload-extract-zone').style.display='none';}});
+};
+
+// --- Interactive Onboarding Tutorial Engine ---
+let tutActive = false;
+let tutStep = 0;
+const tutSteps = [
+{
+title: "Onboarding Walkthrough",
+badge: "Basic Understanding",
+text: "Let's explore your workspace. Tap the <strong>Show Title ('Magic Cues')</strong> at the very top of your screen to manage and load projects.",
+target: () => document.querySelector('header h1')
+},
+{
+title: "Interact & Long-Press",
+badge: "Basic Understanding",
+text: "A demo track was loaded! Long-press (hold down) this track to access its quick contextual menu.",
+target: () => document.querySelector('.tile-info')
+},
+{
+title: "Open Cue Settings",
+badge: "Basic Understanding",
+text: "Great! Now tap the small <strong>Settings Cog (⚙)</strong> on the right of your demo cue to inspect details.",
+target: () => document.querySelector('.tile .edit-trigger')
+},
+{
+title: "Expand Advanced Options",
+badge: "Basic Understanding",
+text: "Inside Cue Settings, you can configure the audio volume. Tap Advanced Settings at the bottom of the card.",
+target: () => document.querySelector('#tut-cue-adv-details summary')
+},
+{
+title: "Open Timeline Editor",
+badge: "Advanced Features",
+text: "Tap Trim & Fades to access the custom timeline trimmer.",
+target: () => document.querySelector('.nested-nav-row')
+},
+{
+title: "Custom Fades & Swipes",
+badge: "Advanced Features",
+text: "Here, swipe left or right on the timing cards to adjust Linear, Logarithmic, or Exponential fades. Click Save when done.",
+target: () => `$('trim-swipe-container')
+},
+{
+title: "Timings & Automations",
+badge: "Advanced Features",
+text: "Now tap Timing & Automations to configure auto-follows and continuous background loop audio rules.",
+target: () => document.querySelectorAll('.nested-nav-row')[1]
+},
+{
+title: "Onboarding Completed",
+badge: "Advanced Features",
+text: "Outstanding! You've learned all the core performance features. Tap Finish to close the guide and begin.",
+target: null
+}
+];
+const checkTutDetailsExpand = () => {
+if (tutActive && tutStep === 3) openTutorial(4);
+};
+
+const clearTutHighlights = () => {
+document.querySelectorAll('.tut-highlight').forEach(el => el.classList.remove('tut-highlight'));
+};
+
+const applyTutHighlight = (targetGetter) => {
+clearTutHighlights();
+if (typeof targetGetter === 'function') {
+const el = targetGetter();
+if (el) el.classList.add('tut-highlight');
+}
+};
+
+const openTutorial = (stepIdx = 0) => {
+tutActive = true;
+tutStep = stepIdx;
+const step = tutSteps[tutStep];
+if (!step) return;
+
+{tutStep + 1} of ('tut-bar-badge').innerText = step.badge;
+('tut-bar-text').innerHTML = step.text;
+
+// Highlight the target element on the screen
+applyTutHighlight(step.target);
+
+if (tutStep === 1) {
+startTutorialActions();
+}
+
+// Toggle navigation button visibilities
+('tut-bar-next').innerText = tutStep === tutSteps.length - 1 ? 'Finish' : 'Next';
+
+// Show floating card container
+$`('tutorial-bar').style.display = 'flex';
+};
+
+const nextTutStep = () => {
+haptic(10);
+if (tutStep < tutSteps.length - 1) {
+openTutorial(tutStep + 1);
+} else {
+finishTutorial();
+}
+};
+
+const prevTutStep = () => {
+haptic(10);
+if (tutStep > 0) {
+openTutorial(tutStep - 1);
+}
+};
+
+const skipTutorial = () => {
+haptic([15, 30]);
+finishTutorial();
+};
+
+const startTutorialActions = () => {
+tracks = tracks.filter(t => t.id !== 'tut-dummy-id');
+let t = mkTrk(null, null);
+t.id = 'tut-dummy-id';
+t.type = 'queue';
+tracks.unshift(t);
+render();
+save();
+};
+
+const finishTutorial = () => {
+clearTutHighlights();
+tutActive = false;
+updSet('tutorialCompleted', true);
+`$('tutorial-bar').style.display = 'none';
+tracks = tracks.filter(t => t.id !== 'tut-dummy-id');
+render();
+save();
 };
 
 if('mediaSession' in navigator){ navigator.mediaSession.setActionHandler('nexttrack',()=>playNextCue(false, true)); navigator.mediaSession.setActionHandler('play',()=>paused?toggleGlobalPause():playNextCue(false, true)); navigator.mediaSession.setActionHandler('pause',()=>!paused&&toggleGlobalPause()); }
  window.addEventListener('load',()=>sessionStorage.getItem('mc_pocket')==='true'&&setTimeout(()=>toggleLock(!0),500));
  document.fonts.ready.then(()=>{
 document.body.style.opacity="1";
+// Launch the tutorial on the very first startup
+if (!settings.tutorialCompleted) {
+setTimeout(() => openTutorial(0), 1000);
+}
 });
 applySettings(); initDB(); initSpeech();
  </script></body></html>
