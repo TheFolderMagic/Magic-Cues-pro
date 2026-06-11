@@ -37,7 +37,7 @@ jobs:
       - name: Initialize Android System Wrapper
         run: npx cap add android
 
-      - - name: Inject NFC Native Bridge
+      - name: Inject NFC Native Bridge
         run: |
           PKG=$(node -e "console.log(require('./capacitor.config.json').appId)")
           PKG_PATH=$(echo "$PKG" | tr '.' '/')
