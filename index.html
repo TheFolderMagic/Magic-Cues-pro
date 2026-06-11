@@ -123,6 +123,11 @@ html[data-theme="high-vis"] .trim-controls button:active { color: #000; }
     display: flex; align-items: center; justify-content: center; flex-direction: column;
 }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Tutorial Mode CSS Styles */
+.tut-step-indicator { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; display: block; }
+.tut-section-badge { display: inline-block; padding: 4px 10px; border-radius: 8px; background: var(--accent-glow); color: var(--accent); font-size: 11px; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+html[data-theme="high-vis"] .tut-section-badge { background: #ff0; color: #000; }
 </style></head>  
 <body class="unlocked show-progress"><header><h1 onclick="haptic(15);openProjects()"><span id="header-title-text">Magic Cues</span><span class="material-symbols-rounded" style="font-size:28px">expand_more</span></h1><div style="display:flex;gap:8px"><button class="icon-btn" onclick="haptic(15);openModal('app-settings')"><span class="material-symbols-rounded">settings</span></button><button class="icon-btn" onclick="haptic(15);toggleLock()"><span class="material-symbols-rounded" id="lock-icon">lock_open</span></button></div></header><div class="master-grid"><button id="master-play" onclick="playNextCue(false, true)"><span class="material-symbols-rounded">play_arrow</span><span id="play-text">Start Show</span></button><button id="mic-btn" onclick="haptic(15);toggleMic()"><span class="material-symbols-rounded" id="mic-icon">mic_off</span></button><button id="pause-btn" onclick="haptic(15);toggleGlobalPause()"><span class="material-symbols-rounded" id="pause-icon">pause</span></button></div><div id="speech-debug"><div id="speech-text">...</div></div><div class="action-row"><button class="action-btn" onclick="haptic(15);$('file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button><button class="action-btn" onclick="haptic([15,30,15]);triggerReset()"><span class="material-symbols-rounded">restart_alt</span> Reset</button></div><input type="file" id="file-input" accept="audio/*,.magic,.json" multiple onchange="handleFiles(this)" style="display:none"><input type="file" id="import-file-input" accept=".magic,.json" style="display:none" onchange="importShow(this)"><input type="file" id="sideload-file-input" accept="audio/*,.magic,.json" multiple onchange="handleSideloadFiles(this)" style="display:none"><div id="queue-container"><h2 id="queue-label">Main Queue</h2><div id="track-list"></div></div>
 <div id="show-notes-container"><div id="show-notes-text"></div></div>
@@ -180,6 +185,10 @@ html[data-theme="high-vis"] .trim-controls button:active { color: #000; }
                 <summary onclick="haptic(10)">Program NFC Tags</summary>
                 <div class="details-content" id="nfc-dynamic-list" style="padding-top:0;"></div>
             </details>
+            <div class="nested-nav-row" style="border-top: 1px solid var(--glass-border); padding: 16px 0 0;" onclick="haptic(10); closeModal('app-settings'); openTutorial(0)">
+                <span>Start Interactive Guide</span>
+                <span class="material-symbols-rounded">play_circle</span>
+            </div>
         </div>
     </details>
 </dialog>
@@ -407,6 +416,29 @@ html[data-theme="high-vis"] .trim-controls button:active { color: #000; }
     <div style="display:flex; gap:10px; padding: 0 20px 20px;"><button class="action-btn" style="border:none; padding:12px" onclick="closeTrimModal()">Cancel</button><button class="action-btn" style="flex:1; background:var(--accent); color:#fff; border:none; padding:12px" onclick="saveTrim()">Save</button></div>
 </dialog>
 
+<!-- Coherent Interactive Tutorial Overlay -->
+<dialog id="tutorial-modal">
+    <div class="modal-header">
+        <span class="modal-title" style="font-size:22px; font-weight:800;" id="tut-title">Interactive Guide</span>
+        <button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('tutorial-modal')">
+            <span class="material-symbols-rounded" style="font-size:20px">close</span>
+        </button>
+    </div>
+    <div style="min-height:220px; display:flex; flex-direction:column; justify-content:center; margin-bottom:20px;">
+        <span class="tut-step-indicator" id="tut-step-indicator">Step 1 of 9</span>
+        <div class="tut-section-badge" id="tut-section-badge">Basic Understanding</div>
+        <h3 id="tut-header" style="font-size:18px; margin:0 0 10px; font-weight:700;">Welcome to Magic Cues</h3>
+        <p id="tut-body-text" style="color:var(--text-muted); font-size:14px; line-height:1.6; margin:0; font-weight:500;">Let's take a quick look through the main features to get your performance running smoothly. You can skip this guide at any time.</p>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+        <button class="action-btn" id="tut-skip-btn" style="border:none; background:rgba(128,128,128,0.15);" onclick="skipTutorial()">Skip</button>
+        <div style="display:flex; gap:8px;" id="tut-nav-btns">
+            <button class="action-btn" id="tut-prev-btn" style="border:none;" onclick="prevTutStep()">Back</button>
+            <button class="action-btn" id="tut-next-btn" style="background:var(--accent); color:#fff; border:none;" onclick="nextTutStep()">Next</button>
+        </div>
+    </div>
+</dialog>
+
 <script>  
 const $ = id => document.getElementById(id);  
 let tracks=[], curIdx=0, locked=!1, actId=null, activeCues=new Map(), activePads=new Map(), paused=!1, wakeLock=null;  
@@ -415,7 +447,8 @@ let defSet = {
     showProgress:!0, theme:'auto', lang:'en-US', uiSize:100, confirmReset:!1, autoPauseMic:!0, 
     pocketMode:!0, strongPocketHaptics:!1, nfcEnabled:!1, enableHaptics:!0, enableDragging:!0,
     globalFadeIn: 0, globalFadeOut: 0, globalFadeInCurve: 'linear', globalFadeOutCurve: 'linear',
-    gfInSkip: true, gfInPause: true, gfOutSkip: true, gfOutPause: true
+    gfInSkip: true, gfInPause: true, gfOutSkip: true, gfOutPause: true,
+    tutorialCompleted: false
 };  
 let settings = {...defSet, ...(JSON.parse(localStorage.getItem('mc_settings'))||{})};  
 let sortQueue, sortGrid, sortSideQueue, sortSideGrid, sortExtract;  
@@ -438,7 +471,12 @@ const haptic = p => {
 };  
 const showAlert = (t,m) => { $('alert-title').innerText=t; $('alert-msg').innerText=m; openModal('custom-alert-modal'); };  
 const openModal = id => { if(id==='app-settings') buildNfcMenu(); document.body.classList.add('modal-open'); $(id).showModal(); };  
-const closeModal = id => { $(id).close(); if(!document.querySelectorAll('dialog[open]').length) document.body.classList.remove('modal-open'); };  
+const closeModal = id => { 
+    $(id).close(); 
+    // Auto-close nested details summaries in settings
+    $(id).querySelectorAll('details').forEach(d => d.removeAttribute('open'));
+    if(!document.querySelectorAll('dialog[open]').length) document.body.classList.remove('modal-open'); 
+};  
 
 // Returns Volume factor mapped safely
 const getCurveVal = (p, c) => c === 'exponential' ? (Math.pow(10, p) - 1) / 9 : c === 'logarithmic' ? Math.log10(1 + 9 * p) : p;
@@ -1486,7 +1524,7 @@ const rAud = (t,L,s,pA=null) => {
             if (cTime >= sStart && cTime <= sEnd) {
                 let container = $('show-notes-container');
                 let textEl = $('show-notes-text');
-                let sentences = t.notesSplit ? (t.notes||'').split('\n').map(x=>x.trim()).filter(x=>x) : [t.notes];
+                let sentences = t.notesSplit ? (t.notes||'').split('\n').map(s=>s.trim()).filter(s=>s) : [t.notes];
                 if(!sentences.length) sentences = [t.notes||''];
                 
                 let idx = 0;
@@ -1609,7 +1647,7 @@ const toggleSideloadPause = () => {
                 cInType = trk.fadeInCurve || 'linear';
             } else if (parseFloat(settings.globalFadeIn) > 0 && settings.gfInPause !== false) {
                 fInTime = parseFloat(settings.globalFadeIn);
-                cInType = settings.globalFadeInCurve || 'linear';
+                cInType = tri.fadeInCurve || 'linear';
             }
 
             clearTimeout(a._pauseTm);
@@ -1647,6 +1685,7 @@ const closeSideload = () => {
 
 const isPly = () => activeCues.size||activePads.size||actSideCues.size||actSidePads.size;  
 const toggleGlobalPause = () => { 
+    if (!isPly()) return; // Prevent play-pause actions when nothing is playing
     paused=!paused; 
     let now = audioCtx ? audioCtx.currentTime : 0;
     [activeCues,activePads,actSideCues,actSidePads].forEach(m=>m.forEach((a, id)=>{
@@ -1767,7 +1806,109 @@ const initSortables = () => {
     sortExtract=new Sortable($('sideload-extract-zone'),{group:'shared',onAdd:e=>{haptic([40,60,40]);let id=e.item.id.replace('side-','').replace('tile-',''), i=sideTrks.findIndex(x=>x.id===id); if(i>-1){let t=sideTrks.splice(i,1)[0];t.type='queue';tracks.push(t);!chkGrpDemote()&&(saveSide(),renderSide());save();render();} e.item.remove();$('sideload-extract-zone').style.display='none';}});
 };  
 
+// --- Interactive Tutorial Engine ---
+let tutStep = 0;
+const tutSteps = [
+    {
+        section: "Basic Understanding",
+        title: "Welcome to Magic Cues Pro",
+        text: "This guide will walk you through the core features to get your performance running smoothly. You can skip this guide at any time."
+    },
+    {
+        section: "Basic Understanding",
+        title: "The Main Queue",
+        text: "The primary playlist holds your core performance tracks. Press <strong>Start Show</strong> to play the current active cue. Cues play in sequence automatically unless configured otherwise."
+    },
+    {
+        section: "Basic Understanding",
+        title: "Adding Cues",
+        text: "Tap the <strong>Add Cue</strong> button to import audio files (.mp3, .wav) or pre-configured show project files (.magic) directly into your workspace."
+    },
+    {
+        section: "Basic Understanding",
+        title: "Interactive Operations",
+        text: "Long-press any cue element to show quick options like renaming, duplicating, grouping, or skipping. Tap and drag the drag handle icon to rearrange the cue order."
+    },
+    {
+        section: "Basic Understanding",
+        title: "App Settings",
+        text: "Access general preferences, theme switching, UI size scaling, Global Fades, and custom background voice parameters by tapping the <strong>Settings Cog</strong> in the top-right header."
+    },
+    {
+        section: "Advanced Features",
+        title: "Show Management",
+        text: "Tap the <strong>Show Title</strong> at the very top (e.g., 'Main Show') to create new shows, duplicate your workspace, or import/export .magic project files."
+    },
+    {
+        section: "Advanced Features",
+        title: "Custom Cue Parameters",
+        text: "Tap the small settings cog inside any cue element to access direct volume controls, voice trigger configurations, custom color tags, and detailed director notes."
+    },
+    {
+        section: "Advanced Features",
+        title: "Timings & Automations",
+        text: "Inside a cue's settings, you can define precise pre-delays, configure auto-follow settings with custom overlaps or post-play delays, and toggle loop modes."
+    },
+    {
+        section: "Advanced Features",
+        title: "Trim, Cuts, & Curves",
+        text: "Trim tracks to specific regions or slice them into multiple automated segments. Select custom Linear, Logarithmic, or Exponential curves for precise volume fades."
+    }
+];
+
+const openTutorial = (stepIdx = 0) => {
+    tutStep = stepIdx;
+    const step = tutSteps[tutStep];
+    if (!step) return;
+
+    $('tut-step-indicator').innerText = `Step ${tutStep + 1} of ${tutSteps.length}`;
+    $('tut-section-badge').innerText = step.section;
+    $('tut-header').innerText = step.title;
+    $('tut-body-text').innerHTML = step.text;
+
+    // Handle navigation button visibilities
+    $('tut-prev-btn').style.display = tutStep === 0 ? 'none' : 'flex';
+    $('tut-next-btn').innerText = tutStep === tutSteps.length - 1 ? 'Finish' : 'Next';
+
+    if (!$('tutorial-modal').open) {
+        openModal('tutorial-modal');
+    }
+};
+
+const nextTutStep = () => {
+    haptic(10);
+    if (tutStep < tutSteps.length - 1) {
+        openTutorial(tutStep + 1);
+    } else {
+        finishTutorial();
+    }
+};
+
+const prevTutStep = () => {
+    haptic(10);
+    if (tutStep > 0) {
+        openTutorial(tutStep - 1);
+    }
+};
+
+const skipTutorial = () => {
+    haptic([15, 30]);
+    finishTutorial();
+};
+
+const finishTutorial = () => {
+    updSet('tutorialCompleted', true);
+    closeModal('tutorial-modal');
+};
+
 if('mediaSession' in navigator){ navigator.mediaSession.setActionHandler('nexttrack',()=>playNextCue(false, true)); navigator.mediaSession.setActionHandler('play',()=>paused?toggleGlobalPause():playNextCue(false, true)); navigator.mediaSession.setActionHandler('pause',()=>!paused&&toggleGlobalPause()); }  
 window.addEventListener('load',()=>sessionStorage.getItem('mc_pocket')==='true'&&setTimeout(()=>toggleLock(!0),500));  
-document.fonts.ready.then(()=>document.body.style.opacity="1"); applySettings(); initDB(); initSpeech();  
+document.fonts.ready.then(()=>{
+    document.body.style.opacity="1";
+    // Launch the tutorial on the very first startup
+    if (!settings.tutorialCompleted) {
+        setTimeout(() => openTutorial(0), 1000);
+    }
+}); 
+applySettings(); initDB(); initSpeech();  
 </script></body></html>
