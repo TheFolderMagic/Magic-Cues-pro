@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.webkit.WebView;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
@@ -19,9 +20,10 @@ public class MainActivity extends BridgeActivity {
             @Override
             public void run() {
                 try {
-                    if (bridge != null && bridge.getWebView() != null) {
-                        nfcBridge = new NfcBridge(MainActivity.this, bridge.getWebView());
-                        bridge.getWebView().addJavascriptInterface(nfcBridge, "Android");
+                    WebView webView = MainActivity.this.getWebView();
+                    if (webView != null) {
+                        nfcBridge = new NfcBridge(MainActivity.this, webView);
+                        webView.addJavascriptInterface(nfcBridge, "Android");
                     }
                 } catch (Exception e) {
                     Log.e("MagicCues", "NFC setup failed: " + e.getMessage());
