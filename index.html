@@ -187,29 +187,27 @@ padding: 6px 12px !important;
 font-size: 12px !important;
 }
 
-/* Modern Pulse Highlight Engine */
-@keyframes tut-pulse {
+/* Hyper-Modern Apple style glowing indicator animation */
+@keyframes tutPulse {
   0% {
-    box-shadow: 0 0 0 0 var(--accent-glow);
-    outline: 2px solid var(--accent);
+    box-shadow: 0 0 0 0px var(--accent), 0 0 0 2px rgba(0, 122, 255, 0.4), 0 4px 12px rgba(0, 122, 255, 0.15);
   }
-  70% {
-    box-shadow: 0 0 0 10px rgba(0, 122, 255, 0);
-    outline: 2px solid var(--accent);
+  50% {
+    box-shadow: 0 0 0 2.5px var(--accent), 0 0 0 6px rgba(0, 122, 255, 0.25), 0 8px 24px rgba(0, 122, 255, 0.4);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(0, 122, 255, 0);
-    outline: 2px solid transparent;
+    box-shadow: 0 0 0 0px var(--accent), 0 0 0 2px rgba(0, 122, 255, 0.4), 0 4px 12px rgba(0, 122, 255, 0.15);
   }
 }
 .tut-highlight {
-  animation: tut-pulse 1.6s infinite !important;
-  outline-offset: 4px !important;
+  animation: tutPulse 2s infinite cubic-bezier(0.25, 1, 0.5, 1) !important;
+  border-color: var(--accent) !important;
+  transition: all 0.3s ease-in-out;
   z-index: 13000 !important;
   border-radius: inherit !important;
 }
 
-/* Temporarily disable containing block creation during active tutorials */
+/* Disable dialog filter properties during active onboarding processes */
 body.tut-active dialog {
   backdrop-filter: none !important;
 }
@@ -1714,32 +1712,6 @@ $('tut-bar-text').innerHTML = step.text;
 applyTutHighlight(step.target);
 adjustTutorialBarParent();
 
-// Position popover intelligently near targeted element to prevent overlap
-const targetEl = step.target ? step.target() : null;
-const bar = $('tutorial-bar');
-if (bar) {
-  if (targetEl) {
-    const rect = targetEl.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-
-    if (rect.bottom > viewportHeight / 2) {
-      bar.style.bottom = 'auto';
-      bar.style.top = '16px';
-    } else {
-      bar.style.bottom = '16px';
-      bar.style.top = 'auto';
-    }
-  } else {
-    bar.style.bottom = '24px';
-    bar.style.top = 'auto';
-  }
-  bar.style.left = '16px';
-  bar.style.right = '16px';
-  bar.style.width = 'calc(100% - 32px)';
-  bar.style.maxWidth = '360px';
-  bar.style.margin = '0 auto';
-}
-
 $('tut-bar-next').innerText = (tutStep === tutSteps.length - 1) ? 'Finish' : 'Next';
 $('tut-bar-next').style.display = step.waitForAction ? 'none' : 'block';
 $('tutorial-bar').style.display = 'flex';
@@ -1807,6 +1779,36 @@ openTutorial(16);
 openTutorial(17);
 }
 };
+
+// Global case-sensitive Click-to-Advance Interception
+document.addEventListener('click', (e) => {
+  if (!tutActive) return;
+  const step = tutSteps[tutStep];
+  if (!step || !step.target) return;
+  const targetEl = step.target();
+  if (!targetEl) return;
+
+  if (targetEl.contains(e.target) || e.target === targetEl) {
+    const clickAdvanceMap = {
+      1: 2,   // settings gear click -> Step 3
+      2: 3,   // cue type selection click -> Step 4
+      4: 5,   // voice triggers summary click -> Step 6
+      5: 6,   // advanced settings summary click -> Step 7
+      6: 7,   // close settings modal click -> Step 8
+      8: 9,   // Skip cue click -> Step 10
+      9: 10,  // Duplicate click -> Step 11
+      10: 11, // close cue options click -> Step 12
+      12: 13, // show title header click -> Step 14
+      15: 16, // close projects modal click -> Step 17
+      16: 17  // settings cog click -> Step 18
+    };
+    if (clickAdvanceMap[tutStep] !== undefined) {
+      setTimeout(() => {
+        openTutorial(clickAdvanceMap[tutStep]);
+      }, 100);
+    }
+  }
+}, true);
 
 if('mediaSession' in navigator){ navigator.mediaSession.setActionHandler('nexttrack',()=>playNextCue(false, true)); navigator.mediaSession.setActionHandler('play',()=>paused?toggleGlobalPause():playNextCue(false, true)); navigator.mediaSession.setActionHandler('pause',()=>!paused&&toggleGlobalPause()); }
  window.addEventListener('load',()=>sessionStorage.getItem('mc_pocket')==='true'&&setTimeout(()=>toggleLock(!0),500));
