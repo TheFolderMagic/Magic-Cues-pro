@@ -736,10 +736,29 @@ const displayShowNote = (tObj, trackDuration) => {
 
 const chkGrpDemote = () => { if(isSideAct && actSideId && sideTrks.length<=1){ let pi=tracks.findIndex(x=>x.id===actSideId); if(pi>-1){ let p=tracks[pi]; if(p.isCueGroup){ if(sideTrks.length===1){ let r=sideTrks[0]; r.type=p.type; tracks.splice(pi,1,r); }else tracks.splice(pi,1); save(); closeSideload(); render(); return !0; } } } return !1; };
 const buildNfcMenu = () => { let h=`<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_NEXT', 'Next Cue')"><span class="material-symbols-rounded">nfc</span> Program 'Next Cue'</button><button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PLAYPAUSE', 'Play/Pause')"><span class="material-symbols-rounded">nfc</span> Program 'Toggle Mic'</button>`; tracks.filter(t=>t.type==='pad').forEach(p=>h+=`<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PAD_${p.id}', '${p.name.replace(/'/g,"\\'")}')"><span class="material-symbols-rounded">nfc</span> Program '${p.name}'</button>`); $('nfc-dynamic-list').innerHTML=h; };  
-const setLang = l => { settings.lang=l; updSet('lang',l); document.querySelectorAll('#lang-controls button').forEach(b=>b.classList.remove('active')); $(l==='en-US'?'lang-en':'lang-de').classList.add('active'); if(rec) rec.lang=l; };  
+const setLang = l => { settings.lang=l; updSet('lang',l); document.querySelectorAll('#lang-controls button').forEach(b=>b.classList.remove('active')); let b = $(l==='en-US'?'lang-en':'lang-de'); if(b) b.classList.add('active'); if(rec) rec.lang=l; };  
 const updSet = (k,v) => { settings[k]=v; localStorage.setItem('mc_settings', JSON.stringify(settings)); };  
 const applyUISize = () => { document.body.style.zoom = (settings.uiSize || 100) + '%'; };
-const applySettings = () => { setTheme(settings.theme); setLang(settings.lang); ['progress','confirm-reset','auto-pause-mic','haptics','dragging','pocket','strong-pocket-haptics','nfc'].forEach(k=>{let p=k.replace(/-([a-z])/g,g=>g[1].toUpperCase()); $($={`${k}-toggle`}) && ($($={`${k}-toggle`}).checked=settings[p==='progress'?'showProgress':p==='nfc'?'nfcEnabled':p==='haptics'?'enableHaptics':p==='dragging'?'enableDragging':p]);}); document.body.classList.toggle('show-progress',settings.showProgress); applyUISize(); $('ui-size-slider').value=settings.uiSize||100; $('ui-size-slider').style.setProperty('--v', ((settings.uiSize||100)-50)/100*100+'%'); if(settings.nfcEnabled) setTimeout(()=>toggleNFC(!0), 1000); initSortables(); };  
+
+const applySettings = () => { 
+    setTheme(settings.theme); 
+    setLang(settings.lang); 
+    ['progress','confirm-reset','auto-pause-mic','haptics','dragging','pocket','strong-pocket-haptics','nfc'].forEach(k => {
+        let p = k.replace(/-([a-z])/g, g => g[1].toUpperCase()); 
+        let el = $(`${k}-toggle`);
+        if (el) el.checked = settings[p === 'progress' ? 'showProgress' : p === 'nfc' ? 'nfcEnabled' : p === 'haptics' ? 'enableHaptics' : p === 'dragging' ? 'enableDragging' : p];
+    }); 
+    document.body.classList.toggle('show-progress', settings.showProgress); 
+    applyUISize(); 
+    let uiSlider = $('ui-size-slider');
+    if (uiSlider) {
+        uiSlider.value = settings.uiSize || 100; 
+        uiSlider.style.setProperty('--v', ((settings.uiSize || 100) - 50) / 100 * 100 + '%');
+    }
+    if (settings.nfcEnabled) setTimeout(() => toggleNFC(true), 1000); 
+    initSortables(); 
+};
+
 const setTheme = t => { document.documentElement.setAttribute('data-theme', t==='auto'?(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):t); document.querySelectorAll('#theme-controls button').forEach(b=>b.classList.remove('active')); let targetBtn = $(`btn-${t==='high-vis'?'vis':t}`); if(targetBtn) targetBtn.classList.add('active'); updSet('theme',t); };  
 window.matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>settings.theme==='auto'&&setTheme('auto'));  
 
@@ -778,7 +797,7 @@ let pTm, dLng=!1; const sPrs=id=>{dLng=!1; pTm=setTimeout(()=>{haptic(30); dLng=
 const openProjects = () => { $('projects-list-container').innerHTML=projectsList.map(p=>`<div class="project-item ${p.id===curProjId?'active':''}" oncontextmenu="return false;" onpointerdown="sPrs('${p.id}')" onpointerup="cPrs()" onpointerleave="cPrs()" onclick="clPrj('${p.id}')"><span style="font-weight:700">${p.name}</span>${p.id===curProjId?'<span class="material-symbols-rounded">check_circle</span>':''}</div>`).join(''); openModal('projects-modal'); };  
 const createNewProject = () => { let n=$('new-show-name').value.trim(); if(!n)return; let id=Date.now().toString(); projectsList.push({id,name:n}); db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList'); closeModal('new-show-modal'); $('new-show-name').value=''; swPrj(id); };  
 const saveShowEdit = () => { let n=$('edit-show-name').value.trim(); if(n&&editProjId){ let p=projectsList.find(x=>x.id===editProjId); if(p)p.name=n; db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList'); if(editProjId===curProjId) $('header-title-text').innerText=n; } closeModal('edit-show-modal'); openProjects(); };  
-const duplicateShow = () => { let p=projectsList.find(x=>x.id===editProjId); if(!p)return; let id=Date.now().toString(); projectsList.push({id,name:p.name+" (Copy)"}); let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('store').get('proj_'+editProjId).onsuccess=r=>{ let cp=JSON.parse(JSON.stringify(r.target.result||[])); cp.forEach(t=>{t.id='id'+Date.now()+Math.random().toString(36).slice(2); let o=(r.target.result||[]).find(x=>x.name===t.name); if(o&&o.file)t.file=o.file;}); db.transaction('store','readwrite').objectStore('store').put(cp,'proj_'+id); closeModal('edit-show-modal'); openProjects(); }; };
+const duplicateShow = () => { let p=projectsList.find(x=>x.id===editProjId); if(!p)return; let id=Date.now().toString(); projectsList.push({id,name:p.name+" (Copy)"}); let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('get-show').get('proj_'+editProjId).onsuccess=r=>{ let cp=JSON.parse(JSON.stringify(r.target.result||[])); cp.forEach(t=>{t.id='id'+Date.now()+Math.random().toString(36).slice(2); let o=(r.target.result||[]).find(x=>x.name===t.name); if(o&&o.file)t.file=o.file;}); db.transaction('store','readwrite').objectStore('store').put(cp,'proj_'+id); closeModal('edit-show-modal'); openProjects(); }; };
 const deleteShow = () => { if(projectsList.length<=1)return showAlert("Notice","Cannot delete last show."); projectsList=projectsList.filter(x=>x.id!==editProjId); let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('store').delete('proj_'+editProjId); closeModal('edit-show-modal'); curProjId===editProjId?swPrj(projectsList[0].id):openProjects(); };  
 const swPrj = id => { if(curProjId===id)return; executeReset(); tracks.forEach(t=>t.blobUrl&&URL.revokeObjectURL(t.blobUrl)); curProjId=id; localStorage.setItem('mc_curProj',id); $('header-title-text').innerText=projectsList.find(x=>x.id===id).name; closeModal('projects-modal'); db.transaction('store').objectStore('store').get('proj_'+id).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:t.file?URL.createObjectURL(t.file):undefined})):[]; render(); }; };  
 
@@ -1010,10 +1029,6 @@ const openSet = (id,s=!1) => {
     } 
     $('modal-content').innerHTML=h; 
     if(!$('settings-modal').open) openModal('settings-modal'); 
-
-    if (!settings.advancedTutorialCompleted && !tutActive) {
-        setTimeout(() => { openAdvancedTutorial(0); }, 300);
-    }
 };
 
 let ws = null, wsRegions = null, tempTrimStart = 0, tempTrimEnd = 0, tempCutStart = 0, tempCutEnd = 0, trTab = 0;
@@ -1749,9 +1764,51 @@ const confirmPocketExit = () => { if(!$('pocket-unlock-check').checked){haptic([
   
 let rec, isLis=!1, spErr=!1, prLen=0, micOn=!1, spLog=[];  
 const upSp = t => { if(t&&t.trim()!==""){spLog.push(t);if(spLog.length>3)spLog.shift();} $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">&gt;</span> ')+(isLis?'<span style="animation:pulse 1s infinite">_</span>':''); $('speech-debug').scrollTop=$('speech-debug').scrollHeight; };  
-const initSpeech = () => { window.SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition; if(!window.SpeechRecognition)return; rec=new window.SpeechRecognition(); rec.continuous=!0; rec.interimResults=!0; rec.lang=settings.lang; rec.onstart=()=>{prLen=0;$('mic-btn').className='mic-active';$('mic-icon').innerText='mic';spLog=["Listening..."];upSp("");}; rec.onresult=e=>{ let fl=''; for(let i=e.resultIndex;i<e.results.length;++i)fl+=e.results[i][0].transcript; let nw=fl.substring(prLen); $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">&gt;</span> ')+'<br><span style="color:var(--accent);font-weight:800">&gt;</span> '+fl; $('speech-debug').scrollTop=$('speech-debug').scrollHeight; let ss=nw.toLowerCase().replace(/[.,!?]/g,'').trim(); if(!ss)return; let trg=!1, q=tracks.filter(x=>x.type==='queue'); if(curIdx<q.length&&q[curIdx].triggerPhrase&&!q[curIdx].globalVoice&&ss.includes(q[curIdx].triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);playNextCue();trg=!0;} if(!trg)for(let t of tracks)if(t.globalVoice&&t.triggerPhrase&&ss.includes(t.triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);t.type==='queue'?playCue(t.id):playPad(t);trg=!0;break;} if(trg)prLen=fl.length; }; rec.onerror=()=>{spErr=!0;if(micOn&&!isPly()){isLis=!1;micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';}}; rec.onend=()=>{prLen=0;if(isLis&&micOn&&!spErr)try{rec.start();}catch(e){} spErr=!1;}; };  
+const initSpeech = () => { 
+    window.SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition; 
+    if(!window.SpeechRecognition)return; 
+    rec=new window.SpeechRecognition(); 
+    rec.continuous=!0; 
+    rec.interimResults=!0; 
+    rec.lang=settings.lang; 
+    rec.onstart=()=>{
+        prLen=0;
+        $('mic-btn').className='mic-active';
+        $('mic-icon').innerText='mic';
+        spLog=["Listening..."];
+        upSp("");
+    }; 
+    rec.onresult=e=>{ 
+        let fl=''; 
+        for(let i=e.resultIndex;i<e.results.length;++i)fl+=e.results[i][0].transcript; 
+        let nw=fl.substring(prLen); 
+        $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">&gt;</span> ')+'<br><span style="color:var(--accent);font-weight:800">&gt;</span> '+fl; 
+        $('speech-debug').scrollTop=$('speech-debug').scrollHeight; 
+        let ss=nw.toLowerCase().replace(/[.,!?]/g,'').trim(); 
+        if(!ss)return; 
+        let trg=!1, q=tracks.filter(x=>x.type==='queue'); 
+        if(curIdx<q.length&&q[curIdx].triggerPhrase&&!q[curIdx].globalVoice&&ss.includes(q[curIdx].triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);playNextCue();trg=!0;} 
+        if(!trg)for(let t of tracks)if(t.globalVoice&&t.triggerPhrase&&ss.includes(t.triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);t.type==='queue'?playCue(t.id):playPad(t);trg=!0;break;} 
+        if(trg)prLen=fl.length; 
+    }; 
+    rec.onerror=()=>{spErr=!0;if(micOn&&!isPly()){isLis=!1;micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';}}; 
+    rec.onend=()=>{prLen=0;if(isLis&&micOn&&!spErr)try{rec.start();}catch(e){} spErr=!1;}; 
+};  
 const mngMic = () => { if(!micOn||!rec)return; if(settings.autoPauseMic&&isPly()){isLis=!1;try{rec.stop();}catch(e){}$('mic-btn').className='mic-paused';$('mic-icon').innerText='mic_off';spLog=["Mic paused..."];upSp("");}else if(!isLis){isLis=!0;try{rec.start();}catch(e){}} };  
-const toggleMic = () => { micOn=!micOn; if(micOn){$('speech-debug').style.display='block'; if(settings.autoPauseMic&&isPly()){$('mic-btn').className='mic-paused';spLog=["Mic paused..."];upSp("");}else{isLis=!0;spErr=!1;prLen=0;try{rec.start();}catch(e){}}}else{isLis=!1;try{rec.stop();}catch(e){} micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';$('speech-debug').style.display='none';} };  
+const toggleMic = () => { 
+    micOn=!micOn; 
+    if(micOn){
+        $('speech-debug').style.display='block'; 
+        if(settings.autoPauseMic&&isPly()){
+            $('mic-btn').className='mic-paused';spLog=["Mic paused..."];upSp("");
+        }else{
+            isLis=!0;spErr=!1;prLen=0;try{rec.start();}catch(e){}
+        }
+        if (tutActive && tutType === 'basic' && tutStep === 6) { openTutorial(7); }
+    }else{
+        isLis=!1;try{rec.stop();}catch(e){} micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';$('speech-debug').style.display='none';
+    } 
+};  
   
 const initSortables = () => {  
     [sortQueue,sortGrid,sortSideQueue,sortSideGrid,sortExtract].forEach(s=>s&&s.destroy());
@@ -1919,6 +1976,8 @@ const setTutMinimized = (min) => {
     const cardView = $('tut-card-view');
     const bubbleView = $('tut-bubble-view');
     const bar = $('tutorial-bar');
+    
+    if(!bar || !cardView || !bubbleView) return;
     
     if (min) {
         cardView.style.display = 'none';
@@ -2100,6 +2159,7 @@ window.nextTutStep = () => {
 // Smooth pointer dragging script to allow absolute relocations of tutorial box
 const initDraggableTutorial = () => {
     const el = $('tutorial-bar');
+    if (!el) return;
     let xOffset = 0, yOffset = 0;
     let active = false;
     let dragStart = { x: 0, y: 0 };
