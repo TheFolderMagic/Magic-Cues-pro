@@ -54,7 +54,7 @@ jobs:
           const path = "android/app/src/main/AndroidManifest.xml";
           if (fs.existsSync(path)) {
             let content = fs.readFileSync(path, "utf8");
-            const add = "\n    <uses-permission android:name=\"android.permission.RECORD_AUDIO\" />\n    <uses-permission android:name=\"android.permission.NFC\" />\n    <uses-feature android:name=\"android.hardware.nfc\" android:required=\"false\" />\n";
+            const add = "\n    <uses-permission android:name=\"android.permission.RECORD_AUDIO\" />\n    <uses-permission android:name=\"android.permission.NFC\" />\n    <uses-feature android:name=\"android.hardware.nfc\" android:required=\"false\" />\n    <queries>\n        <intent>\n            <action android:name=\"android.speech.RecognitionService\" />\n        </intent>\n    </queries>\n";
             content = content.replace("</manifest>", add + "</manifest>");
             fs.writeFileSync(path, content, "utf8");
             console.log("Manifest updated successfully.");
