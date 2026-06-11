@@ -33,7 +33,7 @@ public class MainActivity extends BridgeActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         if (nfcBridge != null) {
             nfcBridge.enableForegroundDispatch();
@@ -41,7 +41,7 @@ public class MainActivity extends BridgeActivity {
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         if (nfcBridge != null) {
             nfcBridge.disableForegroundDispatch();
@@ -49,7 +49,7 @@ public class MainActivity extends BridgeActivity {
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
+    public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (nfcBridge != null) {
             nfcBridge.handleIntent(intent);
