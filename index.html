@@ -147,7 +147,7 @@ html[data-theme="high-vis"] .trim-controls button:active { color: #000; }
     font-weight: 600;
 }
 
-/* Floating Interactive Tutorial Element Animations & Styling */
+/* Draggable Tutorial Bubble & Card CSS Layout */
 .tut-step-indicator { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; display: block; }
 .tut-section-badge { display: inline-block; padding: 4px 10px; border-radius: 8px; background: var(--accent-glow); color: var(--accent); font-size: 11px; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
 html[data-theme="high-vis"] .tut-section-badge { background: #ff0; color: #000; }
@@ -161,6 +161,48 @@ html[data-theme="high-vis"] .tut-section-badge { background: #ff0; color: #000; 
     animation: tut-glow 1.5s infinite !important;
     position: relative !important;
     z-index: 10001 !important;
+}
+
+/* Redesigned Floating, Non-Blocking, Draggable Tutorial Widget */
+#tutorial-bar {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: calc(100% - 48px);
+    max-width: 340px;
+    background: var(--modal-bg);
+    border: 2px solid var(--accent);
+    border-radius: 24px;
+    padding: 16px;
+    z-index: 10003;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none; /* Required to suppress standard browser scrolling during drags */
+    cursor: grab;
+}
+#tutorial-bar:active {
+    cursor: grabbing;
+}
+#tut-card-view {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+#tut-bubble-view {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    cursor: pointer;
+    background: var(--modal-bg);
+    animation: pulse 1.5s infinite;
 }
 </style></head>  
 <body class="unlocked show-progress"><header><h1 onclick="haptic(15);openProjects()"><span id="header-title-text">Magic Cues</span><span class="material-symbols-rounded" style="font-size:28px">expand_more</span></h1><div style="display:flex;gap:8px"><button class="icon-btn" id="header-settings-btn" onclick="haptic(15);openModal('app-settings')"><span class="material-symbols-rounded">settings</span></button><button class="icon-btn" id="header-lock-btn" onclick="haptic(15);toggleLock()"><span class="material-symbols-rounded" id="lock-icon">lock_open</span></button></div></header><div class="master-grid"><button id="master-play" onclick="playNextCue(false, true)"><span class="material-symbols-rounded">play_arrow</span><span id="play-text">Start Show</span></button><button id="mic-btn" onclick="haptic(15);toggleMic()"><span class="material-symbols-rounded" id="mic-icon">mic_off</span></button><button id="pause-btn" onclick="haptic(15);toggleGlobalPause()"><span class="material-symbols-rounded" id="pause-icon">pause</span></button></div><div id="speech-debug"><div id="speech-text">...</div></div><div class="action-row"><button class="action-btn" id="add-cue-btn" onclick="haptic(15);$('file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button><button class="action-btn" id="reset-show-btn" onclick="haptic([15,30,15]);triggerReset()"><span class="material-symbols-rounded">restart_alt</span> Reset</button></div><input type="file" id="file-input" accept="audio/*,.magic,.json" multiple onchange="handleFiles(this)" style="display:none"><input type="file" id="import-file-input" accept=".magic,.json" style="display:none" onchange="importShow(this)"><input type="file" id="sideload-file-input" accept="audio/*,.magic,.json" multiple onchange="handleSideloadFiles(this)" style="display:none"><div id="queue-container"><h2 id="queue-label">Main Queue</h2><div id="track-list"></div></div>
@@ -450,27 +492,34 @@ html[data-theme="high-vis"] .tut-section-badge { background: #ff0; color: #000; 
     <div style="display:flex; gap:10px; padding: 0 20px 20px;"><button class="action-btn" style="border:none; padding:12px" onclick="closeTrimModal()">Cancel</button><button class="action-btn" style="flex:1; background:var(--accent); color:#fff; border:none; padding:12px" onclick="saveTrim()">Save</button></div>
 </dialog>
 
-<!-- Interactive Floating Onboarding Guide Bar -->
-<div id="tutorial-bar" style="position: absolute; bottom: 24px; left: 24px; right: 24px; background: var(--modal-bg); border: 2px solid var(--accent); border-radius: 24px; padding: 20px; z-index: 10002; box-shadow: 0 20px 50px rgba(0,0,0,0.6); display: none; flex-direction: column; gap: 12px; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);">
-    <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-        <div>
-            <span class="tut-step-indicator" id="tut-bar-step">Step 1</span>
-            <span class="tut-section-badge" id="tut-bar-badge">Onboarding</span>
-            <h4 id="tut-bar-title" style="margin: 4px 0 0 0; font-size: 16px; font-weight: 700;">Tutorial</h4>
+<!-- Glowing, Interactive Floating Draggable Tutorial Panel/Bubble -->
+<div id="tutorial-bar">
+    <!-- Card View Layout -->
+    <div id="tut-card-view">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+            <div>
+                <span class="tut-step-indicator" id="tut-bar-step">Step 1</span>
+                <span class="tut-section-badge" id="tut-bar-badge">Onboarding</span>
+                <h4 id="tut-bar-title" style="margin: 4px 0 0 0; font-size: 16px; font-weight: 700;">Tutorial</h4>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button class="icon-btn" style="width: 32px; height: 32px; border-radius: 10px; background: rgba(128,128,128,0.15); border: none;" onclick="toggleTutMinimize()">
+                    <span class="material-symbols-rounded" id="tut-minimize-icon" style="font-size: 16px;">unfold_less</span>
+                </button>
+                <button class="icon-btn" style="width: 32px; height: 32px; border-radius: 10px; background: rgba(128,128,128,0.15); border: none;" onclick="skipTutorial()">
+                    <span class="material-symbols-rounded" style="font-size: 16px;">close</span>
+                </button>
+            </div>
         </div>
-        <div style="display: flex; gap: 8px;">
-            <button class="icon-btn" style="width: 32px; height: 32px; border-radius: 10px; background: rgba(128,128,128,0.15); border: none;" onclick="toggleTutMinimize()">
-                <span class="material-symbols-rounded" id="tut-minimize-icon" style="font-size: 16px;">unfold_less</span>
-            </button>
-            <button class="icon-btn" style="width: 32px; height: 32px; border-radius: 10px; background: rgba(128,128,128,0.15); border: none;" onclick="skipTutorial()">
-                <span class="material-symbols-rounded" style="font-size: 16px;">close</span>
-            </button>
+        <p id="tut-bar-text" style="margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-muted); font-weight: 500;"></p>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;" id="tut-bar-actions">
+            <button class="action-btn" id="tut-bar-prev" style="padding: 8px 16px; font-size: 13px; border-radius: 10px; flex: none; width: auto;" onclick="prevTutStep()">Back</button>
+            <button class="action-btn" id="tut-bar-next" style="padding: 8px 16px; font-size: 13px; background: var(--accent); color: #fff; border-radius: 10px; flex: none; width: auto;" onclick="nextTutStep()">Next</button>
         </div>
     </div>
-    <p id="tut-bar-text" style="margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-muted); font-weight: 500;"></p>
-    <div style="display: flex; justify-content: flex-end; gap: 8px;" id="tut-bar-actions">
-        <button class="action-btn" id="tut-bar-prev" style="padding: 8px 16px; font-size: 13px; border-radius: 10px; flex: none; width: auto;" onclick="prevTutStep()">Back</button>
-        <button class="action-btn" id="tut-bar-next" style="padding: 8px 16px; font-size: 13px; background: var(--accent); color: #fff; border-radius: 10px; flex: none; width: auto;" onclick="nextTutStep()">Next</button>
+    <!-- Glowing Bubble PIP View Layout (Floating Chat Head) -->
+    <div id="tut-bubble-view" onclick="toggleTutMinimize()">
+        <span class="material-symbols-rounded" style="font-size: 28px; color: var(--accent);">help_center</span>
     </div>
 </div>
 
@@ -690,8 +739,8 @@ const buildNfcMenu = () => { let h=`<button class="action-btn" style="margin-bot
 const setLang = l => { settings.lang=l; updSet('lang',l); document.querySelectorAll('#lang-controls button').forEach(b=>b.classList.remove('active')); $(l==='en-US'?'lang-en':'lang-de').classList.add('active'); if(rec) rec.lang=l; };  
 const updSet = (k,v) => { settings[k]=v; localStorage.setItem('mc_settings', JSON.stringify(settings)); };  
 const applyUISize = () => { document.body.style.zoom = (settings.uiSize || 100) + '%'; };
-const applySettings = () => { setTheme(settings.theme); setLang(settings.lang); ['progress','confirm-reset','auto-pause-mic','haptics','dragging','pocket','strong-pocket-haptics','nfc'].forEach(k=>{let p=k.replace(/-([a-z])/g,g=>g[1].toUpperCase()); $(`${k}-toggle`).checked=settings[p==='progress'?'showProgress':p==='nfc'?'nfcEnabled':p==='haptics'?'enableHaptics':p==='dragging'?'enableDragging':p];}); document.body.classList.toggle('show-progress',settings.showProgress); applyUISize(); $('ui-size-slider').value=settings.uiSize||100; $('ui-size-slider').style.setProperty('--v', ((settings.uiSize||100)-50)/100*100+'%'); if(settings.nfcEnabled) setTimeout(()=>toggleNFC(!0), 1000); initSortables(); };  
-const setTheme = t => { document.documentElement.setAttribute('data-theme', t==='auto'?(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):t); document.querySelectorAll('#theme-controls button').forEach(b=>b.classList.remove('active')); $(`btn-${t==='high-vis'?'vis':t}`).classList.add('active'); updSet('theme',t); };  
+const applySettings = () => { setTheme(settings.theme); setLang(settings.lang); ['progress','confirm-reset','auto-pause-mic','haptics','dragging','pocket','strong-pocket-haptics','nfc'].forEach(k=>{let p=k.replace(/-([a-z])/g,g=>g[1].toUpperCase()); $($={`${k}-toggle`}) && ($($={`${k}-toggle`}).checked=settings[p==='progress'?'showProgress':p==='nfc'?'nfcEnabled':p==='haptics'?'enableHaptics':p==='dragging'?'enableDragging':p]);}); document.body.classList.toggle('show-progress',settings.showProgress); applyUISize(); $('ui-size-slider').value=settings.uiSize||100; $('ui-size-slider').style.setProperty('--v', ((settings.uiSize||100)-50)/100*100+'%'); if(settings.nfcEnabled) setTimeout(()=>toggleNFC(!0), 1000); initSortables(); };  
+const setTheme = t => { document.documentElement.setAttribute('data-theme', t==='auto'?(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):t); document.querySelectorAll('#theme-controls button').forEach(b=>b.classList.remove('active')); let targetBtn = $(`btn-${t==='high-vis'?'vis':t}`); if(targetBtn) targetBtn.classList.add('active'); updSet('theme',t); };  
 window.matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>settings.theme==='auto'&&setTheme('auto'));  
 
 let nfcR=null, nfcAb=null, nfcWrAb=null, lastNfc=0;   
@@ -961,6 +1010,10 @@ const openSet = (id,s=!1) => {
     } 
     $('modal-content').innerHTML=h; 
     if(!$('settings-modal').open) openModal('settings-modal'); 
+
+    if (!settings.advancedTutorialCompleted && !tutActive) {
+        setTimeout(() => { openAdvancedTutorial(0); }, 300);
+    }
 };
 
 let ws = null, wsRegions = null, tempTrimStart = 0, tempTrimEnd = 0, tempCutStart = 0, tempCutEnd = 0, trTab = 0;
@@ -1691,56 +1744,14 @@ const toggleGlobalPause = () => {
     if(!paused) evalDucking();
 };  
 
-const toggleLock = async (f=null) => { locked=f!==null?f:!locked; document.body.className=`${locked?'locked':'unlocked'} show-progress`; $('lock-icon').innerText=locked?'lock':'lock_open'; render(); if(locked&&settings.pocketMode){ $('pocket-unlock-check').checked=!1; $('pocket-mode-overlay').style.display='flex'; sessionStorage.setItem('mc_pocket','true'); try{document.documentElement.requestFullscreen(); if("wakeLock" in navigator)wakeLock=await navigator.wakeLock.request("screen");}catch(e){} if (tutActive && tutType === 'basic' && tutStep === 5) { openTutorial(6); } }else{ $('pocket-mode-overlay').style.display='none'; sessionStorage.removeItem('mc_pocket'); try{document.exitFullscreen(); if(wakeLock){wakeLock.release();wakeLock=null;}}catch(e){} } }; 
-const confirmPocketExit = () => { if(!$('pocket-unlock-check').checked){haptic([50,50]);return showAlert("Notice","Check confirm box.");} closeModal('pocket-confirm-modal'); toggleLock(!1); };  
+const toggleLock = async (f=null) => { locked=f!==null?f:!locked; document.body.className=`${locked?'locked':'unlocked'} show-progress`; $('lock-icon').innerText=locked?'lock':'lock_open'; render(); if(locked&&settings.pocketMode){ $('pocket-unlock-check').checked=!1; $('pocket-mode-overlay').style.display='flex'; sessionStorage.setItem('mc_pocket','true'); try{document.documentElement.requestFullscreen(); if("wakeLock" in navigator)wakeLock=await navigator.wakeLock.request("screen");}catch(e){} }else{ $('pocket-mode-overlay').style.display='none'; sessionStorage.removeItem('mc_pocket'); try{document.exitFullscreen(); if(wakeLock){wakeLock.release();wakeLock=null;}}catch(e){} } }; 
+const confirmPocketExit = () => { if(!$('pocket-unlock-check').checked){haptic([50,50]);return showAlert("Notice","Check box.");} closeModal('pocket-confirm-modal'); toggleLock(!1); };  
   
 let rec, isLis=!1, spErr=!1, prLen=0, micOn=!1, spLog=[];  
 const upSp = t => { if(t&&t.trim()!==""){spLog.push(t);if(spLog.length>3)spLog.shift();} $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">&gt;</span> ')+(isLis?'<span style="animation:pulse 1s infinite">_</span>':''); $('speech-debug').scrollTop=$('speech-debug').scrollHeight; };  
-const initSpeech = () => { 
-    window.SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition; 
-    if(!window.SpeechRecognition)return; 
-    rec=new window.SpeechRecognition(); 
-    rec.continuous=!0; 
-    rec.interimResults=!0; 
-    rec.lang=settings.lang; 
-    rec.onstart=()=>{
-        prLen=0;
-        $('mic-btn').className='mic-active';
-        $('mic-icon').innerText='mic';
-        spLog=["Listening..."];
-        upSp("");
-    }; 
-    rec.onresult=e=>{ 
-        let fl=''; 
-        for(let i=e.resultIndex;i<e.results.length;++i)fl+=e.results[i][0].transcript; 
-        let nw=fl.substring(prLen); 
-        $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">&gt;</span> ')+'<br><span style="color:var(--accent);font-weight:800">&gt;</span> '+fl; 
-        $('speech-debug').scrollTop=$('speech-debug').scrollHeight; 
-        let ss=nw.toLowerCase().replace(/[.,!?]/g,'').trim(); 
-        if(!ss)return; 
-        let trg=!1, q=tracks.filter(x=>x.type==='queue'); 
-        if(curIdx<q.length&&q[curIdx].triggerPhrase&&!q[curIdx].globalVoice&&ss.includes(q[curIdx].triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);playNextCue();trg=!0;} 
-        if(!trg)for(let t of tracks)if(t.globalVoice&&t.triggerPhrase&&ss.includes(t.triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);t.type==='queue'?playCue(t.id):playPad(t);trg=!0;break;} 
-        if(trg)prLen=fl.length; 
-    }; 
-    rec.onerror=()=>{spErr=!0;if(micOn&&!isPly()){isLis=!1;micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';}}; 
-    rec.onend=()=>{prLen=0;if(isLis&&micOn&&!spErr)try{rec.start();}catch(e){} spErr=!1;}; 
-};  
+const initSpeech = () => { window.SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition; if(!window.SpeechRecognition)return; rec=new window.SpeechRecognition(); rec.continuous=!0; rec.interimResults=!0; rec.lang=settings.lang; rec.onstart=()=>{prLen=0;$('mic-btn').className='mic-active';$('mic-icon').innerText='mic';spLog=["Listening..."];upSp("");}; rec.onresult=e=>{ let fl=''; for(let i=e.resultIndex;i<e.results.length;++i)fl+=e.results[i][0].transcript; let nw=fl.substring(prLen); $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">&gt;</span> ')+'<br><span style="color:var(--accent);font-weight:800">&gt;</span> '+fl; $('speech-debug').scrollTop=$('speech-debug').scrollHeight; let ss=nw.toLowerCase().replace(/[.,!?]/g,'').trim(); if(!ss)return; let trg=!1, q=tracks.filter(x=>x.type==='queue'); if(curIdx<q.length&&q[curIdx].triggerPhrase&&!q[curIdx].globalVoice&&ss.includes(q[curIdx].triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);playNextCue();trg=!0;} if(!trg)for(let t of tracks)if(t.globalVoice&&t.triggerPhrase&&ss.includes(t.triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);t.type==='queue'?playCue(t.id):playPad(t);trg=!0;break;} if(trg)prLen=fl.length; }; rec.onerror=()=>{spErr=!0;if(micOn&&!isPly()){isLis=!1;micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';}}; rec.onend=()=>{prLen=0;if(isLis&&micOn&&!spErr)try{rec.start();}catch(e){} spErr=!1;}; };  
 const mngMic = () => { if(!micOn||!rec)return; if(settings.autoPauseMic&&isPly()){isLis=!1;try{rec.stop();}catch(e){}$('mic-btn').className='mic-paused';$('mic-icon').innerText='mic_off';spLog=["Mic paused..."];upSp("");}else if(!isLis){isLis=!0;try{rec.start();}catch(e){}} };  
-const toggleMic = () => { 
-    micOn=!micOn; 
-    if(micOn){
-        $('speech-debug').style.display='block'; 
-        if(settings.autoPauseMic&&isPly()){
-            $('mic-btn').className='mic-paused';spLog=["Mic paused..."];upSp("");
-        }else{
-            isLis=!0;spErr=!1;prLen=0;try{rec.start();}catch(e){}
-        }
-        if (tutActive && tutType === 'basic' && tutStep === 6) { openTutorial(7); }
-    }else{
-        isLis=!1;try{rec.stop();}catch(e){} micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';$('speech-debug').style.display='none';
-    } 
-};  
+const toggleMic = () => { micOn=!micOn; if(micOn){$('speech-debug').style.display='block'; if(settings.autoPauseMic&&isPly()){$('mic-btn').className='mic-paused';spLog=["Mic paused..."];upSp("");}else{isLis=!0;spErr=!1;prLen=0;try{rec.start();}catch(e){}}}else{isLis=!1;try{rec.stop();}catch(e){} micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';$('speech-debug').style.display='none';} };  
   
 const initSortables = () => {  
     [sortQueue,sortGrid,sortSideQueue,sortSideGrid,sortExtract].forEach(s=>s&&s.destroy());
@@ -1790,7 +1801,6 @@ let tutActive = false;
 let tutType = 'basic'; 
 let tutStep = 0;
 let advStep = 0;
-let tutMinimized = false;
 
 const basicSteps = [
     {
@@ -1883,7 +1893,7 @@ const advancedSteps = [
     {
         title: "Configure Timing Rules",
         badge: "Advanced Step 5: Automations Logic",
-        text: "Program automations:<br>• <strong>Pre-Delay</strong>: Delays start.<br>• <strong>Auto-Follow</strong>: Automatically triggers subsequent cues.<br>• <strong>Stop BG Audio</strong>: Silences atmospherics instantly.<br>• <strong>Background Mode</strong>: Loop atmospherics with automated ducking volume levels.<br><br>Tap the close (X) icon to conclude.",
+        text: "Program automations:<br>• <strong>Pre-Delay</strong>: Delays start.<br>• <strong>Auto-Follow</strong>: Automatically triggers subsequent cues.<br>• <strong>Stop BG Audio</strong>: Silences atmospherics instantly.<br>• <strong>Background Mode</strong>: Loop atmospherics with ducking volume levels.<br><br>Tap the close (X) icon to conclude.",
         target: () => document.querySelector('#timing-modal .icon-btn'),
         waitForAction: true
     },
@@ -1901,27 +1911,31 @@ const checkTutDetailsExpand = () => {
 };
 
 const toggleTutMinimize = () => {
-    tutMinimized = !tutMinimized;
-    const textEl = $('tut-bar-text');
-    const actionsEl = $('tut-bar-actions');
-    const stepEl = $('tut-bar-step');
-    const badgeEl = $('tut-bar-badge');
-    const toggleIcon = $('tut-minimize-icon');
+    setTutMinimized(!tutMinimized);
+};
+
+const setTutMinimized = (min) => {
+    tutMinimized = min;
+    const cardView = $('tut-card-view');
+    const bubbleView = $('tut-bubble-view');
+    const bar = $('tutorial-bar');
     
-    if (tutMinimized) {
-        textEl.style.display = 'none';
-        actionsEl.style.display = 'none';
-        if(stepEl) stepEl.style.display = 'none';
-        if(badgeEl) badgeEl.style.display = 'none';
-        if(toggleIcon) toggleIcon.innerText = 'unfold_more';
-        $('tutorial-bar').style.padding = '10px 20px';
+    if (min) {
+        cardView.style.display = 'none';
+        bubbleView.style.display = 'flex';
+        bar.style.width = '56px';
+        bar.style.height = '56px';
+        bar.style.padding = '0';
+        bar.style.borderRadius = '50%';
+        bar.style.overflow = 'hidden';
     } else {
-        textEl.style.display = 'block';
-        actionsEl.style.display = 'flex';
-        if(stepEl) stepEl.style.display = 'block';
-        if(badgeEl) badgeEl.style.display = 'inline-block';
-        if(toggleIcon) toggleIcon.innerText = 'unfold_less';
-        $('tutorial-bar').style.padding = '20px';
+        cardView.style.display = 'flex';
+        bubbleView.style.display = 'none';
+        bar.style.width = 'calc(100% - 48px)';
+        bar.style.height = 'auto';
+        bar.style.padding = '16px';
+        bar.style.borderRadius = '24px';
+        bar.style.overflow = 'visible';
     }
 };
 
@@ -1932,19 +1946,21 @@ const adjustTutorialBarParent = () => {
     if (activeDialog) {
         if (tutBar.parentElement !== activeDialog) {
             activeDialog.appendChild(tutBar);
+            tutBar.resetDrag(); // Reset transformations when structural dialog hierarchies change
         }
         tutBar.style.position = 'absolute';
-        tutBar.style.top = '16px';  // Float dynamically near the top of the dialog card
+        tutBar.style.top = '16px';  // Position safely near the top of the dialog card
         tutBar.style.bottom = 'auto';
         tutBar.style.left = '16px';
         tutBar.style.right = '16px';
-        tutBar.style.zIndex = '10002';
+        tutBar.style.zIndex = '10003';
     } else {
         if (tutBar.parentElement !== document.body) {
             document.body.appendChild(tutBar);
+            tutBar.resetDrag();
         }
         tutBar.style.position = 'fixed';
-        tutBar.style.bottom = '24px'; // Float near the bottom of main workspace viewport
+        tutBar.style.bottom = '24px'; // Position safely near the bottom of main view
         tutBar.style.top = 'auto';
         tutBar.style.left = '24px';
         tutBar.style.right = '24px';
@@ -1968,6 +1984,12 @@ const openTutorial = (stepIdx = 0) => {
     tutActive = true;
     tutType = 'basic';
     tutStep = stepIdx;
+    
+    // Automatically close stacked menus when stepping from step 2 to step 3
+    if (stepIdx === 2) {
+        closeModal('cue-menu-modal');
+    }
+    
     const step = basicSteps[tutStep];
     if (!step) return;
 
@@ -1977,6 +1999,13 @@ const openTutorial = (stepIdx = 0) => {
 
     applyTutHighlight(step.target);
     adjustTutorialBarParent();
+
+    // Auto-collapse into glowing bubble during step 1 & 2 to keep full view on main list controls
+    if (step.waitForAction) {
+        setTutMinimized(true);
+    } else {
+        setTutMinimized(false);
+    }
 
     $('tut-bar-prev').style.display = tutStep === 0 ? 'none' : 'block';
     $('tut-bar-next').style.display = step.waitForAction ? 'none' : 'block';
@@ -2029,6 +2058,12 @@ const openAdvancedTutorial = (stepIdx = 0) => {
     applyTutHighlight(step.target);
     adjustTutorialBarParent();
 
+    if (step.waitForAction) {
+        setTutMinimized(true);
+    } else {
+        setTutMinimized(false);
+    }
+
     $('tut-bar-prev').style.display = 'none';
     $('tut-bar-next').style.display = step.waitForAction ? 'none' : 'block';
     $('tut-bar-next').innerText = advStep === advancedSteps.length - 1 ? 'Close' : 'Next';
@@ -2062,10 +2097,59 @@ window.nextTutStep = () => {
     }
 };
 
+// Smooth pointer dragging script to allow absolute relocations of tutorial box
+const initDraggableTutorial = () => {
+    const el = $('tutorial-bar');
+    let xOffset = 0, yOffset = 0;
+    let active = false;
+    let dragStart = { x: 0, y: 0 };
+    
+    const dragStartHandler = (e) => {
+        if (e.target.closest('button, input, textarea, select')) return;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        
+        dragStart.x = clientX - xOffset;
+        dragStart.y = clientY - yOffset;
+        active = true;
+    };
+    
+    const dragMoveHandler = (e) => {
+        if (!active) return;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        
+        xOffset = clientX - dragStart.x;
+        yOffset = clientY - dragStart.y;
+        
+        el.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+    };
+    
+    const dragEndHandler = () => {
+        active = false;
+    };
+    
+    el.addEventListener('mousedown', dragStartHandler, { passive: true });
+    el.addEventListener('touchstart', dragStartHandler, { passive: true });
+    
+    document.addEventListener('mousemove', dragMoveHandler, { passive: true });
+    document.addEventListener('touchmove', dragMoveHandler, { passive: true });
+    
+    document.addEventListener('mouseup', dragEndHandler, { passive: true });
+    document.addEventListener('touchend', dragEndHandler, { passive: true });
+    
+    el.resetDrag = () => {
+        xOffset = 0;
+        yOffset = 0;
+        el.style.transform = `translate(0px, 0px)`;
+    };
+};
+
 if('mediaSession' in navigator){ navigator.mediaSession.setActionHandler('nexttrack',()=>playNextCue(false, true)); navigator.mediaSession.setActionHandler('play',()=>paused?toggleGlobalPause():playNextCue(false, true)); navigator.mediaSession.setActionHandler('pause',()=>!paused&&toggleGlobalPause()); }  
 window.addEventListener('load',()=>sessionStorage.getItem('mc_pocket')==='true'&&setTimeout(()=>toggleLock(!0),500));  
 document.fonts.ready.then(()=>{
     document.body.style.opacity="1";
+    initDraggableTutorial();
     // Launch the basic guide on initial start up if not completed
     if (!settings.tutorialCompleted) {
         setTimeout(() => openTutorial(0), 1000);
