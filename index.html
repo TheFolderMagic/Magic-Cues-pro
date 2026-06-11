@@ -159,23 +159,32 @@ html[data-theme="high-vis"] .trim-controls button:active { color: #000; }
     background: var(--modal-bg);
     border: 2px solid var(--accent);
     border-radius: 24px;
-    padding: 20px;
-    z-index: 11000; /* Float correctly in front of active dialog panels */
+    padding: 12px 16px;
+    z-index: 12000; /* Float correctly in front of active dialog panels */
     box-shadow: 0 20px 50px rgba(0,0,0,0.6);
     display: none;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
+    max-width: 360px;
+    margin: 0 auto;
 }
 #tutorial-bar p {
     font-size: 13px !important;
     line-height: 1.4 !important;
-    margin: 0 0 10px 0 !important;
+    margin: 0 0 6px 0 !important;
     color: var(--text-main);
 }
+#tutorial-bar .tut-step-indicator {
+    font-size: 9px;
+}
+#tutorial-bar .tut-section-badge {
+    padding: 2px 6px;
+    font-size: 9px;
+    margin-bottom: 4px;
+}
 #tutorial-bar .action-btn {
-    padding: 8px 12px !important;
+    padding: 6px 12px !important;
     font-size: 12px !important;
-    border-radius: 10px !important;
 }
 </style></head>  
 <body class="unlocked show-progress"><header><h1 id="show-title-header" onclick="haptic(15);openProjects()"><span id="header-title-text">Magic Cues</span><span class="material-symbols-rounded" style="font-size:28px">expand_more</span></h1><div style="display:flex;gap:8px"><button class="icon-btn" id="header-settings-btn" onclick="haptic(15);openModal('app-settings')"><span class="material-symbols-rounded">settings</span></button><button class="icon-btn" id="header-lock-btn" onclick="haptic(15);toggleLock()"><span class="material-symbols-rounded" id="lock-icon">lock_open</span></button></div></header><div class="master-grid"><button id="master-play" onclick="playNextCue(false, true)"><span class="material-symbols-rounded">play_arrow</span><span id="play-text">Start Show</span></button><button id="mic-btn" onclick="haptic(15);toggleMic()"><span class="material-symbols-rounded" id="mic-icon">mic_off</span></button><button id="pause-btn" onclick="haptic(15);toggleGlobalPause()"><span class="material-symbols-rounded" id="pause-icon">pause</span></button></div><div id="speech-debug"><div id="speech-text">...</div></div><div class="action-row"><button class="action-btn" id="add-cue-btn" onclick="haptic(15);$('file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button><button class="action-btn" id="reset-show-btn" onclick="haptic([15,30,15]);triggerReset()"><span class="material-symbols-rounded">restart_alt</span> Reset</button></div><input type="file" id="file-input" accept="audio/*,.magic,.json" multiple onchange="handleFiles(this)" style="display:none"><input type="file" id="import-file-input" accept=".magic,.json" style="display:none" onchange="importShow(this)"><input type="file" id="sideload-file-input" accept="audio/*,.magic,.json" multiple onchange="handleSideloadFiles(this)" style="display:none"><div id="queue-container"><h2 id="queue-label">Main Queue</h2><div id="track-list"></div></div>
@@ -1355,6 +1364,9 @@ const updTrk = (k,v) => {
         if(k==='volume')[activeCues,activePads,actSideCues,actSidePads].forEach(m=>m.has(actId)&&(m.get(actId).volume=t[k])); 
         if(k==='type')closeModal('settings-modal'); 
         isSetSide?(saveSide(),renderSide()):(save(),render()); 
+        if (tutActive) {
+            evalTutorialStep();
+        }
     } 
 };  
 const deleteTrack = () => { 
@@ -1436,6 +1448,7 @@ const rAud = (t,L,s,pA=null) => {
         s ? renderSide() : render();
     }
     
+    s?(sidePaused=!1,$('sideload-pause-icon').innerText='pause'):(paused=!1,$('pause-icon').innerText='pause');
     if(!L){ 
         if (!t.isBackground) {
             let toDelete = [];
@@ -1896,8 +1909,9 @@ const adjustTutorialBarParent = () => {
         if (tutBar.parentElement !== activeDialog) {
             activeDialog.appendChild(tutBar);
         }
+        // Force rendering inside dialog viewport but anchored to fixed coordinates at screen bottom
         tutBar.style.position = 'fixed';
-        tutBar.style.bottom = '16px';  
+        tutBar.style.bottom = '16px';  // Keep safe margin from visual modal boundaries
         tutBar.style.top = 'auto';
         tutBar.style.left = '16px';
         tutBar.style.right = '16px';
@@ -2039,6 +2053,4 @@ document.fonts.ready.then(()=>{
     }
 }); 
 applySettings(); initDB(); initSpeech();  
-</script>
-</body>
-</html>
+</script></body></html>
