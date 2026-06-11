@@ -24,26 +24,24 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:non
 .custom-toggle:checked::after { transform: translateX(20px); }
 html[data-theme="high-vis"] .custom-toggle:checked::after { background: #000; }
 
-details{overflow:hidden}summary{font-weight:600;font-size:15px;cursor:pointer;outline:none;}summary::after{content:'expand_more';font-family:'Material Symbols Rounded';font-size:24px;transition:transform .3s;font-variation-settings:'FILL' 1, 'wght' 400;color:var(--text-muted);}details[open]>summary::after{transform:rotate(180deg)}.details-content{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}.mini-row{display:flex;justify-content:space-between;align-items:center;width:100%;}.mini-row label{font-size:14px;font-weight:500}.danger-zone{margin-top:20px;border-top:1px solid var(--glass-border);padding-top:20px}.btn-delete{width:100%;padding:18px;border-radius:16px;background:rgba(255,69,58,.15);color:var(--danger);font-weight:700;font-size:16px;border:1px solid var(--danger)}.project-item{padding:16px;background:var(--input-bg);border:1px solid var(--glass-border);border-radius:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:pan-y}.project-item.active{border-color:var(--accent);background:var(--accent-glow)}#pocket-mode-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:9998;display:none;align-items:center;justify-content:center}#pocket-exit-btn{background:#111;color:#444;border:2px solid #222;border-radius:50%;width:80px;height:80px;display:flex;align-items:center;justify-content:center}.nfc-pulse{width:80px;height:80px;border-radius:50%;background:var(--accent-glow);margin:20px auto;display:flex;align-items:center;justify-content:center;animation:pulse 1.5s infinite}@keyframes pulse{0%{box-shadow:0 0 0 0 var(--accent-glow)}70%{box-shadow:0 0 0 20px transparent}100%{box-shadow:0 0 0 0 transparent}}#sideload-modal{width:100%;height:100%;max-width:100%;max-height:100%;margin:0;padding:24px;border-radius:0;border:none;box-sizing:border-box;background:var(--bg-top)}#sideload-modal[open]{display:flex;flex-direction:column}#sideload-modal::backdrop{background:#000}
+details{overflow:hidden}summary{font-weight:600;font-size:15px;cursor:pointer;outline:none;}summary::after{content:'expand_more';font-family:'Material Symbols Rounded';font-size:24px;transition:transform .3s;font-variation-settings:'FILL' 1, 'wght' 400;color:var(--text-muted);}details[open]>summary::after{transform:rotate(180deg)}.details-content{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}.mini-row{display:flex;justify-content:space-between;align-items:center}.mini-row label{font-size:14px;font-weight:500}
+
+.danger-zone{margin-top:20px;border-top:1px solid var(--glass-border);padding-top:20px}
+.btn-delete{width:100%;padding:18px;border-radius:16px;background:rgba(255,69,58,.15);color:var(--danger);font-weight:700;font-size:16px;border:1px solid var(--danger)}
+.project-item{padding:16px;background:var(--input-bg);border:1px solid var(--glass-border);border-radius:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.project-item.active{border-color:var(--accent);background:var(--accent-glow)}#pocket-mode-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:9998;display:none;align-items:center;justify-content:center}#pocket-exit-btn{background:#111;color:#444;border:2px solid #222;border-radius:50%;width:80px;height:80px;display:flex;align-items:center;justify-content:center}.nfc-pulse{width:80px;height:80px;border-radius:50%;background:var(--accent-glow);margin:20px auto;display:flex;align-items:center;justify-content:center;animation:pulse 1.5s infinite}@keyframes pulse{0%{box-shadow:0 0 0 0 var(--accent-glow)}70%{box-shadow:0 0 0 20px transparent}100%{box-shadow:0 0 0 0 transparent}}#sideload-modal{width:100%;height:100%;max-width:100%;max-height:100%;margin:0;padding:24px;border-radius:0;border:none;box-sizing:border-box;background:var(--bg-top)}#sideload-modal[open]{display:flex;flex-direction:column}#sideload-modal::backdrop{background:#000}
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-html[data-theme="high-vis"] .action-btn[style*="background: var(--accent)"],
-html[data-theme="high-vis"] .action-btn[style*="background:var(--accent)"] { color: #000 !important; font-weight: 800; }
-
+html[data-theme="high-vis"] .action-btn[style*="background: var(--accent)"], html[data-theme="high-vis"] .action-btn[style*="background:var(--accent)"] { color: #000 !important; font-weight: 800; }
 #waveform-wrapper { background: transparent; border: none; padding: 0; position: relative; height: 80px; display:flex; flex-direction:column; justify-content:center; overflow: hidden; margin: 0 20px 10px;}
 #waveform { width: 100%; height: 80px; position: relative; }
 #waveform ::part(region) { background: var(--accent-glow) !important; border-left: 3px solid var(--accent) !important; border-right: 3px solid var(--accent) !important; z-index: 5 !important; }
 #waveform ::part(region-handle-left), #waveform ::part(region-handle-right) { width: 40px !important; background-color: transparent !important; border: none !important; height: 100% !important; z-index: 6 !important; }
 
-/* Swipable Widgets */
-.trim-widget-container {
-position: relative; width: 100%; min-height: 180px; margin-bottom: 5px;
-display: flex; align-items: center; overflow-x: auto;
-scroll-snap-type: x mandatory; scroll-behavior: smooth;
--webkit-overflow-scrolling: touch; scrollbar-width: none;
-}
+/* Swipable timing container setup */
+.trim-widget-container { position: relative; width: 100%; min-height: 180px; margin-bottom: 5px; display: flex; align-items: center; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .trim-widget-container::-webkit-scrollbar { display: none; }
 .trim-card-wrapper { flex: 0 0 100%; scroll-snap-align: center; padding: 0 20px; box-sizing: border-box; }
 .trim-card { background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; text-align: center; }
@@ -52,36 +50,14 @@ scroll-snap-type: x mandatory; scroll-behavior: smooth;
 .trim-controls button { background: var(--glass); border: 1px solid var(--glass-border); color: var(--text-main); padding: 10px 15px; border-radius: 12px; height: 44px; font-weight: 600; display:flex; align-items:center; justify-content:center; }
 .trim-controls button:active { background: var(--accent); color: #fff; border-color: var(--accent); }
 html[data-theme="high-vis"] .trim-controls button:active { color: #000; }
-
-.curve-swiper {
-flex: 1; height: 44px; background: var(--glass); border: 1px solid var(--glass-border);
-border-radius: 12px; overflow: hidden; position: relative; cursor: pointer;
-}
-.curve-swiper::before {
-content: 'expand_less'; font-family: 'Material Symbols Rounded';
-position: absolute; top: 0px; left: 50%; transform: translateX(-50%);
-font-size: 14px; color: var(--text-muted); opacity: 0.5; pointer-events: none; z-index: 2;
-transition: opacity 0.2s;
-}
-.curve-swiper::after {
-content: 'expand_more'; font-family: 'Material Symbols Rounded';
-position: absolute; bottom: 0px; left: 50%; transform: translateX(-50%);
-font-size: 14px; color: var(--text-muted); opacity: 0.5; pointer-events: none; z-index: 2;
-transition: opacity 0.2s;
-}
+.curve-swiper { flex: 1; height: 44px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px; overflow: hidden; position: relative; cursor: pointer; }
+.curve-swiper::before { content: 'expand_less'; font-family: 'Material Symbols Rounded'; position: absolute; top: 0px; left: 50%; transform: translateX(-50%); font-size: 14px; color: var(--text-muted); opacity: 0.5; pointer-events: none; z-index: 2; transition: opacity 0.2s; }
+.curve-swiper::after { content: 'expand_more'; font-family: 'Material Symbols Rounded'; position: absolute; bottom: 0px; left: 50%; transform: translateX(-50%); font-size: 14px; color: var(--text-muted); opacity: 0.5; pointer-events: none; z-index: 2; transition: opacity 0.2s; }
 .curve-swiper.at-top::before { opacity: 0 !important; }
 .curve-swiper.at-bottom::after { opacity: 0 !important; }
-
-.cs-track {
-height: 100%; width: 100%; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none; -ms-overflow-style: none;
-}
+.cs-track { height: 100%; width: 100%; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none; -ms-overflow-style: none; }
 .cs-track::-webkit-scrollbar { display: none; }
-.cs-item {
-height: 100%; width: 100%; display: flex; align-items: center; justify-content: center;
-scroll-snap-align: center; scroll-snap-stop: always;
-font-weight: 700; font-size: 15px; color: var(--text-main); user-select: none;
-}
-
+.cs-item { height: 100%; width: 100%; display: flex; align-items: center; justify-content: center; scroll-snap-align: center; scroll-snap-stop: always; font-weight: 700; font-size: 15px; color: var(--text-main); user-select: none; }
 .swipe-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 20px; }
 .swipe-dot { width: 6px; height: 6px; border-radius: 3px; background: var(--glass-border); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); cursor:pointer; }
 .swipe-dot.active { background: var(--accent); width: 16px; }
@@ -89,7 +65,6 @@ font-weight: 700; font-size: 15px; color: var(--text-main); user-select: none;
 .fc-indicator { position: absolute; right: 15px; top: 20px; color: var(--text-muted); opacity: 0.3; pointer-events: none; z-index: 5; }
 .fc-views { transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); transform: translateY(0); }
 .fc-slider-view, .fc-btn-view { height: 180px; display:flex; flex-direction:column; justify-content:center; }
-
 .color-swatch { width: 40px; height: 40px; border-radius: 12px; border: 2px solid transparent; cursor: pointer; transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1); flex-shrink: 0; box-sizing: border-box; }
 .color-swatch:active { transform: scale(0.85); }
 .color-swatch.active { border-color: var(--text-main); transform: scale(1.1); }
@@ -98,145 +73,14 @@ font-weight: 700; font-size: 15px; color: var(--text-main); user-select: none;
 .locked .drag-handle, .locked .action-row, .locked .edit-trigger, .locked .pad-settings-trigger, .locked #queue-label { display: none !important; }
 .locked .tile:not(.is-current) { display: none; }
 .locked .is-current { border: 2px solid var(--accent); border-radius: 20px !important; }
-
 .locked .master-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 120px 64px; }
-.locked #master-play, .locked #sideload-master-play {
-grid-column: 1 / -1; height: 120px; border-radius: 32px; padding: 0 30px;
-justify-content: flex-start; gap: 20px; overflow: hidden; min-width: 0;
-}
-.locked #master-play .material-symbols-rounded, .locked #sideload-master-play .material-symbols-rounded {
-font-size: 48px !important; flex-shrink: 0;
-}
-.locked #play-text, .locked #sideload-play-text {
-white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-font-size: 32px; font-weight: 800; text-align: left; flex: 1;
-min-width: 0; display: block;
-}
+.locked #master-play, .locked #sideload-master-play { grid-column: 1 / -1; height: 120px; border-radius: 32px; padding: 0 30px; justify-content: flex-start; gap: 20px; overflow: hidden; min-width: 0; }
+.locked #master-play .material-symbols-rounded, .locked #sideload-master-play .material-symbols-rounded { font-size: 48px !important; flex-shrink: 0; }
+.locked #play-text, .locked #sideload-play-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 32px; font-weight: 800; text-align: left; flex: 1; min-width: 0; display: block; }
 .locked #mic-btn, .locked #pause-btn, .locked #sideload-pause-btn, .locked #sideload-reset-btn { height: 64px; border-radius: 20px; }
-
-#show-notes-container {
-display: none; text-align: center; padding: 24px; font-size: 24px; line-height: 1.5; font-weight: 600;
-color: var(--text-main); background: var(--input-bg); border: 1px solid var(--accent);
-border-radius: 20px; margin-bottom: 20px; box-shadow: inset 0 0 20px rgba(0, 122, 255, 0.1);
-}
-.locked #show-notes-container.has-notes {
-display: flex; align-items: center; justify-content: center; flex-direction: column;
-}
+#show-notes-container { display: none; text-align: center; padding: 24px; font-size: 24px; line-height: 1.5; font-weight: 600; color: var(--text-main); background: var(--input-bg); border: 1px solid var(--accent); border-radius: 20px; margin-bottom: 20px; box-shadow: inset 0 0 20px rgba(0, 122, 255, 0.1); }
+.locked #show-notes-container.has-notes { display: flex; align-items: center; justify-content: center; flex-direction: column; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-/* Spacing adjustments inside Context Option Modal to prevent squishing */
-#cue-menu-modal {
-padding: 32px 24px !important;
-}
-#cue-menu-modal .modal-header {
-margin-bottom: 24px;
-}
-#cue-menu-modal input[type="text"] {
-margin-bottom: 24px !important;
-width: 100%;
-}
-#cue-menu-modal .action-row {
-display: flex;
-gap: 16px;
-margin-top: 12px;
-margin-bottom: 20px !important;
-}
-#cue-menu-modal .action-btn {
-padding: 18px;
-border-radius: 16px;
-font-weight: 600;
-}
-
-/* Custom Dynamic Relative Popover Tooltip styles */
-.tut-step-indicator { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; display: block; }
-.tut-section-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; background: var(--accent-glow); color: var(--accent); font-size: 10px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; }
-
-#tutorial-bar {
-position: fixed; /* position: fixed is verified to anchor reliably over top layer card boundaries */
-bottom: 24px;
-left: 50%;
-transform: translateX(-50%);
-width: calc(100% - 48px);
-max-width: 360px;
-background: var(--modal-bg);
-border: 2px solid var(--accent);
-border-radius: 24px;
-padding: 16px;
-z-index: 13000; /* Float correctly in front of active dialog panels */
-box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-display: none;
-flex-direction: column;
-gap: 10px;
-box-sizing: border-box;
-}
-#tutorial-bar p {
-font-size: 13px !important;
-line-height: 1.4 !important;
-margin: 0 0 6px 0 !important;
-color: var(--text-main);
-}
-#tutorial-bar .tut-step-indicator {
-font-size: 9px;
-}
-#tutorial-bar .tut-section-badge {
-padding: 2px 6px;
-font-size: 9px;
-margin-bottom: 4px;
-}
-#tutorial-bar .action-btn {
-padding: 6px 12px !important;
-font-size: 12px !important;
-}
-
-/* High-Finesse organic pulsing Squircle Indicator */
-@keyframes squirclePulse {
-  0% {
-    box-shadow: 0 0 0 1px var(--accent), 0 0 0 2px rgba(0, 122, 255, 0.4), 0 4px 16px rgba(0, 122, 255, 0.15);
-  }
-  50% {
-    box-shadow: 0 0 0 3.5px var(--accent), 0 0 0 10px rgba(0, 122, 255, 0.25), 0 12px 30px rgba(0, 122, 255, 0.45);
-  }
-  100% {
-    box-shadow: 0 0 0 1px var(--accent), 0 0 0 2px rgba(0, 122, 255, 0.4), 0 4px 16px rgba(0, 122, 255, 0.15);
-  }
-}
-.tut-highlight {
-  animation: squirclePulse 2s infinite cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-  border-color: var(--accent) !important;
-  border-radius: 20px !important;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  z-index: 13000 !important;
-}
-
-/* Circle overrides for squircle highlights */
-.tut-highlight[style*="border-radius: 50%"],
-.tut-highlight[style*="border-radius:50%"],
-#pocket-exit-btn.tut-highlight,
-#mic-btn.tut-highlight,
-#pause-btn.tut-highlight {
-  border-radius: 50% !important;
-}
-
-/* Fluid dialog-open parent override to avoid screen protrusions */
-dialog[open] #tutorial-bar {
-  position: relative !important;
-  bottom: auto !important;
-  left: auto !important;
-  transform: none !important;
-  width: 100% !important;
-  max-width: none !important;
-  margin: 16px 0 0 0 !important;
-  box-shadow: none !important;
-  border: 1px solid var(--accent) !important;
-  border-radius: 18px !important;
-  background: rgba(128,128,128,0.06) !important;
-}
-body.tut-active dialog {
-  backdrop-filter: none !important;
-}
-body.tut-active dialog::backdrop {
-  backdrop-filter: none !important;
-}
 </style></head>
  <body class="unlocked show-progress"><header><h1 id="show-title-header" onclick="haptic(15);openProjects()"><span id="header-title-text">Magic Cues</span><span class="material-symbols-rounded" style="font-size:28px">expand_more</span></h1><div style="display:flex;gap:8px"><button class="icon-btn" id="header-settings-btn" onclick="haptic(15);openModal('app-settings')"><span class="material-symbols-rounded">settings</span></button><button class="icon-btn" id="header-lock-btn" onclick="haptic(15);toggleLock()"><span class="material-symbols-rounded" id="lock-icon">lock_open</span></button></div></header><div class="master-grid"><button id="master-play" onclick="playNextCue(false, true)"><span class="material-symbols-rounded">play_arrow</span><span id="play-text">Start Show</span></button><button id="mic-btn" onclick="haptic(15);toggleMic()"><span class="material-symbols-rounded" id="mic-icon">mic_off</span></button><button id="pause-btn" onclick="haptic(15);toggleGlobalPause()"><span class="material-symbols-rounded" id="pause-icon">pause</span></button></div><div id="speech-debug"><div id="speech-text">...</div></div><div class="action-row"><button class="action-btn" id="add-cue-btn" onclick="haptic(15);$('file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button><button class="action-btn" id="reset-show-btn" onclick="haptic([15,30,15]);triggerReset()"><span class="material-symbols-rounded">restart_alt</span> Reset</button></div><input type="file" id="file-input" accept="audio/*,.magic,.json" multiple onchange="handleFiles(this)" style="display:none"><input type="file" id="import-file-input" accept=".magic,.json" style="display:none" onchange="importShow(this)"><input type="file" id="sideload-file-input" accept="audio/*,.magic,.json" multiple onchange="handleSideloadFiles(this)" style="display:none"><div id="queue-container"><h2 id="queue-label">Main Queue</h2><div id="track-list"></div></div> <div id="show-notes-container"><div id="show-notes-text"></div></div> <h2>Instant Cues</h2><div id="instant-grid"></div><div id="pocket-mode-overlay"><button id="pocket-exit-btn" onclick="haptic(15);openModal('pocket-confirm-modal')"><span class="material-symbols-rounded" style="font-size:32px">lock</span></button></div><dialog id="pocket-confirm-modal"><div class="modal-header"><span class="modal-title">Unlock Workspace?</span></div><div style="margin-bottom:25px;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);padding:12px;border-radius:12px"><input type="checkbox" class="custom-toggle" id="pocket-unlock-check"><label style="font-size:15px;font-weight:600">Confirm Unlock</label></div><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('pocket-confirm-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="confirmPocketExit()">Unlock</button></div></dialog><dialog id="custom-alert-modal"><div class="modal-header"><span class="modal-title" id="alert-title">Notice</span></div><p id="alert-msg" style="color:var(--text-muted);margin-bottom:25px;line-height:1.5;"></p><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10);closeModal('custom-alert-modal')">OK</button></dialog><dialog id="sideload-modal"><div class="modal-header"><span class="modal-title" id="sideload-title">Sideload</span><button class="icon-btn" style="width:48px;height:48px;border-radius:16px" onclick="haptic(10);closeSideload()"><span class="material-symbols-rounded">close</span></button></div><div id="sideload-extract-zone" style="padding:16px;text-align:center;border:2px dashed var(--glass-border);border-radius:16px;margin-bottom:15px;display:none;background:rgba(255,255,255,.05);"><span class="material-symbols-rounded" style="font-size:24px;vertical-align:middle;margin-right:8px;color:var(--text-muted)">move_up</span> Drop here to move to Main Show</div><div class="master-grid" style="margin-bottom:20px;"><button id="sideload-master-play" onclick="playSideloadNextCue(false, true)"><span class="material-symbols-rounded">play_arrow</span><span id="sideload-play-text">Start Show</span></button><button id="sideload-pause-btn" onclick="haptic(15);toggleSideloadPause()"><span class="material-symbols-rounded" id="sideload-pause-icon">pause</span></button><button id="sideload-reset-btn" onclick="haptic([15,30,15]);triggerSideloadReset()"><span class="material-symbols-rounded">restart_alt</span></button></div><div class="action-row" style="margin-bottom:15px"><button class="action-btn" onclick="haptic(15);$('sideload-file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button></div><div style="flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;padding:10px 24px 100px;margin:0 -24px;"><h2 style="margin:0 0 10px 5px" id="sideload-queue-label">Queue</h2><div id="sideload-track-list" style="display:flex;flex-direction:column;gap:12px;margin-bottom:25px;"></div><h2 style="margin:0 0 10px 5px">Instant Cues</h2><div id="sideload-instant-grid"></div></div></dialog><dialog id="nfc-write-modal" oncancel="cancelNfcWrite()"><div class="modal-header"><span class="modal-title">Program NFC</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="cancelNfcWrite()" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><div class="nfc-pulse"><span class="material-symbols-rounded" style="font-size:40px;color:var(--accent)">nfc</span></div><p id="nfc-write-text" style="text-align:center;font-weight:600;font-size:16px;margin:20px 0">Hold an NFC chip near your phone...</p><button class="action-btn" style="width:100%;border:none" onclick="cancelNfcWrite()">Cancel</button></dialog><dialog id="nfc-success-modal"><div class="modal-header"><span class="modal-title">Success!</span></div><div style="text-align:center;margin:20px 0"><span class="material-symbols-rounded" style="font-size:60px;color:#34c759">check_circle</span></div><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10);closeModal('nfc-success-modal')">Done</button></dialog><dialog id="projects-modal"><div class="modal-header"><span class="modal-title">My Shows</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('projects-modal')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><div id="projects-list-container" style="max-height:300px;overflow-y:auto;margin-bottom:20px"></div><div style="display:flex;gap:12px"><button class="action-btn" id="show-import-btn" style="flex:1" onclick="haptic(15);$('import-file-input').click()"><span class="material-symbols-rounded">upload</span> Import</button><button class="action-btn" id="show-new-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);closeModal('projects-modal');openModal('new-show-modal')"><span class="material-symbols-rounded">add</span> New</button></div></dialog><dialog id="new-show-modal"><div class="modal-header"><span class="modal-title">Create Show</span></div><input type="text" id="new-show-name" placeholder="Show name..."><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('new-show-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);createNewProject()">Create</button></div></dialog>
 
@@ -540,35 +384,19 @@ Advanced Settings
 <div style="display:flex; gap:10px; padding: 0 20px 20px;"><button class="action-btn" style="border:none; padding:12px" onclick="closeTrimModal()">Cancel</button><button class="action-btn" style="flex:1; background:var(--accent); color:#fff; border:none; padding:12px" onclick="saveTrim()">Save</button></div>
 </dialog>
 
-<!-- Glowing, Interactive Fixed Viewport-Bottom Tutorial Panel -->
-<div id="tutorial-bar">
-<div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-<div>
-<span class="tut-step-indicator" id="tut-bar-step">Step 1</span>
-<span class="tut-section-badge" id="tut-bar-badge">Onboarding</span>
-<h4 id="tut-bar-title" style="margin: 4px 0 0 0; font-size: 16px; font-weight: 700;">Tutorial</h4>
-</div>
-<button class="icon-btn" style="width: 32px; height: 32px; border-radius: 10px; background: rgba(128,128,128,0.15); border: none;" onclick="skipTutorial()">
-<span class="material-symbols-rounded" style="font-size: 16px;">close</span>
-</button>
-</div>
-<p id="tut-bar-text" style="margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-main); font-weight: 500;"></p>
-<div style="display: flex; justify-content: flex-end; gap: 8px;" id="tut-bar-actions">
-<button class="action-btn" id="tut-bar-prev" style="padding: 8px 16px; font-size: 13px; border-radius: 10px; flex: none; width: auto;" onclick="prevTutStep()">Back</button>
-<button class="action-btn" id="tut-bar-next" style="padding: 8px 16px; font-size: 13px; background: var(--accent); color: #fff; border-radius: 10px; flex: none; width: auto;" onclick="nextTutStep()">Next</button>
-</div>
-</div>
+<!-- Script inclusion loaded externally -->
+<script src="tutorial.js" defer></script>
 
 <script>
  const $ = id => document.getElementById(id);
  let tracks=[], curIdx=0, locked=!1, actId=null, activeCues=new Map(), activePads=new Map(), paused=!1, wakeLock=null;
- let db, projectsList=[], curProjId='default', editProjId=null, tutActive=!1, tutType='basic', tutStep=0;
+ let db, projectsList=[], curProjId='default', editProjId=null;
  let defSet = {
 showProgress:!0, theme:'auto', lang:'en-US', uiSize:100, confirmReset:!1, autoPauseMic:!0,
 pocketMode:!0, strongPocketHaptics:!1, nfcEnabled:!1, enableHaptics:!0, enableDragging:!0,
 globalFadeIn: 0, globalFadeOut: 0, globalFadeInCurve: 'linear', globalFadeOutCurve: 'linear',
 gfInSkip: true, gfInPause: true, gfOutSkip: true, gfOutPause: true,
-tutorialCompleted: false, advancedTutorialCompleted: false
+tutorialCompleted: false
 };
  let settings = {...defSet, ...(JSON.parse(localStorage.getItem('mc_settings'))||{})};
  let sortQueue, sortGrid, sortSideQueue, sortSideGrid, sortExtract;
@@ -579,7 +407,6 @@ let hoverTmr=null, curHov=null, isGrp=!1, dragY=0, dragX=0;
 const updPos = e => { if(e.touches?.[0]) {dragY=e.touches[0].clientY; dragX=e.touches[0].clientX;} else {dragY=e.clientY; dragX=e.clientX;} if(curHov) { let r = curHov.getBoundingClientRect(); if(dragY < r.top || dragY > r.bottom || dragX < r.left || dragX > r.right) { curHov.classList.remove('group-hover-highlight'); curHov = null; isGrp = !1; clearTimeout(hoverTmr); } } }; document.addEventListener('pointermove', updPos, {passive:!0}); document.addEventListener('touchmove', updPos, {passive:!0});
 
 let isSideAct=!1, actSideId=null, sideTrks=[], sideIdx=0, actSideCues=new Map(), actSidePads=new Map(), sidePaused=!1, isSetSide=!1;
-
 const haptic = p => {
 if (settings.enableHaptics) {
 if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Haptics) {
@@ -590,26 +417,17 @@ navigator.vibrate(p);
 }
 }
 };
-
-const showAlert = (t,m) => { $('alert-msg').innerText=m; openModal('custom-alert-modal'); };
-
-const openModal = id => {
+ const showAlert = (t,m) => { $('alert-msg').innerText=m; openModal('custom-alert-modal'); };
+ const openModal = id => {
 if(id==='app-settings') buildNfcMenu();
 document.body.classList.add('modal-open');
 $(id).showModal();
-adjustTutorialBarParent();
-if (tutActive) {
-evalTutorialStep();
-}
 };
 
 const closeModal = id => {
 $(id).close();
+$(id).querySelectorAll('details').forEach(d => d.removeAttribute('open'));
 if(!document.querySelectorAll('dialog[open]').length) document.body.classList.remove('modal-open');
-adjustTutorialBarParent();
-if (tutActive) {
-evalTutorialStep();
-}
 };
 
 // Returns Volume factor mapped safely
@@ -618,16 +436,14 @@ const getCurveVal = (p, c) => c === 'exponential' ? (Math.pow(10, p) - 1) / 9 : 
 // --- App Fades Modal Logic ---
 let gfTab = 0;
 const openGlobalFadesModal = () => {
-$('gf-out-input').value = (parseFloat(settings.globalFadeOut) || 0).toFixed(1);
+$('gf-in-input').value = (parseFloat(settings.globalFadeIn) || 0).toFixed(1); $('gf-out-input').value = (parseFloat(settings.globalFadeOut) || 0).toFixed(1);
 updateGCurveUI('in', settings.globalFadeInCurve || 'linear');
 updateGCurveUI('out', settings.globalFadeOutCurve || 'linear');
 
-$('gf-in-pause-chk').checked = settings.gfInPause !== false;
-$('gf-out-pause-chk').checked = settings.gfOutPause !== false;
+$('gf-in-skip-chk').checked = settings.gfInSkip !== false; $('gf-in-pause-chk').checked = settings.gfInPause !== false;
+$('gf-out-skip-chk').checked = settings.gfOutSkip !== false; $('gf-out-pause-chk').checked = settings.gfOutPause !== false;
 
-$('gf-swipe-container').scrollLeft = 0; swpGF(0); openModal('global-fades-modal'); }; const manGFade = (type, val) => { haptic(15); let v = Math.max(0, parseFloat(val) || 0); updSet(type === 'in' ? 'globalFadeIn' : 'globalFadeOut', v); 
-
-$(type === 'in' ? 'gf-in-input' : 'gf-out-input').value = v.toFixed(1);
+$('gf-swipe-container').scrollLeft = 0; swpGF(0); openModal('global-fades-modal'); }; const manGFade = (type, val) => { haptic(15); let v = Math.max(0, parseFloat(val) || 0); updSet(type === 'in' ? 'globalFadeIn' : 'globalFadeOut', v); $(type === 'in' ? 'gf-in-input' : 'gf-out-input').value = v.toFixed(1);
 };
 const nudgeGFade = (type, amt) => {
 haptic(5);
@@ -662,7 +478,7 @@ delete c.dataset.owner;
 };
 
 const displayShowNote = (tObj, trackDuration) => {
-let text = (tObj.notes || '').trim(), container = $('show-notes-container'), textEl = $('show-notes-text');
+let text = (tObj.notes || '').trim(), container = $('show-notes-text');
 hideShowNotes();
 if (!text) return;
 
@@ -697,38 +513,112 @@ currentNoteTimeout = setTimeout(() => hideShowNotes(), duration * 1000);
 };
 
 const chkGrpDemote = () => { if(isSideAct && actSideId && sideTrks.length<=1){ let pi=tracks.findIndex(x=>x.id===actSideId); if(pi>-1){ let p=tracks[pi]; if(p.isCueGroup){ if(sideTrks.length===1){ let r=sideTrks[0]; r.type=p.type; tracks.splice(pi,1,r); }else tracks.splice(pi,1); save(); closeSideload(); render(); return !0; } } } return !1; };
-const buildNfcMenu = () => { let h=`<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_NEXT', 'Next Cue')"><span class="material-symbols-rounded">nfc</span> Program 'Next Cue'</button><button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PLAYPAUSE', 'Play/Pause')"><span class="material-symbols-rounded">nfc</span> Program 'Toggle Mic'</button>`; tracks.filter(t=>t.type==='pad').forEach(p=>h+=`<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PAD_${p.id}', '${p.name}')">${p.name}</button>`); $('nfc-dynamic-list').innerHTML=h; };
- const setLang = l => { settings.lang=l; updSet('lang',l); document.querySelectorAll('#lang-controls button').forEach(b=>b.classList.remove('active')); let b = $(l==='en-US'?'lang-en':'lang-de'); if(b) b.classList.add('active'); if(rec) rec.lang=l; };
- const updSet = (k,v) => { settings[k]=v; localStorage.setItem('mc_settings', JSON.stringify(settings)); };
- const applyUISize = () => { document.body.style.zoom = (settings.uiSize || 100) + '%'; };
+const buildNfcMenu = () => { let h=`<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_NEXT', 'Next Cue')"><span class="material-symbols-rounded">nfc</span> Program 'Next Cue'</button><button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PLAYPAUSE', 'Play/Pause')"><span class="material-symbols-rounded">nfc</span> Program 'Toggle Mic'</button>`; tracks.filter(t=>t.type==='pad').forEach(p=>h+=`<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PAD_${p.id}', '${p.name.replace(/'/g,"\\'")}')"><span class="material-symbols-rounded">nfc</span> Program '${p.name}'</button>`);$('nfc-dynamic-list').innerHTML=h; };
+ const setLang = l => { settings.lang=l; updSet('lang',l); document.querySelectorAll('#lang-controls button').forEach(b=>b.classList.remove('active')); $(l==='en-US'?'lang-en':'lang-de').classList.add('active'); if(rec) rec.lang=l; }; const updSet = (k,v) => { settings[k]=v; localStorage.setItem('mc_settings', JSON.stringify(settings)); }; const applyUISize = () => { document.body.style.zoom = (settings.uiSize || 100) + '%'; }; const applySettings = () => { setTheme(settings.theme); setLang(settings.lang); ['progress','confirm-reset','auto-pause-mic','haptics','dragging','pocket','strong-pocket-haptics','nfc'].forEach(k=>{let p=k.replace(/-([a-z])/g,g=>g[1].toUpperCase()); $(`${k}-toggle`).checked=settings[p==='progress'?'showProgress':p==='nfc'?'nfcEnabled':p==='haptics'?'enableHaptics':p==='dragging'?'enableDragging':p];}); document.body.classList.toggle('show-progress',settings.showProgress); applyUISize();$('ui-size-slider').value=settings.uiSize||100; if(settings.nfcEnabled) setTimeout(()=>toggleNFC(true),1000); initSortables(); };
 
-const applySettings = () => {
-setTheme(settings.theme);
-setLang(settings.lang);
-['progress','confirm-reset','auto-pause-mic','haptics','dragging','pocket','strong-pocket-haptics','nfc'].forEach(k => {
-let p = k.replace(/-([a-z])/g, g => g[1].toUpperCase());
-let el = $(`${k}-toggle`); if (el) el.checked = settings[p === 'progress' ? 'showProgress' : p === 'nfc' ? 'nfcEnabled' : p === 'haptics' ? 'enableHaptics' : p === 'dragging' ? 'enableDragging' : p]; }); document.body.classList.toggle('show-progress', settings.showProgress); applyUISize(); let uiSlider = $('ui-size-slider');
-if (uiSlider) {
-uiSlider.value = settings.uiSize || 100;
-uiSlider.style.setProperty('--v', ((settings.uiSize || 100) - 50) / 100 * 100 + '%');
+window.onNfcRead = t => {
+if(!settings.nfcEnabled||Date.now()-lastNfc<2000)return;
+lastNfc=Date.now();
+if(locked&&settings.pocketMode&&settings.strongPocketHaptics)haptic([100,50,100,50,200]);
+else haptic([20,30]);
+if(t==="CUE_NEXT") playNextCue(false, true);
+else if(t==="CUE_PLAYPAUSE") toggleGlobalPause();
+else if(t==="CUE_MIC") toggleMic();
+else if(t.startsWith("CUE_PAD_")){
+let tk=tracks.find(x=>x.id===t.replace("CUE_PAD_",""));
+if(tk) tk.isExternalShow?(isSideAct&&actSideId===tk.id?(haptic([30,50]),closeSideload()):(haptic([40,60,40]),openSide(tk,tk.autoStartShow))):playPad(tk);
 }
-if (settings.nfcEnabled) setTimeout(() => toggleNFC(true), 1000);
-initSortables();
 };
+window.onNfcWriteResult = (success, errMsg) => {
+closeModal('nfc-write-modal');
+if(success) {
+haptic([40,60,40]);
+openModal('nfc-success-modal');
+} else {
+showAlert("Failed", "Programming failed: " + errMsg);
+}
+};
+const toggleNFC = async e => {
+if(e){
+if(window.nfc && typeof window.nfc.addNdefListener === 'function') {
+window.nfc.addNdefListener(
+evt => {
+try {
+let tag = evt.tag;
+if (tag && tag.ndefMessage && tag.ndefMessage.length > 0) {
+let record = tag.ndefMessage[0];
+let payload = record.payload;
+let t = "";
+if (payload[0] === 0x02 || payload[0] === 0x04) {
+let langLen = payload[0];
+t = new TextDecoder("utf-8").decode(new Uint8Array(payload.slice(1 + langLen)));
+} else {
+t = new TextDecoder("utf-8").decode(new Uint8Array(payload));
+if (t.substring(1,3) === "en") t = t.substring(3);
+}
+window.onNfcRead(t.trim());
+}
+} catch(err){}
+},
+() => {},
+err => { $('nfc-toggle').checked = !1; updSet('nfcEnabled', !1); } ); return; } if(window.Android && typeof window.Android.startNFC === 'function') { window.Android.startNFC(); return; } if(!("NDEFReader" in window)) return showAlert("Error", "NFC is not supported."); try{ if(nfcAb) nfcAb.abort(); nfcAb=new AbortController(); if(!nfcR){ nfcR=new NDEFReader(); nfcR.addEventListener("reading",({message})=>{ for(const r of message.records){ if(r.recordType==="text"){ let t=new TextDecoder(r.encoding).decode(r.data); window.onNfcRead(t); } } }); } await nfcR.scan({signal:nfcAb.signal}); }catch(err){$('nfc-toggle').checked=!1; updSet('nfcEnabled',!1);}
+}else{
+if(window.nfc && typeof window.nfc.removeNdefListener === 'function') {
+window.nfc.removeNdefListener();
+}
+if(window.Android && typeof window.Android.stopNFC === 'function') {
+window.Android.stopNFC();
+}
+if(nfcAb){ nfcAb.abort(); nfcAb=null; }
+}
+};
+ const programNfcTag = async(c,n) => {
+if(window.nfc && typeof window.nfc.write === 'function') {
+$('nfc-write-text').innerText=`Programming: ${n}`; openModal('nfc-write-modal'); let record = window.ndef ? window.ndef.textRecord(c) : { tnf: 1, type: [84], id: [], payload: [2, 101, 110, ...[...c].map(x=>x.charCodeAt(0))] }; window.nfc.write( [record], () => { window.onNfcWriteResult(true, ""); }, err => { window.onNfcWriteResult(false, err); } ); return; } if(window.Android && typeof window.Android.writeNFC === 'function') { 
 
-const setTheme = t => { document.documentElement.setAttribute('data-theme', t==='auto'?(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):t); document.querySelectorAll('#theme-controls button').forEach(b=>b.classList.remove('active')); let targetBtn = $(`btn-${t==='high-vis'?'vis':t}`); if(targetBtn) targetBtn.classList.add('active'); updSet('theme',t); };
- window.matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>settings.theme==='auto'&&setTheme('auto'));
-
-let nfcR=null, nfcAb=null, nfcWrAb=null, lastNfc=0;
- const toggleNFC = async e => { if(e){ if(!("NDEFReader" in window)) return showAlert("Error", "NFC is not supported."); try{ if(nfcAb) nfcAb.abort(); nfcAb=new AbortController(); if(!nfcR){ nfcR=new NDEFReader(); nfcR.addEventListener("reading",({message})=>{ if(!settings.nfcEnabled||Date.now()-lastNfc<2000)return; for(const r of message.records){ if(r.recordType==="text"){ let t=new TextDecoder(r.encoding).decode(r.data); lastNfc=Date.now(); if(locked&&settings.pocketMode&&settings.strongPocketHaptics)haptic([100,50,100,50,200]); else haptic([20,30]); if(t==="CUE_NEXT") playNextCue(false, true); else if(t==="CUE_PLAYPAUSE") toggleGlobalPause(); else if(t==="CUE_MIC") toggleMic(); else if(t.startsWith("CUE_PAD_")){ let tk=tracks.find(x=>x.id===t.replace("CUE_PAD_","")); if(tk) tk.isExternalShow?(isSideAct&&actSideId===tk.id?(haptic([30,50]),closeSideload()):(haptic([40,60,40]),openSide(tk,tk.autoStartShow))):playPad(tk); } } } }); } await nfcR.scan({signal:nfcAb.signal}); }catch(err){$('nfc-toggle').checked=!1; updSet('nfcEnabled',!1);} }else if(nfcAb){ nfcAb.abort(); nfcAb=null; } }; const programNfcTag = async(c,n) => { if(!("NDEFReader" in window))return showAlert("Error","NFC not supported."); if(nfcWrAb)nfcWrAb.abort(); nfcWrAb=new AbortController(); $('nfc-write-text').innerText=`Programming: ${n}`; openModal('nfc-write-modal'); try{ await new NDEFReader().write(c,{signal:nfcWrAb.signal}); haptic([40,60,40]); closeModal('nfc-write-modal'); openModal('nfc-success-modal'); }catch(e){if(e.name!=='AbortError')showAlert("Failed","Programming failed: "+e);} };
- const cancelNfcWrite = () => { haptic(10); if(nfcWrAb) nfcWrAb.abort(); closeModal('nfc-write-modal'); };
+$('nfc-write-text').innerText=`Programming: ${n}`; openModal('nfc-write-modal'); window.Android.writeNFC(c); return; } if(!("NDEFReader" in window))return showAlert("Error","NFC not supported."); if(nfcWrAb)nfcWrAb.abort(); nfcWrAb=new AbortController();$('nfc-write-text').innerText=`Programming: ${n}`;
+openModal('nfc-write-modal');
+try{
+await new NDEFReader().write(c,{signal:nfcWrAb.signal});
+haptic([40,60,40]);
+closeModal('nfc-write-modal');
+openModal('nfc-success-modal');
+}catch(e){if(e.name!=='AbortError')showAlert("Failed","Programming failed: "+e);}
+};
+ const cancelNfcWrite = () => {
+haptic(10);
+if(window.Android && typeof window.Android.cancelWriteNFC === 'function') {
+window.Android.cancelWriteNFC();
+}
+if(nfcWrAb) nfcWrAb.abort();
+closeModal('nfc-write-modal');
+};
 
 const initDB = () => { let r=indexedDB.open('MCPDB',4); r.onupgradeneeded=e=>!e.target.result.objectStoreNames.contains('store')&&e.target.result.createObjectStore('store'); r.onsuccess=e=>{ db=e.target.result; let st=db.transaction('store','readwrite').objectStore('store'); st.get('projectList').onsuccess=res=>{ projectsList=res.target.result||[{id:'default',name:'Main Show'}]; if(!res.target.result) st.put(projectsList,'projectList'); curProjId=localStorage.getItem('mc_curProj')||projectsList[0].id; $('header-title-text').innerText=(projectsList.find(x=>x.id===curProjId)||projectsList[0]).name; st.get('proj_'+curProjId).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:t.file?URL.createObjectURL(t.file):undefined})):[]; render(); }; }; }; };
  const save = () => db&&db.transaction('store','readwrite').objectStore('store').put(tracks.map(t=>({...t,blobUrl:undefined})), 'proj_'+curProjId);
  const saveSide = () => { if(actSideId){ let p=tracks.find(x=>x.id===actSideId); if(p){ p.showData=sideTrks.map(t=>({...t,blobUrl:undefined})); save(); } } };
 
 let cuePTm, cLng=!1, aMenuId=null, isSideMenu=!1;
-const stCuePrs = (e,id,s) => { if(e.target.closest('.drag-handle,.edit-trigger'))return; cLng=!1; cuePTm=setTimeout(()=>{haptic([30,40]); cLng=!0; aMenuId=id; isSideMenu=s; let t=(s?sideTrks:tracks).find(x=>x.id===id); $('rename-cue-input').value=t.name; let typeText = t.isCueGroup ? 'Group' : (t.isExternalShow ? 'Show' : 'Cue'); $('skip-cue-text').innerText=t.skip?`Unskip ${typeText}`:`Skip ${typeText}`; $('skip-cue-icon').innerText=t.skip?'play_circle':'block'; openModal('cue-menu-modal'); setTimeout(() => $('rename-cue-input').blur(), 10); if (tutActive && tutType === 'basic' && tutStep === 8) { openTutorial(9); } }, 600); }; const ccCuePrs = () => clearTimeout(cuePTm); const clickCue = (id,s) => { if(cLng||locked)return; let tl=s?sideTrks:tracks, t=tl.find(x=>x.id===id); if(!t)return; t.type==='queue'?(s?(sideIdx=sideTrks.filter(x=>x.type==='queue').findIndex(x=>x.id===id),playSideloadNextCue(!0, true)):playCue(id)):(s?playSidePad(t):playPad(t)); }; const updMenu = () => { isSideMenu?(saveSide(),renderSide()):(save(),render()); closeModal('cue-menu-modal'); }; const saveCueRename = () => { let t=(isSideMenu?sideTrks:tracks).find(x=>x.id===aMenuId); if(t){ t.name=$('rename-cue-input').value||'Unnamed Cue'; updMenu(); } };
+const stCuePrs = (e,id,s) => {
+if(e.target.closest('.drag-handle,.edit-trigger'))return;
+cLng=!1;
+cuePTm=setTimeout(()=>{
+haptic([30,40]);
+cLng=!0;
+aMenuId=id;
+isSideMenu=s;
+let t=(s?sideTrks:tracks).find(x=>x.id===id);
+let typeText = t.isCueGroup ? 'Group' : (t.isExternalShow ? 'Show' : 'Cue');
+$('skip-cue-text').innerText=t.skip?`Unskip ${typeText}`:`Skip ${typeText}`;
+$('skip-cue-icon').innerText=t.skip?'play_circle':'block';
+openModal('cue-menu-modal');
+setTimeout(() => $('rename-cue-input').blur(), 10);
+},600);
+};
+const ccCuePrs = () => clearTimeout(cuePTm);
+const clickCue = (id,s) => { if(cLng||locked)return; let tl=s?sideTrks:tracks, t=tl.find(x=>x.id===id); if(!t)return; t.type==='queue'?(s?(sideIdx=sideTrks.filter(x=>x.type==='queue').findIndex(x=>x.id===id),playSideloadNextCue(!0, true)):playCue(id)):(s?playSidePad(t):playPad(t)); };
+const updMenu = () => { isSideMenu?(saveSide(),renderSide()):(save(),render()); closeModal('cue-menu-modal'); };
+const saveCueRename = () => { let t=(isSideMenu?sideTrks:tracks).find(x=>x.id===aMenuId); if(t){ t.name=$('rename-cue-input').value||'Unnamed Cue'; updMenu(); } };
 const toggleCueSkip = () => { let t=(isSideMenu?sideTrks:tracks).find(x=>x.id===aMenuId); if(t){ t.skip=!t.skip; updMenu(); } };
 const duplicateCue = () => { let l=isSideMenu?sideTrks:tracks, i=l.findIndex(x=>x.id===aMenuId); if(i>-1){ let n=JSON.parse(JSON.stringify(l[i])); n.id='id'+Date.now(); n.name+=' (Copy)'; l.splice(i+1,0,n); updMenu(); } };
 const createGroupFromMenu = () => { let l=isSideMenu?sideTrks:tracks, i=l.findIndex(x=>x.id===aMenuId); if(i>-1){ let t=l[i], n={id:'id'+Date.now(), name:'Cue Group '+(tracks.filter(x=>x.isCueGroup).length+1), type:t.type, delay:0, fadeIn:0, fadeOut:0, volume:1, autoFollow:!1, overlap:0, postDelay:0, triggerPhrase:'', globalVoice:!1, isExternalShow:!0, isCueGroup:!0, autoStartShow:!1, skip:!1, showData:[t]}; l.splice(i,1,n); updMenu(); } };
@@ -739,7 +629,7 @@ const render = () => drwLst(tracks,'track-list','instant-grid',!1);
 const renderSide = () => drwLst(sideTrks,'sideload-track-list','sideload-instant-grid',!0);
 
 const mkTrk = (f,d) => ({id:'id'+Date.now()+Math.random().toString(36).slice(2),name:f?f.name.replace(/\.[^/.]+$/,""):"★ Loaded Audio Cue",type:'queue',delay:0,fadeIn:0,fadeOut:0,volume:1,autoFollow:!1,overlap:0,postDelay:0,triggerPhrase:'',globalVoice:!1,isExternalShow:!!d,isCueGroup:!1,showData:d,autoStartShow:!1,skip:!1,trimStart:0,trimEnd:0,borderColor:null,notes:'',notesTrigger:'start',notesDuration:0,notesSplit:!1,isBackground:!1,bgLoop:!0,duckVol:0.3,duckTime:1.0,unduckTime:1.0,duckCurve:'linear',fadeInCurve:'linear',fadeOutCurve:'linear',stopsBg:!1});
-const hFiles = async (i,l,r,s) => { for(let f of Array.from(i.files)){ if(f.name.endsWith('.magic')||f.name.endsWith('.json')) l.push(mkTrk(f,JSON.parse(await f.text()))); else{ let b=new Blob([await f.arrayBuffer()],{type:f.type}), t=mkTrk(f,null); t.blobUrl=URL.createObjectURL(b); t.file=b; l.push(t); } } r(); s(); i.value=''; if (tutActive && tutType === 'basic' && tutStep === 0 && tracks.length > 0) { openTutorial(1); } };
+const hFiles = async (i,l,r,s) => { for(let f of Array.from(i.files)){ if(f.name.endsWith('.magic')||f.name.endsWith('.json')) l.push(mkTrk(f,JSON.parse(await f.text()))); else{ let b=new Blob([await f.arrayBuffer()],{type:f.type}), t=mkTrk(f,null); t.blobUrl=URL.createObjectURL(b); t.file=b; l.push(t); } } r(); s(); i.value=''; };
 const handleFiles = i => hFiles(i,tracks,render,save); const handleSideloadFiles = i => hFiles(i,sideTrks,renderSide,saveSide);
 
 const exportShow = async () => { let p=projectsList.find(x=>x.id===editProjId); if(!p)return; db.transaction('store').objectStore('store').get('proj_'+p.id).onsuccess=async r=>{ let ex=[]; $('edit-show-name').value="Exporting..."; for(let t of(r.target.result||[])){ if(t.isExternalShow){ let se=[]; for(let st of t.showData){ if(st.file) se.push({...st,fileData:await new Promise(res=>{let fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(st.file);}),file:undefined}); else se.push({...st}); } ex.push({...t,showData:se}); }else if(t.file) ex.push({...t,fileData:await new Promise(res=>{let fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(t.file);}),file:undefined}); else ex.push({...t}); } let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(ex)],{type:'application/json'})); a.download=p.name+'.magic'; a.click(); $('edit-show-name').value=p.name; }; };
@@ -1265,13 +1155,6 @@ else t[k]=parseFloat(v);
 if(k==='volume')[activeCues,activePads,actSideCues,actSidePads].forEach(m=>m.has(actId)&&(m.get(actId).volume=t[k]));
 if(k==='type')closeModal('settings-modal');
 isSetSide?(saveSide(),renderSide()):(save(),render());
-if (tutActive) {
-  if (tutStep === 3 && k === 'volume') {
-    openTutorial(4); // Advance to Voice Triggers Summary click
-  } else {
-    evalTutorialStep();
-  }
-}
 }
 };
  const deleteTrack = () => {
@@ -1419,8 +1302,8 @@ sEnd = nDur > 0 ? Math.min(nDur, actualDur) : actualDur;
 }
 
 if (cTime >= sStart && cTime <= sEnd) {
-let container = $('show-notes-text');
-let sentences = t.notesSplit ? (t.notes||'').split('\n').map(x=>x.trim()).filter(x=>x) : [t.notes];
+let container = $('show-notes-container'); let textEl = $('show-notes-text');
+let sentences = t.notesSplit ? (t.notes||'').split('\n').map(s=>s.trim()).filter(s=>s) : [t.notes];
 if(!sentences.length) sentences = [t.notes||''];
 
 let idx = 0;
@@ -1457,16 +1340,14 @@ a.pause(); let fn=a.onended; if(fn){a.onended=null;fn();}
 }
 }
 };
-a.play().catch(()=>{}); s||mngMic(); if(locked&&settings.pocketMode&&settings.strongPocketHaptics)navigator.vibrate?.([150,100,250]); evalDucking();
+a.play().catch(()=>{}); s?($('sideload-play-text').innerText=t.name):($('play-text').innerText=t.name); s||mngMic(); if(locked&&settings.pocketMode&&settings.strongPocketHaptics)navigator.vibrate?.([150,100,250]); evalDucking();
 a.onended=()=>{
 let fn=a.onended; if(!fn)return;
 a.onended=null;
 a.ontimeupdate=null;
 
 if (a._showingNote) {
-if ($('show-notes-container').dataset.owner === t.id) hideShowNotes(); a._showingNote = false; } if(t.notes && t.notesTrigger === 'after') displayShowNote(t, t.notesDuration || 10); if(t.autoFollow&&!af){ af=!0; pd>0? doDelayCountdown(pd, s?'sideload-play-text':'play-text', s, ()=>s?playSideloadNextCue(!1):playNextCue(!1)) : s?playSideloadNextCue(!1):playNextCue(!1); } acts.delete(t.id); evalDucking(); if(!acts.size){ let q=(s?sideTrks:tracks).filter(x=>x.type==='queue'), nx=s?sideIdx:curIdx; while(nx<q.length&&q[nx].skip)nx++; 
-
-(s?'sideload-play-text':'play-text').innerText=nx<q.length?'Next Cue':(s?'':'End of Show'); s&&nx>=q.length&&closeSideload(); }
+if ($('show-notes-container').dataset.owner === t.id) hideShowNotes(); a._showingNote = false; } if(t.notes && t.notesTrigger === 'after') displayShowNote(t, t.notesDuration || 10); if(t.autoFollow&&!af){ af=!0; pd>0? doDelayCountdown(pd, s?'sideload-play-text':'play-text', s, ()=>s?playSideloadNextCue(!1):playNextCue(!1)) : s?playSideloadNextCue(!1):playNextCue(!1); } acts.delete(t.id); evalDucking(); if(!acts.size){ let q=(s?sideTrks:tracks).filter(x=>x.type==='queue'), nx=s?sideIdx:curIdx; while(nx<q.length&&q[nx].skip)nx++; $(s?'sideload-play-text':'play-text').innerText=nx<q.length?'Next Cue':(s?'':'End of Show'); s&&nx>=q.length&&closeSideload(); }
 s?renderSide():(render(),mngMic());
 };
 s?renderSide():render();
@@ -1492,9 +1373,8 @@ acts.delete(t.id); evalDucking(); s?renderSide():(render(),mngMic()); return;
 }
 let a=new Audio(t.blobUrl); setupAudioNode(a); a.isRealPlay = true; a.currentTime=t.trimStart||0; a.volume=t.volume??1; acts.set(t.id,a); s?renderSide():render();
 a.ontimeupdate=()=>{
-let d=t.trimEnd||a.duration; let p=s?($('side-prog-'+t.id).style.width=Math.max(0,Math.min(100,(a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100))+'%'):($('prog-'+t.id).style.width=Math.max(0,Math.min(100,(a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100))+'%'); if(a.currentTime>=d&&!a.paused){a.pause(); let fn=a.onended; if(fn){a.onended=null;fn();}} };
-a.onended=()=>{ acts.delete(t.id); evalDucking(); s?renderSide():render(); };
-s?(sidePaused=!1,$('sideload-pause-icon').innerText='pause'):(paused=!1,$('pause-icon').innerText='pause'); a.play().catch(()=>{}); s||mngMic(); if(locked&&settings.pocketMode&&settings.strongPocketHaptics)navigator.vibrate?.([150,100,250]); evalDucking();
+let d=t.trimEnd||a.duration; let p=$(s?'side-prog-'+t.id:'prog-'+t.id); if(p)p.style.width=Math.max(0,Math.min(100,(a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100))+'%'; if(a.currentTime>=d){ if(t.isBackground && (t.bgLoop !== false)){ a.currentTime=t.trimStart||0; } else { a.pause();acts.delete(t.id);evalDucking();s?renderSide():(render(),mngMic()); } } }; s?(sidePaused=!1,$('sideload-pause-icon').innerText='pause'):(paused=!1,$('pause-icon').innerText='pause');
+a.play().catch(()=>{}); s||mngMic(); if(locked&&settings.pocketMode&&settings.strongPocketHaptics)navigator.vibrate?.([150,100,250]); evalDucking();
 };
 const playPad = t => pPad(t,!1); const playSidePad = t => pPad(t,!0);
 
@@ -1531,7 +1411,7 @@ fInTime = parseFloat(trk.fadeIn);
 cInType = trk.fadeInCurve || 'linear';
 } else if (parseFloat(settings.globalFadeIn) > 0 && settings.gfInPause !== false) {
 fInTime = parseFloat(settings.globalFadeIn);
-cInType = settings.globalFadeInCurve || 'linear';
+cInType = trk.fadeInCurve || 'linear';
 }
 
 clearTimeout(a._pauseTm);
@@ -1546,11 +1426,7 @@ a.gainNode.gain.value = a._isDucked && trk?.isBackground ? (trk.duckVol??0.3) : 
 }
 }
 }));
-$('sideload-pause-icon').innerText=sidePaused?'play_arrow':'pause'; if(!sidePaused) evalDucking(); }; const triggerSideloadReset = () => settings.confirmReset?openModal('sideload-reset-modal'):executeSideloadReset(); const executeSideloadReset = () => { haptic([50,50,50]); closeModal('sideload-reset-modal'); clearInterval(sideloadDelayInt); hideShowNotes(); [actSideCues,actSidePads].forEach(m=>m.forEach((a, id)=>{ let trk = sideTrks.find(x=>x.id===id); stopAudioWithFade(a, trk, 'reset'); })); actSideCues.clear(); actSidePads.clear(); sideIdx=0; sidePaused=!1; 
-
-$('sideload-play-text').innerText='Start Show'; $('sideload-pause-icon').innerText='pause'; evalDucking(); renderSide(); }; const closeSideload = () => { isSideAct=!1; clearInterval(sideloadDelayInt); hideShowNotes(); [actSideCues,actSidePads].forEach(m=>m.forEach((a, id)=>{ let trk = sideTrks.find(x=>x.id===id); stopAudioWithFade(a, trk, 'reset'); })); actSideCues.clear(); actSidePads.clear(); sideTrks.forEach(s=>s.blobUrl&&URL.revokeObjectURL(s.blobUrl)); sideTrks=[]; closeModal('sideload-modal'); render(); if(actSideId){ let s=tracks.find(x=>x.id===actSideId); actSideId=null; if(s&&s.type==='queue'&&s.autoFollow){ let pd=s.postDelay||0; if(pd>0)doDelayCountdown(pd,'play-text',!1,()=>playNextCue(!1)); else playNextCue(!1); }else 
-
-$('play-text').innerText=curIdx<tracks.filter(x=>x.type==='queue').length?'Next Cue':'End of Show'; } evalDucking();
+$('sideload-pause-icon').innerText=sidePaused?'play_arrow':'pause'; if(!sidePaused) evalDucking(); }; const triggerSideloadReset = () => settings.confirmReset?openModal('sideload-reset-modal'):executeSideloadReset(); const executeSideloadReset = () => { haptic([50,50,50]); closeModal('sideload-reset-modal'); clearInterval(sideloadDelayInt); hideShowNotes(); [actSideCues,actSidePads].forEach(m=>m.forEach((a, id)=>{ let trk = sideTrks.find(x=>x.id===id); stopAudioWithFade(a, trk, 'reset'); })); actSideCues.clear(); actSidePads.clear(); sideIdx=0; sidePaused=!1; $('sideload-play-text').innerText='Start Show'; $('sideload-pause-icon').innerText='pause'; evalDucking(); renderSide(); }; const closeSideload = () => { isSideAct=!1; clearInterval(sideloadDelayInt); hideShowNotes(); [actSideCues,actSidePads].forEach(m=>m.forEach((a, id)=>{ let trk = sideTrks.find(x=>x.id===id); stopAudioWithFade(a, trk, 'reset'); })); actSideCues.clear(); actSidePads.clear(); sideTrks.forEach(s=>s.blobUrl&&URL.revokeObjectURL(s.blobUrl)); sideTrks=[]; closeModal('sideload-modal'); render(); if(actSideId){ let s=tracks.find(x=>x.id===actSideId); actSideId=null; if(s&&s.type==='queue'&&s.autoFollow){ let pd=s.postDelay||0; if(pd>0)doDelayCountdown(pd,'play-text',!1,()=>playNextCue(!1)); else playNextCue(!1); }else $('play-text').innerText=curIdx<tracks.filter(x=>x.type==='queue').length?'Next Cue':'End of Show'; } evalDucking();
 };
 
 const isPly = () => activeCues.size||activePads.size||actSideCues.size||actSidePads.size;
@@ -1587,7 +1463,7 @@ fInTime = parseFloat(trk.fadeIn);
 cInType = trk.fadeInCurve || 'linear';
 } else if (parseFloat(settings.globalFadeIn) > 0 && settings.gfInPause !== false) {
 fInTime = parseFloat(settings.globalFadeIn);
-cInType = settings.globalFadeInCurve || 'linear';
+cInType = trk.fadeInCurve || 'linear';
 }
 
 clearTimeout(a._pauseTm);
@@ -1607,17 +1483,17 @@ mngMic();
 if(!paused) evalDucking();
 };
 
-const toggleLock = async (f=null) => { locked=f!==null?f:!locked; document.body.className=`${locked?'locked':'unlocked'} show-progress`; $('lock-icon').innerText=locked?'lock':'lock_open'; render(); if(locked&&settings.pocketMode){ $('pocket-unlock-check').checked=!1; $('pocket-mode-overlay').style.display='flex'; sessionStorage.setItem('mc_pocket','true'); try{document.documentElement.requestFullscreen(); if("wakeLock" in navigator)wakeLock=await navigator.wakeLock.request("screen");}catch(e){} }else{ $('pocket-mode-overlay').style.display='none'; sessionStorage.removeItem('mc_pocket'); try{document.exitFullscreen(); if(wakeLock){wakeLock.release();wakeLock=null;}}catch(e){} } }; const confirmPocketExit = () => { if(!$('pocket-unlock-check').checked){haptic([50,50]);return showAlert("Notice","Check box.");} closeModal('pocket-confirm-modal'); toggleLock(!1); };
+const toggleLock = async (f=null) => { locked=f!==null?f:!locked; document.body.className=`${locked?'locked':'unlocked'} show-progress`;$('lock-icon').innerText=locked?'lock':'lock_open'; render(); if(locked&&settings.pocketMode){ $('pocket-mode-overlay').style.display='flex'; sessionStorage.setItem('mc_pocket','true'); try{document.documentElement.requestFullscreen(); if("wakeLock" in navigator)wakeLock=await navigator.wakeLock.request("screen");}catch(e){} }else{ $('pocket-mode-overlay').style.display='none'; sessionStorage.removeItem('mc_pocket'); try{document.exitFullscreen(); if(wakeLock){wakeLock.release();wakeLock=null;}}catch(e){} } }; const confirmPocketExit = () => { if(!document.getElementById('pocket-unlock-check').checked){haptic([50,50]);return showAlert("Notice","Check box.");} closeModal('pocket-confirm-modal'); toggleLock(!1); };
 
 let rec, isLis=!1, spErr=!1, prLen=0, micOn=!1, spLog=[];
- const upSp = t => { if(t&&t.trim()!==""){spLog.push(t);if(spLog.length>3)spLog.shift();} $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">></span> ')+(isLis?'<span style="animation:pulse 1s infinite">_</span>':''); $('speech-debug').scrollTop=$('speech-debug').scrollHeight; }; const initSpeech = () => { window.SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition; if(!window.SpeechRecognition)return; rec=new window.SpeechRecognition(); rec.continuous=!0; rec.interimResults=!0; rec.lang=settings.lang; rec.onstart=()=>{prLen=0;$('mic-btn').className='mic-active';$('mic-icon').innerText='mic';spLog=["Listening..."];upSp("");}; rec.onresult=e=>{ let fl=''; for(let i=e.resultIndex;i<e.results.length;++i)fl+=e.results[i][0].transcript; let nw=fl.substring(prLen); $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">></span> ')+'<br><span style="color:var(--accent);font-weight:800">></span> '+fl; $('speech-debug').scrollTop=$('speech-debug').scrollHeight; let ss=nw.toLowerCase().replace(/[.,!?]/g,'').trim(); if(!ss)return; let trg=!1, q=tracks.filter(x=>x.type==='queue'); if(curIdx<q.length&&q[curIdx].triggerPhrase&&!q[curIdx].globalVoice&&ss.includes(q[curIdx].triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);playNextCue();trg=!0;} if(!trg)for(let t of tracks)if(t.globalVoice&&t.triggerPhrase&&ss.includes(t.triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);t.type==='queue'?playCue(t.id):playPad(t);trg=!0;break;} if(trg)prLen=fl.length; }; rec.onerror=()=>{spErr=!0;if(micOn&&!isPly()){isLis=!1;micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';}}; rec.onend=()=>{prLen=0;if(isLis&&micOn&&!spErr)try{rec.start();}catch(e){} spErr=!1;}; };
- const mngMic = () => { if(!micOn||!rec)return; if(settings.autoPauseMic&&isPly()){isLis=!1;try{rec.stop();}catch(e){}$('mic-btn').className='mic-paused';$('mic-icon').innerText='mic_off';spLog=["Mic paused..."];upSp("");}else if(!isLis){isLis=!0;try{rec.start();}catch(e){}} };
- const toggleMic = () => { micOn=!micOn; if(micOn){$('speech-debug').style.display='block'; if(settings.autoPauseMic&&isPly()){$('mic-btn').className='mic-paused';spLog=["Mic paused..."];upSp("");}else{isLis=!0;spErr=!1;prLen=0;try{rec.start();}catch(e){}}}else{isLis=!1;try{rec.stop();}catch(e){} micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';$('speech-debug').style.display='none';} };
+ const upSp = t => { if(t&&t.trim()!==""){spLog.push(t);if(spLog.length>3)spLog.shift();} $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">></span> ')+(isLis?'<span style="animation:pulse 1s infinite">_</span>':''); $('speech-debug').scrollTop=$('speech-debug').scrollHeight; }; const initSpeech = async () => { window.SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition; if(!window.SpeechRecognition)return; if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) { try { let stream = await navigator.mediaDevices.getUserMedia({ audio: true }); stream.getTracks().forEach(track => track.stop()); } catch(e){} } rec=new window.SpeechRecognition(); rec.continuous=!0; rec.interimResults=!0; rec.lang=settings.lang; rec.onstart=()=>{prLen=0;$('mic-btn').className='mic-active';$('mic-icon').innerText='mic';spLog=["Listening..."];upSp("");}; rec.onresult=e=>{ let fl=''; for(let i=e.resultIndex;i<e.results.length;++i)fl+=e.results[i][0].transcript; let nw=fl.substring(prLen); $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">></span> ')+'<br><span style="color:var(--accent);font-weight:800">></span> '+fl; $('speech-debug').scrollTop=$('speech-debug').scrollHeight; let ss=nw.toLowerCase().replace(/[.,!?]/g,'').trim(); if(!ss)return; let trg=!1, q=tracks.filter(x=>x.type==='queue'); if(curIdx<q.length&&q[curIdx].triggerPhrase&&!q[curIdx].globalVoice&&ss.includes(q[curIdx].triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);playNextCue();trg=!0;} if(!trg)for(let t of tracks)if(t.globalVoice&&t.triggerPhrase&&ss.includes(t.triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);t.type==='queue'?playCue(t.id):playPad(t);trg=!0;break;} if(trg)prLen=fl.length; }; rec.onerror=()=>{spErr=!0;if(micOn&&!isPly()){isLis=!1;micOn=!1;('mic-icon').innerText='mic_off';}}; rec.onend=()=>{prLen=0;if(isLis&&micOn&&!spErr)try{rec.start();}catch(e){} spErr=!1;}; };
+ const mngMic = () => { if(!micOn||!rec)return; if(settings.autoPauseMic&&isPly()){isLis=!1;try{rec.stop();}catch(e){}('mic-icon').innerText='mic_off';spLog=["Mic paused..."];upSp("");}else if(!isLis){isLis=!0;try{rec.start();}catch(e){}} };
+ const toggleMic = () => { micOn=!micOn; if(micOn){$('speech-debug').style.display='block'; if(settings.autoPauseMic&&isPly()){$('mic-btn').className='mic-paused';spLog=["Mic paused..."];upSp("");}else{isLis=!0;spErr=!1;prLen=0;try{rec.start();}catch(e){}}}else{isLis=!1;try{rec.stop();}catch(e){} micOn=!1;$('mic-icon').innerText='mic_off';$('speech-debug').style.display='none';} };
 
 const initSortables = () => {
  [sortQueue,sortGrid,sortSideQueue,sortSideGrid,sortExtract].forEach(s=>s&&s.destroy());
 let opt = { group:'shared', animation:250, ghostClass:"sortable-ghost", disabled:!settings.enableDragging, swapThreshold:0.65,
-onStart: e => { isGrp=!1; curHov=null; clearTimeout(hoverTmr); haptic(15); if(e.from.id.includes('sideload'))$('sideload-extract-zone').style.display='block'; }, onChange: e => haptic(e.to!==e.from?[30,50,30]:5), onMove: e => { if(e.related?.id==='sideload-extract-zone') return !0; let t=e.related; if(!t) { clearTimeout(hoverTmr); if(curHov){curHov.classList.remove('group-hover-highlight');curHov=null;} isGrp=!1; return !0; } let r=t.getBoundingClientRect(); let inY=dragY>r.top+r.height*0.25 && dragY<r.bottom-r.height*0.25; let inX=t.classList.contains('cue-pad')?(dragX>r.left+r.width*0.25 && dragX<r.right-r.width*0.25):(dragX>r.left && dragX<r.right); if(inY&&inX) { if(curHov!==t){ clearTimeout(hoverTmr); if(curHov)curHov.classList.remove('group-hover-highlight'); curHov=t; isGrp=!1; hoverTmr=setTimeout(()=>{ if(curHov===t){ curHov.classList.add('group-hover-highlight'); isGrp=!0; haptic([20,30,20]); } }, 350); } return !1; } else { clearTimeout(hoverTmr); if(curHov){curHov.classList.remove('group-hover-highlight');curHov=null;} isGrp=!1; return !0; } }, onEnd: e => { let isGd=isGrp&&curHov?.classList.contains('group-hover-highlight'), tEl=curHov; if(isGd && tEl) { let r = tEl.getBoundingClientRect(); if(dragY < r.top || dragY > r.bottom || dragX < r.left || dragX > r.right) { isGd = false; } } clearTimeout(hoverTmr); if(curHov)curHov.classList.remove('group-hover-highlight'); curHov=null; isGrp=!1; if(e.from.id.includes('sideload')) $('sideload-extract-zone').style.display='none';
+onStart: e => { isGrp=!1; curHov=null; clearTimeout(hoverTmr); haptic(15); if(e.from.id.includes('sideload'))$('sideload-extract-zone').style.display='block'; }, onChange: e => haptic(e.to!==e.from?[30,50,30]:5), onMove: e => { if(e.related?.id==='sideload-extract-zone') return !0; let t=e.related; if(!t) { clearTimeout(hoverTmr); if(curHov){curHov.classList.remove('group-hover-highlight');curHov=null;} isGrp=!1; return !0; } let r=t.getBoundingClientRect(); let inY=dragY>r.top+r.height*0.25 && dragY<r.bottom-r.height*0.25; let inX=t.classList.contains('cue-pad')?(dragX>r.left+r.width*0.25 && dragX<r.right-r.width*0.25):(dragX>r.left && dragX<r.right); if(inY&&inX) { if(curHov!==t){ clearTimeout(hoverTmr); if(curHov)curHov.classList.remove('group-hover-highlight'); curHov=t; isGrp=!1; hoverTmr=setTimeout(()=>{ if(curHov===t){ curHov.classList.add('group-hover-highlight'); isGrp=!0; haptic([20,30,20]); } }, 350); } return !1; } else { clearTimeout(hoverTmr); if(curHov){curHov.classList.remove('group-hover-highlight');curHov=null;} isGrp=!1; return !0; } }, onEnd: e => { let isGd=isGrp&&curHov?.classList.contains('group-hover-highlight'), tEl=curHov; if(isGd && tEl) { let r = tEl.getBoundingClientRect(); if(dragY < r.top || dragY > r.bottom || dragX < r.left || dragX > r.right) { isGd = false; } } clearTimeout(hoverTmr); if(curHov)curHov.classList.remove('group-hover-highlight'); curHov=null; isGrp=!1; if(e.from.id.includes('sideload'))$('sideload-extract-zone').style.display='none';
 let dId=e.item.id.replace('tile-','').replace('side-','');
 if(isGd&&tEl&&tEl.id!==e.item.id){
 let tId=tEl.id.replace('tile-','').replace('side-',''), fS=e.from.id.includes('sideload'), fL=fS?sideTrks:tracks, tS=tEl.id.startsWith('side-'), tL=tS?sideTrks:tracks, dI=fL.findIndex(x=>x.id===dId), tI=tL.findIndex(x=>x.id===tId);
@@ -1630,215 +1506,19 @@ tS?saveSide():save(); fS!==tS&&(fS?saveSide():save()); render(); renderSide(); r
 let fS=e.from.id.includes('sideload'), tS=e.to.id.includes('sideload'), fL=fS?sideTrks:tracks, tL=tS?sideTrks:tracks;
 if(fL!==tL){ let dI=fL.findIndex(x=>x.id===dId); if(dI>-1) tL.push(fL.splice(dI,1)[0]); }
 haptic(e.to!==e.from?[40,60,40]:15); let t=tL.find(x=>x.id===dId); if(t)t.type=e.to.id.includes('grid')?'pad':'queue';
-let qIds=Array.from((tS?'sideload-instant-grid':'instant-grid').children).map(el=>el.id.replace('tile-','').replace('side-',''));
-let sL=[...tL.filter(x=>x.type==='queue').sort((a,b)=>qIds.indexOf(a.id)-qIds.indexOf(b.id)), ...tL.filter(x=>x.type==='pad').sort((a,b)=>qIds.indexOf(a.id)-qIds.indexOf(b.id))];
+let qIds=Array.from($(tS?'sideload-track-list':'track-list').children).map(el=>el.id.replace('tile-','').replace('side-','')), pIds=Array.from($(tS?'sideload-instant-grid':'instant-grid').children).map(el=>el.id.replace('tile-','').replace('side-',''));
+let sL=[...tL.filter(x=>x.type==='queue').sort((a,b)=>qIds.indexOf(a.id)-qIds.indexOf(b.id)), ...tL.filter(x=>x.type==='pad').sort((a,b)=>pIds.indexOf(a.id)-pIds.indexOf(b.id))];
  tS?(sideTrks=sL,saveSide(),renderSide()):(tracks=sL,save(),render()); fL!==tL&&(fS?(saveSide(),renderSide()):(save(),render()));
 }
  };
- sortQueue=new Sortable($('instant-grid'),{...opt,handle:'.drag-handle',filter:".pad-settings-trigger",preventOnFilter:!1}); sortSideQueue=new Sortable(($('sideload-instant-grid')),{...opt,handle:'.drag-handle',filter:".pad-settings-trigger",preventOnFilter:!1});
-sortExtract=new Sortable($('sideload-extract-zone'),{group:'shared',onAdd:e=>{haptic([40,60,40]);let id=e.item.id.replace('side-','').replace('tile-',''), i=sideTrks.findIndex(x=>x.id===id); if(i>-1){let t=sideTrks.splice(i,1)[0];t.type='queue';tracks.push(t);!chkGrpDemote()&&(saveSide(),renderSide());save();render();} e.item.remove();
-$('sideload-extract-zone').style.display='none';}});
+ sortQueue=new Sortable($('track-list'),{...opt,handle:'.drag-handle'}); sortGrid=new Sortable($('instant-grid'),{...opt,handle:'.drag-handle',filter:".pad-settings-trigger",preventOnFilter:!1}); sortSideQueue=new Sortable($('sideload-track-list'),{...opt,handle:'.drag-handle'}); sortSideGrid=new Sortable($('sideload-instant-grid'),{...opt,handle:'.drag-handle',filter:".pad-settings-trigger",preventOnFilter:!1});
+sortExtract=new Sortable($('sideload-extract-zone'),{group:'shared',onAdd:e=>{haptic([40,60,40]);let id=e.item.id.replace('side-','').replace('tile-',''), i=sideTrks.findIndex(x=>x.id===id); if(i>-1){let t=sideTrks.splice(i,1)[0];t.type='queue';tracks.push(t);!chkGrpDemote()&&(saveSide(),renderSide());save();render();} e.item.remove();$('sideload-extract-zone').style.display='none';}});
 };
-
-// --- Simple Step-by-Step Onboarding Engine ---
-const tutSteps = [
-{
-title: "Import Your Music",
-badge: "Step 1: Add a Track",
-text: "Let's build your cue list. Tap <strong>Add Cue</strong> to load an audio file from your device.",
-target: () => $('add-cue-btn'), waitForAction: true },
-{ title: "Access Cue Settings", badge: "Step 2: Cue Configuration", text: "Great! Your track is loaded. Tap the <strong>Settings Gear (⚙)</strong> on the right of the cue card to open its settings.", target: () => document.querySelector('.tile .edit-trigger'), waitForAction: true },
-{ title: "Cue Playback Modes", badge: "Step 3: Cue Types", text: "Choose how this cue behaves:<br>• <strong>Main</strong>: Sequential tracks in your main playlist.<br>• <strong>Instant</strong>: Quick-trigger pads in the grid below.", target: () => $('cue-type-selector-row'), waitForAction: false },
-{ title: "Individual Volume Level", badge: "Step 4: Custom Volume", text: "Drag the <strong>Volume Slider</strong> to adjust this track's playback volume. Slide it now to automatically proceed.", target: () => document.querySelector('#cue-volume-slider-row input[type="range"]'), waitForAction: true },
-{ title: "Voice Command Setup", badge: "Step 5: Voice Setup", text: "Tap on <strong>Voice Triggers</strong> to expand the voice activation options.", target: () => document.querySelector('#cue-voice-details summary'), waitForAction: true },
-{ title: "Spoken Commands", badge: "Step 6: Setup Commands", text: "Set a phrase here to trigger this cue hands-free. Toggle <strong>Global</strong> to listen for this command even when the track is not next in queue.", target: () => $('cue-voice-details'), waitForAction: false },
-{ title: "Timelines & Atmospheric Ducking", badge: "Step 7: Advanced Settings", text: "Open <strong>Advanced Settings</strong> to find audio trimming, custom fades, looping background modes, and automatic volume ducking.", target: () => $('cue-advanced-details'), waitForAction: true },
-{ title: "Close Options Panel", badge: "Step 8: Return to Main", text: "Tap the top-right <strong>Close (X)</strong> button to exit the settings panel.", target: () => document.querySelector('#settings-modal .icon-btn'), waitForAction: true },
-{ title: "Context Options Menu", badge: "Step 9: Long-Press Menu", text: "<strong>Long-press</strong> (press and hold) the middle of your cue card to open the quick actions menu.", target: () => document.querySelector('.tile-info'), waitForAction: true },
-{ title: "Sequence Bypassing", badge: "Step 10: Skipping Tracks", text: "Tap <strong>Skip Cue</strong> to bypass this track during your show without deleting it.", target: () => $('ctx-skip-btn'), waitForAction: true },
-{ title: "Cloning", badge: "Step 11: Duplicate Cue", text: "Tap <strong>Duplicate</strong> to quickly copy this cue and all of its settings.", target: () => $('ctx-dup-btn'), waitForAction: true },
-{ title: "Create Group Container", badge: "Step 12: Cue Groups", text: "Tap <strong>Create Group</strong> to combine tracks. This opens a nested sideload player.", target: () => $('ctx-group-btn'), waitForAction: true },
-{ title: "Close Cue Options Menu", badge: "Step 13: Close Menu", text: "Let's head back. Dismiss this menu by tapping the <strong>Close (X)</strong> button.", target: () => document.querySelector('#cue-menu-modal .icon-btn'), waitForAction: true },
-{ title: "Manual Sorting", badge: "Step 14: Manual Sorting", text: "Drag cards by their <strong>handles (☰)</strong> on the left to reorder them. Drag one cue directly over another to group them.", target: () => document.querySelector('.tile .drag-handle'), waitForAction: false },
-{ title: "Manage Shows", badge: "Step 15: Project Files", text: "Tap the <strong>Show Title Header</strong> at the top of the screen to open your Show Manager.", target: () => $('show-title-header'), waitForAction: true },
-{ title: "Clean Show Sheets", badge: "Step 16: New Show Files", text: "Tap <strong>New</strong> to start a completely fresh show sheet.", target: () => $('show-new-btn'), waitForAction: false },
-{ title: "File Imports", badge: "Step 17: Imports", text: "Tap <strong>Import</strong> to restore backup show files (with the <code>.magic</code> extension).", target: () => $('show-import-btn'), waitForAction: false },
-{ title: "Context Projects Customization", badge: "Step 18: Edit Shows List", text: "<strong>Long-press</strong> any show in the list to rename, duplicate, export, or delete it. Tap the <strong>Close (X)</strong> button to exit the show manager.", target: () => document.querySelector('#projects-modal .icon-btn'), waitForAction: true },
-{ title: "Adjust Haptics & Fade Speed", badge: "Step 19: App Settings", text: "Tap the <strong>Settings Cog (⚙)</strong> in the header to change themes, languages, UI size, haptics, and global sequence fades.", target: () => $('header-settings-btn'), waitForAction: true },
-{ title: "Onboarding Sequence Concluded", badge: "Step 20: Ready to Go", text: "You are ready to create! To replay this tutorial anytime, find the <strong>Interactive Guide</strong> in <strong>Advanced Settings</strong>. Tap <strong>Finish</strong> to close.", target: null, waitForAction: false }
-];
-
-const adjustTutorialBarParent = () => {
-const activeDialog = document.querySelector('dialog[open]');
-const tutBar = $('tutorial-bar');
-if (!tutBar) return;
-if (activeDialog) {
-if (tutBar.parentElement !== activeDialog) {
-activeDialog.appendChild(tutBar);
-}
-tutBar.style.position = 'fixed';
-tutBar.style.bottom = '16px';
-tutBar.style.top = 'auto';
-tutBar.style.left = '16px';
-tutBar.style.right = '16px';
-tutBar.style.width = 'calc(100% - 32px)';
-tutBar.style.maxWidth = '360px';
-tutBar.style.margin = '0 auto';
-tutBar.style.zIndex = '13000';
-} else {
-if (tutBar.parentElement !== document.body) {
-document.body.appendChild(tutBar);
-}
-tutBar.style.position = 'fixed';
-tutBar.style.bottom = '24px';
-tutBar.style.top = 'auto';
-tutBar.style.left = '24px';
-tutBar.style.right = '24px';
-tutBar.style.width = 'calc(100% - 48px)';
-tutBar.style.maxWidth = '360px';
-tutBar.style.margin = '0 auto';
-tutBar.style.zIndex = '13000';
-}
-};
-
-const clearTutHighlights = () => {
-document.querySelectorAll('.tut-highlight').forEach(el => el.classList.remove('tut-highlight'));
-};
-
-const applyTutHighlight = (targetGetter) => {
-clearTutHighlights();
-if (typeof targetGetter === 'function') {
-const el = targetGetter();
-if (el) el.classList.add('tut-highlight');
-}
-};
-
-const openTutorial = (stepIdx = 0) => {
-tutActive = true;
-tutType = 'basic';
-tutStep = stepIdx;
-document.body.classList.add('tut-active');
-
-if (stepIdx === 2) {
-closeModal('cue-menu-modal');
-}
-
-const step = tutSteps[tutStep];
-if (!step) return;
-
-$('tut-bar-step').innerText = `Step ${tutStep + 1} of ${tutSteps.length}`;
-$('tut-bar-badge').innerText = step.badge;
-$('tut-bar-text').innerHTML = step.text;
-
-applyTutHighlight(step.target);
-adjustTutorialBarParent();
-
-$('tut-bar-next').innerText = (tutStep === tutSteps.length - 1) ? 'Finish' : 'Next';
-$('tut-bar-next').style.display = step.waitForAction ? 'none' : 'block';
-$('tutorial-bar').style.display = 'flex';
-};
-
-const nextTutStep = () => {
-haptic(10);
-if (tutStep < tutSteps.length - 1) {
-openTutorial(tutStep + 1);
-} else {
-finishTutorial();
-}
-};
-
-const prevTutStep = () => {
-haptic(10);
-if (tutStep > 0) {
-openTutorial(tutStep - 1);
-}
-};
-
-const skipTutorial = () => {
-haptic([15, 30]);
-finishTutorial();
-};
-
-const finishTutorial = () => {
-clearTutHighlights();
-tutActive = false;
-document.body.classList.remove('tut-active');
-updSet('tutorialCompleted', true);
-$('tutorial-bar').style.display = 'none';
-adjustTutorialBarParent();
-};
-
-const evalTutorialStep = () => {
-if (!tutActive) return;
-
-const settingsOpen = $('settings-modal').open; 
-const cueMenuOpen = $('cue-menu-modal').open;
-const projectsOpen = $('projects-modal').open;
-const appSettingsOpen = $('app-settings').open;
-const voiceOpen = $('cue-voice-details') && $('cue-voice-details').open;
-const advOpen = $('cue-advanced-details') && $('cue-advanced-details').open;
-
-if (tutStep === 0 && tracks.length > 0) {
-openTutorial(1);
-} else if (tutStep === 1 && settingsOpen) {
-openTutorial(2);
-} else if (tutStep === 4 && voiceOpen) {
-openTutorial(5);
-} else if (tutStep === 6 && advOpen) {
-openTutorial(7);
-} else if (tutStep === 7 && !settingsOpen) {
-openTutorial(8);
-} else if (tutStep === 8 && cueMenuOpen) {
-openTutorial(9);
-} else if (tutStep === 12 && !cueMenuOpen) {
-openTutorial(13);
-} else if (tutStep === 14 && projectsOpen) {
-openTutorial(15);
-} else if (tutStep === 17 && !projectsOpen) {
-openTutorial(18);
-} else if (tutStep === 18 && appSettingsOpen) {
-openTutorial(19);
-}
-};
-
-// Global case-sensitive Click-to-Advance Interception
-document.addEventListener('click', (e) => {
-  if (!tutActive) return;
-  const step = tutSteps[tutStep];
-  if (!step || !step.target) return;
-  const targetEl = step.target();
-  if (!targetEl) return;
-
-  if (targetEl.contains(e.target) || e.target === targetEl) {
-    const clickAdvanceMap = {
-      1: 2,   // settings gear click -> Step 3
-      2: 3,   // cue type selection click -> Step 4
-      4: 5,   // voice triggers summary click -> Step 6
-      6: 7,   // advanced settings summary click -> Step 8
-      7: 8,   // close settings modal click -> Step 9
-      9: 10,  // Skip cue click -> Step 11
-      10: 11, // Duplicate click -> Step 12
-      11: 12, // Create Group click -> Step 13
-      12: 13, // close cue menu modal click -> Step 14
-      14: 15, // show title header click -> Step 16
-      17: 18, // close projects modal click -> Step 19
-      18: 19  // settings cog click -> Step 20
-    };
-    if (clickAdvanceMap[tutStep] !== undefined) {
-      setTimeout(() => {
-        openTutorial(clickAdvanceMap[tutStep]);
-      }, 100);
-    }
-  }
-}, true);
 
 if('mediaSession' in navigator){ navigator.mediaSession.setActionHandler('nexttrack',()=>playNextCue(false, true)); navigator.mediaSession.setActionHandler('play',()=>paused?toggleGlobalPause():playNextCue(false, true)); navigator.mediaSession.setActionHandler('pause',()=>!paused&&toggleGlobalPause()); }
  window.addEventListener('load',()=>sessionStorage.getItem('mc_pocket')==='true'&&setTimeout(()=>toggleLock(!0),500));
  document.fonts.ready.then(()=>{
 document.body.style.opacity="1";
-if (!settings.tutorialCompleted) {
-setTimeout(() => openTutorial(0), 1000);
-}
 });
 applySettings(); initDB(); initSpeech();
  </script></body></html>
