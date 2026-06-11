@@ -330,6 +330,7 @@ html[data-theme="high-vis"] .trim-controls button:active { color: #000; }
             </div>
         </div>
     </div>
+    
     <div class="swipe-dots" style="margin-top:10px;">
         <div class="swipe-dot active" id="gf-dot-0" onclick="swpGF(0)"></div>
         <div class="swipe-dot" id="gf-dot-1" onclick="swpGF(1)"></div>
@@ -1224,7 +1225,7 @@ const openTrimModal = id => {
 };
 
 const manTrim = (type, val) => { if(!ws||!wsRegions)return; haptic(15); let v=parseFloat(val), r=wsRegions.getRegions()[0], dur=ws.getDuration(); if(type==='start'){if(v<0)v=0; if(v>=r.end)v=r.end-0.1; r.setOptions({start:v}); tempTrimStart=v; $('trim-time-start-input').value=v.toFixed(2);}else{if(v>dur)v=dur; if(v<=r.start)v=r.start+0.1; r.setOptions({end:v}); tempTrimEnd=v; $('trim-time-end-input').value=v.toFixed(2);} updVisFade(); };
-const nudgeTrim = (type, amount) => { if(!ws || !wsRegions) return; haptic(5); let r = wsRegions.getRegions()[0], dur = ws.getDuration(); if(type === 'start') { let v = Math.max(0, Math.min(r.start + amount, r.end - 0.1)); r.setOptions({start: v}); tempTrimStart = v; $('trim-time-start-input').value = v.toFixed(2); } else { let v = Math.max(r.start + 0.1, Math.min(r.end + amount, dur)); r.setOptions({end: v}); tempTrimEnd = v; $('trim-time-end-input').value = v.toFixed(2); } updVisFade(); };
+const nudgeTrim = (type, amount) => { if(!ws || !wsRegions) return; haptic(5); let r = wsRegions.getRegions()[0], dur = ws.getDuration(); if(type === 'start') { let v = Math.max(0, Math.min(r.start + amount, r.end - 0.1)); r.setOptions({start: v}); tempTrimStart = v; $('trim-time-start-input').value = v.toFixed(2); } else { let v = Math.max(r.start + 0.1, Math.min(r.end + amount, dur)); r.setOptions({end: v}); tempTrimEnd = v; $('trim-time-start-input').value = v.toFixed(2); } updVisFade(); };
 const setTrimPos = (type) => { if(!ws || !wsRegions) return; haptic(15); let t = ws.getCurrentTime(), r = wsRegions.getRegions()[0]; if(type === 'start') { if(t >= r.end) t = Math.max(0, r.end - 0.1); r.setOptions({start: t}); tempTrimStart = t; } else { if(t <= r.start) t = Math.min(ws.getDuration(), r.start + 0.1); r.setOptions({end: t}); tempTrimEnd = t; } $('trim-time-start-input').value = tempTrimStart.toFixed(2); $('trim-time-end-input').value = tempTrimEnd.toFixed(2); updVisFade(); };
 
 const manCut = (type, val) => { 
@@ -1905,8 +1906,9 @@ const adjustTutorialBarParent = () => {
         if (tutBar.parentElement !== activeDialog) {
             activeDialog.appendChild(tutBar);
         }
+        // Force rendering inside dialog viewport but anchored to fixed coordinates at screen bottom
         tutBar.style.position = 'fixed';
-        tutBar.style.bottom = '16px';  
+        tutBar.style.bottom = '16px';  // Keep safe margin from visual modal boundaries
         tutBar.style.top = 'auto';
         tutBar.style.left = '16px';
         tutBar.style.right = '16px';
@@ -1944,7 +1946,7 @@ const openTutorial = (stepIdx = 0) => {
     tutType = 'basic';
     tutStep = stepIdx;
     
-    // Auto-advance modal overlays smoothly to keep transitions clear
+    // Automatically close context choices modal if transitioning from step 2 to step 3
     if (stepIdx === 2) {
         closeModal('cue-menu-modal');
     }
@@ -1958,26 +1960,6 @@ const openTutorial = (stepIdx = 0) => {
 
     applyTutHighlight(step.target);
     adjustTutorialBarParent();
-
-    // Position popover intelligently near targeted element
-    const targetEl = step.target ? step.target() : null;
-    const bar = $('tutorial-bar');
-    if (targetEl && bar) {
-        const rect = targetEl.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
-        
-        // Render popover at viewport top if targeted settings are on the lower half to avoid overlap
-        if (rect.bottom > viewportHeight / 2) {
-            bar.style.bottom = 'auto';
-            bar.style.top = '16px';
-        } else {
-            bar.style.bottom = '16px';
-            bar.style.top = 'auto';
-        }
-    } else if (bar) {
-        bar.style.bottom = '24px';
-        bar.style.top = 'auto';
-    }
 
     $('tut-bar-prev').style.display = tutStep === 0 ? 'none' : 'block';
     $('tut-bar-next').style.display = step.waitForAction ? 'none' : 'block';
@@ -2022,7 +2004,6 @@ const evalTutorialStep = () => {
     const cueMenuOpen = $('cue-menu-modal').open;
     const projectsOpen = $('projects-modal').open;
     const appSettingsOpen = $('app-settings').open;
-    const fadesOpen = $('global-fades-modal').open;
 
     if (tutStep === 0 && tracks.length > 0) {
         openTutorial(1);
