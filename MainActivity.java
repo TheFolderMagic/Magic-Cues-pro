@@ -2,8 +2,6 @@ package __PACKAGE__;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.webkit.WebView;
 import com.getcapacitor.BridgeActivity;
@@ -15,21 +13,25 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        // Defer NFC setup so Capacitor has time to fully initialize
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    WebView webView = MainActivity.this.getBridge().getWebView();
-                    if (webView != null) {
-                        nfcBridge = new NfcBridge(MainActivity.this, webView);
-                        webView.addJavascriptInterface(nfcBridge, "Android");
+        try {
+            WebView webView = MainActivity.this.getBridge().getWebView();
+            if (webView != null) {
+                nfcBridge = new NfcBridge(MainActivity.this, webView);
+                
+                // Inject the NFC bridge immediately so it is available on page load
+                webView.addJavascriptInterface(nfcBridge, "Android");
+                
+                // Extend Capacitor's default WebChromeClient to auto-grant Mic/Web permissions inside the WebView
+                webView.setWebChromeClient(new com.getcapacitor.BridgeWebChromeClient(MainActivity.this.getBridge()) {
+                    @Override
+                    public void onPermissionRequest(final android.webkit.PermissionRequest request) {
+                        request.grant(request.getResources());
                     }
-                } catch (Exception e) {
-                    Log.e("MagicCues", "NFC setup failed: " + e.getMessage());
-                }
+                });
             }
-        });
+        } catch (Exception e) {
+            Log.e("MagicCues", "NFC setup failed: " + e.getMessage());
+        }
     }
 
     @Override
