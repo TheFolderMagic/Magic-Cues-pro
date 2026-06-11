@@ -44,8 +44,8 @@ jobs:
           DIR="android/app/src/main/java/$PKG_PATH"
           mkdir -p "$DIR"
           rm -f "$DIR/MainActivity.java"
-          sed "s/__PACKAGE__/$PKG/g" NfcBridge.kt > "$DIR/NfcBridge.kt"
-          sed "s/__PACKAGE__/$PKG/g" MainActivity.kt > "$DIR/MainActivity.kt"
+          sed "s/__PACKAGE__/$PKG/g" NfcBridge.java > "$DIR/NfcBridge.java"
+          sed "s/__PACKAGE__/$PKG/g" MainActivity.java > "$DIR/MainActivity.java"
 
       - name: Configure Android Permissions (Mic, NFC)
         run: |
