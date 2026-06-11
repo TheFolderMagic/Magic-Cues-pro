@@ -154,19 +154,20 @@ font-weight: 600;
 #tutorial-bar {
 position: fixed; /* position: fixed is verified to anchor reliably over top layer card boundaries */
 bottom: 24px;
-left: 24px;
-right: 24px;
+left: 50%;
+transform: translateX(-50%);
+width: calc(100% - 48px);
+max-width: 360px;
 background: var(--modal-bg);
 border: 2px solid var(--accent);
 border-radius: 24px;
-padding: 12px 16px;
-z-index: 12000; /* Float correctly in front of active dialog panels */
+padding: 16px;
+z-index: 13000; /* Float correctly in front of active dialog panels */
 box-shadow: 0 20px 50px rgba(0,0,0,0.6);
 display: none;
 flex-direction: column;
-gap: 8px;
-max-width: 360px;
-margin: 0 auto;
+gap: 10px;
+box-sizing: border-box;
 }
 #tutorial-bar p {
 font-size: 13px !important;
@@ -187,27 +188,49 @@ padding: 6px 12px !important;
 font-size: 12px !important;
 }
 
-/* Hyper-Modern Apple style glowing indicator animation */
-@keyframes tutPulse {
+/* High-Finesse organic pulsing Squircle Indicator */
+@keyframes squirclePulse {
   0% {
-    box-shadow: 0 0 0 0px var(--accent), 0 0 0 2px rgba(0, 122, 255, 0.4), 0 4px 12px rgba(0, 122, 255, 0.15);
+    box-shadow: 0 0 0 1px var(--accent), 0 0 0 2px rgba(0, 122, 255, 0.4), 0 4px 16px rgba(0, 122, 255, 0.15);
   }
   50% {
-    box-shadow: 0 0 0 2.5px var(--accent), 0 0 0 6px rgba(0, 122, 255, 0.25), 0 8px 24px rgba(0, 122, 255, 0.4);
+    box-shadow: 0 0 0 3.5px var(--accent), 0 0 0 10px rgba(0, 122, 255, 0.25), 0 12px 30px rgba(0, 122, 255, 0.45);
   }
   100% {
-    box-shadow: 0 0 0 0px var(--accent), 0 0 0 2px rgba(0, 122, 255, 0.4), 0 4px 12px rgba(0, 122, 255, 0.15);
+    box-shadow: 0 0 0 1px var(--accent), 0 0 0 2px rgba(0, 122, 255, 0.4), 0 4px 16px rgba(0, 122, 255, 0.15);
   }
 }
 .tut-highlight {
-  animation: tutPulse 2s infinite cubic-bezier(0.25, 1, 0.5, 1) !important;
+  animation: squirclePulse 2s infinite cubic-bezier(0.25, 0.8, 0.25, 1) !important;
   border-color: var(--accent) !important;
-  transition: all 0.3s ease-in-out;
+  border-radius: 20px !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   z-index: 13000 !important;
-  border-radius: inherit !important;
 }
 
-/* Disable dialog filter properties during active onboarding processes */
+/* Circle overrides for squircle highlights */
+.tut-highlight[style*="border-radius: 50%"],
+.tut-highlight[style*="border-radius:50%"],
+#pocket-exit-btn.tut-highlight,
+#mic-btn.tut-highlight,
+#pause-btn.tut-highlight {
+  border-radius: 50% !important;
+}
+
+/* Fluid dialog-open parent override to avoid screen protrusions */
+dialog[open] #tutorial-bar {
+  position: relative !important;
+  bottom: auto !important;
+  left: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 16px 0 0 0 !important;
+  box-shadow: none !important;
+  border: 1px solid var(--accent) !important;
+  border-radius: 18px !important;
+  background: rgba(128,128,128,0.06) !important;
+}
 body.tut-active dialog {
   backdrop-filter: none !important;
 }
@@ -705,7 +728,7 @@ const initDB = () => { let r=indexedDB.open('MCPDB',4); r.onupgradeneeded=e=>!e.
  const saveSide = () => { if(actSideId){ let p=tracks.find(x=>x.id===actSideId); if(p){ p.showData=sideTrks.map(t=>({...t,blobUrl:undefined})); save(); } } };
 
 let cuePTm, cLng=!1, aMenuId=null, isSideMenu=!1;
-const stCuePrs = (e,id,s) => { if(e.target.closest('.drag-handle,.edit-trigger'))return; cLng=!1; cuePTm=setTimeout(()=>{haptic([30,40]); cLng=!0; aMenuId=id; isSideMenu=s; let t=(s?sideTrks:tracks).find(x=>x.id===id); $('rename-cue-input').value=t.name; let typeText = t.isCueGroup ? 'Group' : (t.isExternalShow ? 'Show' : 'Cue'); $('skip-cue-text').innerText=t.skip?`Unskip ${typeText}`:`Skip ${typeText}`; $('skip-cue-icon').innerText=t.skip?'play_circle':'block'; openModal('cue-menu-modal'); setTimeout(() => $('rename-cue-input').blur(), 10); if (tutActive && tutType === 'basic' && tutStep === 7) { openTutorial(8); } },600); }; const ccCuePrs = () => clearTimeout(cuePTm); const clickCue = (id,s) => { if(cLng||locked)return; let tl=s?sideTrks:tracks, t=tl.find(x=>x.id===id); if(!t)return; t.type==='queue'?(s?(sideIdx=sideTrks.filter(x=>x.type==='queue').findIndex(x=>x.id===id),playSideloadNextCue(!0, true)):playCue(id)):(s?playSidePad(t):playPad(t)); }; const updMenu = () => { isSideMenu?(saveSide(),renderSide()):(save(),render()); closeModal('cue-menu-modal'); }; const saveCueRename = () => { let t=(isSideMenu?sideTrks:tracks).find(x=>x.id===aMenuId); if(t){ t.name=$('rename-cue-input').value||'Unnamed Cue'; updMenu(); } };
+const stCuePrs = (e,id,s) => { if(e.target.closest('.drag-handle,.edit-trigger'))return; cLng=!1; cuePTm=setTimeout(()=>{haptic([30,40]); cLng=!0; aMenuId=id; isSideMenu=s; let t=(s?sideTrks:tracks).find(x=>x.id===id); $('rename-cue-input').value=t.name; let typeText = t.isCueGroup ? 'Group' : (t.isExternalShow ? 'Show' : 'Cue'); $('skip-cue-text').innerText=t.skip?`Unskip ${typeText}`:`Skip ${typeText}`; $('skip-cue-icon').innerText=t.skip?'play_circle':'block'; openModal('cue-menu-modal'); setTimeout(() => $('rename-cue-input').blur(), 10); if (tutActive && tutType === 'basic' && tutStep === 8) { openTutorial(9); } }, 600); }; const ccCuePrs = () => clearTimeout(cuePTm); const clickCue = (id,s) => { if(cLng||locked)return; let tl=s?sideTrks:tracks, t=tl.find(x=>x.id===id); if(!t)return; t.type==='queue'?(s?(sideIdx=sideTrks.filter(x=>x.type==='queue').findIndex(x=>x.id===id),playSideloadNextCue(!0, true)):playCue(id)):(s?playSidePad(t):playPad(t)); }; const updMenu = () => { isSideMenu?(saveSide(),renderSide()):(save(),render()); closeModal('cue-menu-modal'); }; const saveCueRename = () => { let t=(isSideMenu?sideTrks:tracks).find(x=>x.id===aMenuId); if(t){ t.name=$('rename-cue-input').value||'Unnamed Cue'; updMenu(); } };
 const toggleCueSkip = () => { let t=(isSideMenu?sideTrks:tracks).find(x=>x.id===aMenuId); if(t){ t.skip=!t.skip; updMenu(); } };
 const duplicateCue = () => { let l=isSideMenu?sideTrks:tracks, i=l.findIndex(x=>x.id===aMenuId); if(i>-1){ let n=JSON.parse(JSON.stringify(l[i])); n.id='id'+Date.now(); n.name+=' (Copy)'; l.splice(i+1,0,n); updMenu(); } };
 const createGroupFromMenu = () => { let l=isSideMenu?sideTrks:tracks, i=l.findIndex(x=>x.id===aMenuId); if(i>-1){ let t=l[i], n={id:'id'+Date.now(), name:'Cue Group '+(tracks.filter(x=>x.isCueGroup).length+1), type:t.type, delay:0, fadeIn:0, fadeOut:0, volume:1, autoFollow:!1, overlap:0, postDelay:0, triggerPhrase:'', globalVoice:!1, isExternalShow:!0, isCueGroup:!0, autoStartShow:!1, skip:!1, showData:[t]}; l.splice(i,1,n); updMenu(); } };
@@ -1244,7 +1267,7 @@ if(k==='type')closeModal('settings-modal');
 isSetSide?(saveSide(),renderSide()):(save(),render());
 if (tutActive) {
   if (tutStep === 3 && k === 'volume') {
-    openTutorial(4); // Auto-advance to Step 5 when Volume slider is adjusted!
+    openTutorial(4); // Advance to Voice Triggers Summary click
   } else {
     evalTutorialStep();
   }
@@ -1594,9 +1617,7 @@ let rec, isLis=!1, spErr=!1, prLen=0, micOn=!1, spLog=[];
 const initSortables = () => {
  [sortQueue,sortGrid,sortSideQueue,sortSideGrid,sortExtract].forEach(s=>s&&s.destroy());
 let opt = { group:'shared', animation:250, ghostClass:"sortable-ghost", disabled:!settings.enableDragging, swapThreshold:0.65,
-onStart: e => { isGrp=!1; curHov=null; clearTimeout(hoverTmr); haptic(15); if(e.from.id.includes('sideload'))$('sideload-extract-zone').style.display='block'; }, onChange: e => haptic(e.to!==e.from?[30,50,30]:5), onMove: e => { if(e.related?.id==='sideload-extract-zone') return !0; let t=e.related; if(!t) { clearTimeout(hoverTmr); if(curHov){curHov.classList.remove('group-hover-highlight');curHov=null;} isGrp=!1; return !0; } let r=t.getBoundingClientRect(); let inY=dragY>r.top+r.height*0.25 && dragY<r.bottom-r.height*0.25; let inX=t.classList.contains('cue-pad')?(dragX>r.left+r.width*0.25 && dragX<r.right-r.width*0.25):(dragX>r.left && dragX<r.right); if(inY&&inX) { if(curHov!==t){ clearTimeout(hoverTmr); if(curHov)curHov.classList.remove('group-hover-highlight'); curHov=t; isGrp=!1; hoverTmr=setTimeout(()=>{ if(curHov===t){ curHov.classList.add('group-hover-highlight'); isGrp=!0; haptic([20,30,20]); } }, 350); } return !1; } else { clearTimeout(hoverTmr); if(curHov){curHov.classList.remove('group-hover-highlight');curHov=null;} isGrp=!1; return !0; } }, onEnd: e => { let isGd=isGrp&&curHov?.classList.contains('group-hover-highlight'), tEl=curHov; if(isGd && tEl) { let r = tEl.getBoundingClientRect(); if(dragY < r.top || dragY > r.bottom || dragX < r.left || dragX > r.right) { isGd = false; } } clearTimeout(hoverTmr); if(curHov)curHov.classList.remove('group-hover-highlight'); curHov=null; isGrp=!1; if(e.from.id.includes('sideload'))
-
-$('sideload-extract-zone').style.display='none';
+onStart: e => { isGrp=!1; curHov=null; clearTimeout(hoverTmr); haptic(15); if(e.from.id.includes('sideload'))$('sideload-extract-zone').style.display='block'; }, onChange: e => haptic(e.to!==e.from?[30,50,30]:5), onMove: e => { if(e.related?.id==='sideload-extract-zone') return !0; let t=e.related; if(!t) { clearTimeout(hoverTmr); if(curHov){curHov.classList.remove('group-hover-highlight');curHov=null;} isGrp=!1; return !0; } let r=t.getBoundingClientRect(); let inY=dragY>r.top+r.height*0.25 && dragY<r.bottom-r.height*0.25; let inX=t.classList.contains('cue-pad')?(dragX>r.left+r.width*0.25 && dragX<r.right-r.width*0.25):(dragX>r.left && dragX<r.right); if(inY&&inX) { if(curHov!==t){ clearTimeout(hoverTmr); if(curHov)curHov.classList.remove('group-hover-highlight'); curHov=t; isGrp=!1; hoverTmr=setTimeout(()=>{ if(curHov===t){ curHov.classList.add('group-hover-highlight'); isGrp=!0; haptic([20,30,20]); } }, 350); } return !1; } else { clearTimeout(hoverTmr); if(curHov){curHov.classList.remove('group-hover-highlight');curHov=null;} isGrp=!1; return !0; } }, onEnd: e => { let isGd=isGrp&&curHov?.classList.contains('group-hover-highlight'), tEl=curHov; if(isGd && tEl) { let r = tEl.getBoundingClientRect(); if(dragY < r.top || dragY > r.bottom || dragX < r.left || dragX > r.right) { isGd = false; } } clearTimeout(hoverTmr); if(curHov)curHov.classList.remove('group-hover-highlight'); curHov=null; isGrp=!1; if(e.from.id.includes('sideload')) $('sideload-extract-zone').style.display='none';
 let dId=e.item.id.replace('tile-','').replace('side-','');
 if(isGd&&tEl&&tEl.id!==e.item.id){
 let tId=tEl.id.replace('tile-','').replace('side-',''), fS=e.from.id.includes('sideload'), fL=fS?sideTrks:tracks, tS=tEl.id.startsWith('side-'), tL=tS?sideTrks:tracks, dI=fL.findIndex(x=>x.id===dId), tI=tL.findIndex(x=>x.id===tId);
@@ -1614,9 +1635,8 @@ let sL=[...tL.filter(x=>x.type==='queue').sort((a,b)=>qIds.indexOf(a.id)-qIds.in
  tS?(sideTrks=sL,saveSide(),renderSide()):(tracks=sL,save(),render()); fL!==tL&&(fS?(saveSide(),renderSide()):(save(),render()));
 }
  };
- sortQueue=new Sortable(($('instant-grid')),{...opt,handle:'.drag-handle',filter:".pad-settings-trigger",preventOnFilter:!1}); sortSideQueue=new Sortable(($('sideload-instant-grid')),{...opt,handle:'.drag-handle',filter:".pad-settings-trigger",preventOnFilter:!1});
+ sortQueue=new Sortable($('instant-grid'),{...opt,handle:'.drag-handle',filter:".pad-settings-trigger",preventOnFilter:!1}); sortSideQueue=new Sortable(($('sideload-instant-grid')),{...opt,handle:'.drag-handle',filter:".pad-settings-trigger",preventOnFilter:!1});
 sortExtract=new Sortable($('sideload-extract-zone'),{group:'shared',onAdd:e=>{haptic([40,60,40]);let id=e.item.id.replace('side-','').replace('tile-',''), i=sideTrks.findIndex(x=>x.id===id); if(i>-1){let t=sideTrks.splice(i,1)[0];t.type='queue';tracks.push(t);!chkGrpDemote()&&(saveSide(),renderSide());save();render();} e.item.remove();
-
 $('sideload-extract-zone').style.display='none';}});
 };
 
@@ -1630,20 +1650,22 @@ target: () => $('add-cue-btn'), waitForAction: true },
 { title: "Access Cue Settings", badge: "Step 2: Cue Configuration", text: "Great! Your track is loaded. Tap the <strong>Settings Gear (⚙)</strong> on the right of the cue card to open its settings.", target: () => document.querySelector('.tile .edit-trigger'), waitForAction: true },
 { title: "Cue Playback Modes", badge: "Step 3: Cue Types", text: "Choose how this cue behaves:<br>• <strong>Main</strong>: Sequential tracks in your main playlist.<br>• <strong>Instant</strong>: Quick-trigger pads in the grid below.", target: () => $('cue-type-selector-row'), waitForAction: false },
 { title: "Individual Volume Level", badge: "Step 4: Custom Volume", text: "Drag the <strong>Volume Slider</strong> to adjust this track's playback volume. Slide it now to automatically proceed.", target: () => document.querySelector('#cue-volume-slider-row input[type="range"]'), waitForAction: true },
-{ title: "Voice Commands", badge: "Step 5: Voice Recognition", text: "Set a <strong>Phrase</strong> to trigger this cue hands-free. Toggle <strong>Global</strong> to let the app listen for this trigger at any time. Open the Voice Triggers block to advance.", target: () => $('cue-voice-details'), waitForAction: true },
-{ title: "Timelines & Atmospheric Ducking", badge: "Step 6: Advanced Settings", text: "Open <strong>Advanced Settings</strong> to find audio trimming, custom fades, looping background modes, and automatic volume ducking.", target: () => $('cue-advanced-details'), waitForAction: true },
-{ title: "Close Options Panel", badge: "Step 7: Return to Main", text: "Tap the top-right <strong>Close (X)</strong> button to exit the settings panel.", target: () => document.querySelector('#settings-modal .icon-btn'), waitForAction: true },
-{ title: "Context Options Menu", badge: "Step 8: Long-Press Menu", text: "<strong>Long-press</strong> (press and hold) the middle of your cue card to open the quick actions menu.", target: () => document.querySelector('.tile-info'), waitForAction: true },
-{ title: "Sequence Bypassing", badge: "Step 9: Skipping Tracks", text: "Tap <strong>Skip Cue</strong> to bypass this track during your show without deleting it.", target: () => $('ctx-skip-btn'), waitForAction: false },
-{ title: "Cloning", badge: "Step 10: Duplicate Cue", text: "Tap <strong>Duplicate</strong> to quickly copy this cue and all of its settings.", target: () => $('ctx-dup-btn'), waitForAction: false },
-{ title: "Create Group Container", badge: "Step 11: Cue Groups", text: "Tap <strong>Create Group</strong> to combine tracks. This opens a nested sideload player. Now, dismiss this menu by tapping the <strong>Close (X)</strong> button.", target: () => document.querySelector('#cue-menu-modal .icon-btn'), waitForAction: true },
-{ title: "Reordering & Grouping", badge: "Step 12: Manual Sorting", text: "Drag cards by their <strong>handles (☰)</strong> on the left to reorder them. Drag one cue directly over another to group them.", target: () => document.querySelector('.tile .drag-handle'), waitForAction: false },
-{ title: "Manage Shows", badge: "Step 13: Project Files", text: "Tap the <strong>Show Title Header</strong> at the top of the screen to open your Show Manager.", target: () => $('show-title-header'), waitForAction: true },
-{ title: "Clean Show Sheets", badge: "Step 14: New Show Files", text: "Tap <strong>New</strong> to start a completely fresh show sheet.", target: () => $('show-new-btn'), waitForAction: false },
-{ title: "File Imports", badge: "Step 15: Imports", text: "Tap <strong>Import</strong> to restore backup show files (with the <code>.magic</code> extension).", target: () => $('show-import-btn'), waitForAction: false },
-{ title: "Context Projects Customization", badge: "Step 16: Edit Shows List", text: "<strong>Long-press</strong> any show in the list to rename, duplicate, export, or delete it. Tap the <strong>Close (X)</strong> button to exit the show manager.", target: () => document.querySelector('#projects-modal .icon-btn'), waitForAction: true },
-{ title: "Adjust Haptics & Fade Speed", badge: "Step 17: App Settings", text: "Tap the <strong>Settings Cog (⚙)</strong> in the header to change themes, languages, UI size, haptics, and fade options.", target: () => $('header-settings-btn'), waitForAction: true },
-{ title: "Onboarding Sequence Concluded", badge: "Step 18: Ready to Go", text: "You are ready to create! To replay this tutorial anytime, find the <strong>Interactive Guide</strong> in <strong>Advanced Settings</strong>. Tap <strong>Finish</strong> to close.", target: null, waitForAction: false }
+{ title: "Voice Command Setup", badge: "Step 5: Voice Setup", text: "Tap on <strong>Voice Triggers</strong> to expand the voice activation options.", target: () => document.querySelector('#cue-voice-details summary'), waitForAction: true },
+{ title: "Spoken Commands", badge: "Step 6: Setup Commands", text: "Set a phrase here to trigger this cue hands-free. Toggle <strong>Global</strong> to listen for this command even when the track is not next in queue.", target: () => $('cue-voice-details'), waitForAction: false },
+{ title: "Timelines & Atmospheric Ducking", badge: "Step 7: Advanced Settings", text: "Open <strong>Advanced Settings</strong> to find audio trimming, custom fades, looping background modes, and automatic volume ducking.", target: () => $('cue-advanced-details'), waitForAction: true },
+{ title: "Close Options Panel", badge: "Step 8: Return to Main", text: "Tap the top-right <strong>Close (X)</strong> button to exit the settings panel.", target: () => document.querySelector('#settings-modal .icon-btn'), waitForAction: true },
+{ title: "Context Options Menu", badge: "Step 9: Long-Press Menu", text: "<strong>Long-press</strong> (press and hold) the middle of your cue card to open the quick actions menu.", target: () => document.querySelector('.tile-info'), waitForAction: true },
+{ title: "Sequence Bypassing", badge: "Step 10: Skipping Tracks", text: "Tap <strong>Skip Cue</strong> to bypass this track during your show without deleting it.", target: () => $('ctx-skip-btn'), waitForAction: true },
+{ title: "Cloning", badge: "Step 11: Duplicate Cue", text: "Tap <strong>Duplicate</strong> to quickly copy this cue and all of its settings.", target: () => $('ctx-dup-btn'), waitForAction: true },
+{ title: "Create Group Container", badge: "Step 12: Cue Groups", text: "Tap <strong>Create Group</strong> to combine tracks. This opens a nested sideload player.", target: () => $('ctx-group-btn'), waitForAction: true },
+{ title: "Close Cue Options Menu", badge: "Step 13: Close Menu", text: "Let's head back. Dismiss this menu by tapping the <strong>Close (X)</strong> button.", target: () => document.querySelector('#cue-menu-modal .icon-btn'), waitForAction: true },
+{ title: "Manual Sorting", badge: "Step 14: Manual Sorting", text: "Drag cards by their <strong>handles (☰)</strong> on the left to reorder them. Drag one cue directly over another to group them.", target: () => document.querySelector('.tile .drag-handle'), waitForAction: false },
+{ title: "Manage Shows", badge: "Step 15: Project Files", text: "Tap the <strong>Show Title Header</strong> at the top of the screen to open your Show Manager.", target: () => $('show-title-header'), waitForAction: true },
+{ title: "Clean Show Sheets", badge: "Step 16: New Show Files", text: "Tap <strong>New</strong> to start a completely fresh show sheet.", target: () => $('show-new-btn'), waitForAction: false },
+{ title: "File Imports", badge: "Step 17: Imports", text: "Tap <strong>Import</strong> to restore backup show files (with the <code>.magic</code> extension).", target: () => $('show-import-btn'), waitForAction: false },
+{ title: "Context Projects Customization", badge: "Step 18: Edit Shows List", text: "<strong>Long-press</strong> any show in the list to rename, duplicate, export, or delete it. Tap the <strong>Close (X)</strong> button to exit the show manager.", target: () => document.querySelector('#projects-modal .icon-btn'), waitForAction: true },
+{ title: "Adjust Haptics & Fade Speed", badge: "Step 19: App Settings", text: "Tap the <strong>Settings Cog (⚙)</strong> in the header to change themes, languages, UI size, haptics, and global sequence fades.", target: () => $('header-settings-btn'), waitForAction: true },
+{ title: "Onboarding Sequence Concluded", badge: "Step 20: Ready to Go", text: "You are ready to create! To replay this tutorial anytime, find the <strong>Interactive Guide</strong> in <strong>Advanced Settings</strong>. Tap <strong>Finish</strong> to close.", target: null, waitForAction: false }
 ];
 
 const adjustTutorialBarParent = () => {
@@ -1654,9 +1676,8 @@ if (activeDialog) {
 if (tutBar.parentElement !== activeDialog) {
 activeDialog.appendChild(tutBar);
 }
-// Force rendering inside dialog viewport but anchored to fixed coordinates at screen bottom
 tutBar.style.position = 'fixed';
-tutBar.style.bottom = '16px'; // Keep safe margin from visual modal boundaries
+tutBar.style.bottom = '16px';
 tutBar.style.top = 'auto';
 tutBar.style.left = '16px';
 tutBar.style.right = '16px';
@@ -1763,20 +1784,20 @@ openTutorial(1);
 openTutorial(2);
 } else if (tutStep === 4 && voiceOpen) {
 openTutorial(5);
-} else if (tutStep === 5 && advOpen) {
-openTutorial(6);
-} else if (tutStep === 6 && !settingsOpen) {
+} else if (tutStep === 6 && advOpen) {
 openTutorial(7);
-} else if (tutStep === 7 && cueMenuOpen) {
+} else if (tutStep === 7 && !settingsOpen) {
 openTutorial(8);
-} else if (tutStep === 10 && !cueMenuOpen) {
-openTutorial(11);
-} else if (tutStep === 12 && projectsOpen) {
+} else if (tutStep === 8 && cueMenuOpen) {
+openTutorial(9);
+} else if (tutStep === 12 && !cueMenuOpen) {
 openTutorial(13);
-} else if (tutStep === 15 && !projectsOpen) {
-openTutorial(16);
-} else if (tutStep === 16 && appSettingsOpen) {
-openTutorial(17);
+} else if (tutStep === 14 && projectsOpen) {
+openTutorial(15);
+} else if (tutStep === 17 && !projectsOpen) {
+openTutorial(18);
+} else if (tutStep === 18 && appSettingsOpen) {
+openTutorial(19);
 }
 };
 
@@ -1793,14 +1814,15 @@ document.addEventListener('click', (e) => {
       1: 2,   // settings gear click -> Step 3
       2: 3,   // cue type selection click -> Step 4
       4: 5,   // voice triggers summary click -> Step 6
-      5: 6,   // advanced settings summary click -> Step 7
-      6: 7,   // close settings modal click -> Step 8
-      8: 9,   // Skip cue click -> Step 10
-      9: 10,  // Duplicate click -> Step 11
-      10: 11, // close cue options click -> Step 12
-      12: 13, // show title header click -> Step 14
-      15: 16, // close projects modal click -> Step 17
-      16: 17  // settings cog click -> Step 18
+      6: 7,   // advanced settings summary click -> Step 8
+      7: 8,   // close settings modal click -> Step 9
+      9: 10,  // Skip cue click -> Step 11
+      10: 11, // Duplicate click -> Step 12
+      11: 12, // Create Group click -> Step 13
+      12: 13, // close cue menu modal click -> Step 14
+      14: 15, // show title header click -> Step 16
+      17: 18, // close projects modal click -> Step 19
+      18: 19  // settings cog click -> Step 20
     };
     if (clickAdvanceMap[tutStep] !== undefined) {
       setTimeout(() => {
