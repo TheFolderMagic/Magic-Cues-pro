@@ -1,29 +1,38 @@
-package __PACKAGE__
+package com.yourname.magiccues
 
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import com.getcapacitor.BridgeActivity
 
 class MainActivity : BridgeActivity() {
-    private lateinit var nfcBridge: NfcBridge
+    private var nfcBridge: NfcBridge? = null
 
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
-        nfcBridge = NfcBridge(this, bridge.webView)
-        bridge.webView.addJavascriptInterface(nfcBridge, "Android")
+        // Defer NFC setup so Capacitor has time to fully initialize
+        Handler(Looper.getMainLooper()).post {
+            try {
+                nfcBridge = NfcBridge(this@MainActivity, bridge.webView)
+                bridge.webView.addJavascriptInterface(nfcBridge, "Android")
+            } catch (e: Exception) {
+                android.util.Log.e("MagicCues", "NFC setup failed: ${e.message}")
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        if (::nfcBridge.isInitialized) nfcBridge.enableForegroundDispatch()
+        nfcBridge?.enableForegroundDispatch()
     }
 
     override fun onPause() {
         super.onPause()
-        if (::nfcBridge.isInitialized) nfcBridge.disableForegroundDispatch()
+        nfcBridge?.disableForegroundDispatch()
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (::nfcBridge.isInitialized) nfcBridge.handleIntent(intent)
+        nfcBridge?.handleIntent(intent)
     }
 }
