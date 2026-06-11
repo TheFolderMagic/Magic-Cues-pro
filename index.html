@@ -147,51 +147,66 @@ html[data-theme="high-vis"] .trim-controls button:active { color: #000; }
     font-weight: 600;
 }
 
-/* Draggable Tutorial Bubble & Card CSS Layout */
-.tut-step-indicator { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; display: block; }
-.tut-section-badge { display: inline-block; padding: 4px 10px; border-radius: 8px; background: var(--accent-glow); color: var(--accent); font-size: 11px; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-html[data-theme="high-vis"] .tut-section-badge { background: #ff0; color: #000; }
+/* Custom Dynamic Relative Popover Tooltip */
+.tut-step-indicator { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; display: block; }
+.tut-section-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; background: var(--accent-glow); color: var(--accent); font-size: 10px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; }
 
-@keyframes tut-glow {
-    0% { box-shadow: 0 0 0 0 var(--accent-glow); outline: 2px solid transparent; }
-    50% { box-shadow: 0 0 0 10px var(--accent-glow); outline: 2px solid var(--accent); }
-    100% { box-shadow: 0 0 0 0 var(--accent-glow); outline: 2px solid transparent; }
-}
-.tut-highlight {
-    animation: tut-glow 1.5s infinite !important;
-    position: relative !important;
-    z-index: 10001 !important;
-}
-
-/* Redesigned Viewport-Fixed Non-Blocking Tutorial Bar */
 #tutorial-bar {
-    position: fixed;
-    bottom: 24px;
-    left: 24px;
-    right: 24px;
+    position: absolute;
     background: var(--modal-bg);
     border: 2px solid var(--accent);
-    border-radius: 24px;
-    padding: 20px;
-    z-index: 10003;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    border-radius: 18px;
+    padding: 14px;
+    z-index: 11000; /* Float correctly in front of active dialog panels */
+    box-shadow: 0 15px 30px rgba(0,0,0,0.5);
     display: none;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
+    width: 280px;
+    pointer-events: auto;
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+#tutorial-bar p {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+    margin: 0 0 10px 0 !important;
+    color: var(--text-main);
+}
+#tutorial-bar .action-btn {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+    border-radius: 10px !important;
 }
 </style></head>  
-<body class="unlocked show-progress"><header><h1 onclick="haptic(15);openProjects()"><span id="header-title-text">Magic Cues</span><span class="material-symbols-rounded" style="font-size:28px">expand_more</span></h1><div style="display:flex;gap:8px"><button class="icon-btn" id="header-settings-btn" onclick="haptic(15);openModal('app-settings')"><span class="material-symbols-rounded">settings</span></button><button class="icon-btn" id="header-lock-btn" onclick="haptic(15);toggleLock()"><span class="material-symbols-rounded" id="lock-icon">lock_open</span></button></div></header><div class="master-grid"><button id="master-play" onclick="playNextCue(false, true)"><span class="material-symbols-rounded">play_arrow</span><span id="play-text">Start Show</span></button><button id="mic-btn" onclick="haptic(15);toggleMic()"><span class="material-symbols-rounded" id="mic-icon">mic_off</span></button><button id="pause-btn" onclick="haptic(15);toggleGlobalPause()"><span class="material-symbols-rounded" id="pause-icon">pause</span></button></div><div id="speech-debug"><div id="speech-text">...</div></div><div class="action-row"><button class="action-btn" id="add-cue-btn" onclick="haptic(15);$('file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button><button class="action-btn" id="reset-show-btn" onclick="haptic([15,30,15]);triggerReset()"><span class="material-symbols-rounded">restart_alt</span> Reset</button></div><input type="file" id="file-input" accept="audio/*,.magic,.json" multiple onchange="handleFiles(this)" style="display:none"><input type="file" id="import-file-input" accept=".magic,.json" style="display:none" onchange="importShow(this)"><input type="file" id="sideload-file-input" accept="audio/*,.magic,.json" multiple onchange="handleSideloadFiles(this)" style="display:none"><div id="queue-container"><h2 id="queue-label">Main Queue</h2><div id="track-list"></div></div>
+<body class="unlocked show-progress"><header><h1 id="show-title-header" onclick="haptic(15);openProjects()"><span id="header-title-text">Magic Cues</span><span class="material-symbols-rounded" style="font-size:28px">expand_more</span></h1><div style="display:flex;gap:8px"><button class="icon-btn" id="header-settings-btn" onclick="haptic(15);openModal('app-settings')"><span class="material-symbols-rounded">settings</span></button><button class="icon-btn" id="header-lock-btn" onclick="haptic(15);toggleLock()"><span class="material-symbols-rounded" id="lock-icon">lock_open</span></button></div></header><div class="master-grid"><button id="master-play" onclick="playNextCue(false, true)"><span class="material-symbols-rounded">play_arrow</span><span id="play-text">Start Show</span></button><button id="mic-btn" onclick="haptic(15);toggleMic()"><span class="material-symbols-rounded" id="mic-icon">mic_off</span></button><button id="pause-btn" onclick="haptic(15);toggleGlobalPause()"><span class="material-symbols-rounded" id="pause-icon">pause</span></button></div><div id="speech-debug"><div id="speech-text">...</div></div><div class="action-row"><button class="action-btn" id="add-cue-btn" onclick="haptic(15);$('file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button><button class="action-btn" id="reset-show-btn" onclick="haptic([15,30,15]);triggerReset()"><span class="material-symbols-rounded">restart_alt</span> Reset</button></div><input type="file" id="file-input" accept="audio/*,.magic,.json" multiple onchange="handleFiles(this)" style="display:none"><input type="file" id="import-file-input" accept=".magic,.json" style="display:none" onchange="importShow(this)"><input type="file" id="sideload-file-input" accept="audio/*,.magic,.json" multiple onchange="handleSideloadFiles(this)" style="display:none"><div id="queue-container"><h2 id="queue-label">Main Queue</h2><div id="track-list"></div></div>
 <div id="show-notes-container"><div id="show-notes-text"></div></div>
-<h2>Instant Cues</h2><div id="instant-grid"></div><div id="pocket-mode-overlay"><button id="pocket-exit-btn" onclick="haptic(15);openModal('pocket-confirm-modal')"><span class="material-symbols-rounded" style="font-size:32px">lock</span></button></div><dialog id="pocket-confirm-modal"><div class="modal-header"><span class="modal-title">Unlock Workspace?</span></div><div style="margin-bottom:25px;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);padding:12px;border-radius:12px"><input type="checkbox" class="custom-toggle" id="pocket-unlock-check"><label style="font-size:15px;font-weight:600">Confirm Unlock</label></div><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('pocket-confirm-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="confirmPocketExit()">Unlock</button></div></dialog><dialog id="custom-alert-modal"><div class="modal-header"><span class="modal-title" id="alert-title">Notice</span></div><p id="alert-msg" style="color:var(--text-muted);margin-bottom:25px;line-height:1.5;"></p><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10);closeModal('custom-alert-modal')">OK</button></dialog><dialog id="sideload-modal"><div class="modal-header"><span class="modal-title" id="sideload-title">Sideload</span><button class="icon-btn" style="width:48px;height:48px;border-radius:16px" onclick="haptic(10);closeSideload()"><span class="material-symbols-rounded">close</span></button></div><div id="sideload-extract-zone" style="padding:16px;text-align:center;border:2px dashed var(--glass-border);border-radius:16px;margin-bottom:15px;display:none;background:rgba(255,255,255,.05);"><span class="material-symbols-rounded" style="font-size:24px;vertical-align:middle;margin-right:8px;color:var(--text-muted)">move_up</span> Drop here to move to Main Show</div><div class="master-grid" style="margin-bottom:20px;"><button id="sideload-master-play" onclick="playSideloadNextCue(false, true)"><span class="material-symbols-rounded">play_arrow</span><span id="sideload-play-text">Start Show</span></button><button id="sideload-pause-btn" onclick="haptic(15);toggleSideloadPause()"><span class="material-symbols-rounded" id="sideload-pause-icon">pause</span></button><button id="sideload-reset-btn" onclick="haptic([15,30,15]);triggerSideloadReset()"><span class="material-symbols-rounded">restart_alt</span></button></div><div class="action-row" style="margin-bottom:15px"><button class="action-btn" onclick="haptic(15);$('sideload-file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button></div><div style="flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;padding:10px 24px 100px;margin:0 -24px;"><h2 style="margin:0 0 10px 5px" id="sideload-queue-label">Queue</h2><div id="sideload-track-list" style="display:flex;flex-direction:column;gap:12px;margin-bottom:25px;"></div><h2 style="margin:0 0 10px 5px">Instant Cues</h2><div id="sideload-instant-grid"></div></div></dialog><dialog id="nfc-write-modal" oncancel="cancelNfcWrite()"><div class="modal-header"><span class="modal-title">Program NFC</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="cancelNfcWrite()" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><div class="nfc-pulse"><span class="material-symbols-rounded" style="font-size:40px;color:var(--accent)">nfc</span></div><p id="nfc-write-text" style="text-align:center;font-weight:600;font-size:16px;margin:20px 0">Hold an NFC chip near your phone...</p><button class="action-btn" style="width:100%;border:none" onclick="cancelNfcWrite()">Cancel</button></dialog><dialog id="nfc-success-modal"><div class="modal-header"><span class="modal-title">Success!</span></div><div style="text-align:center;margin:20px 0"><span class="material-symbols-rounded" style="font-size:60px;color:#34c759">check_circle</span></div><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10);closeModal('nfc-success-modal')">Done</button></dialog><dialog id="projects-modal"><div class="modal-header"><span class="modal-title">My Shows</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('projects-modal')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><div id="projects-list-container" style="max-height:300px;overflow-y:auto;margin-bottom:20px"></div><div style="display:flex;gap:12px"><button class="action-btn" style="flex:1" onclick="haptic(15);$('import-file-input').click()"><span class="material-symbols-rounded">upload</span> Import</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);closeModal('projects-modal');openModal('new-show-modal')"><span class="material-symbols-rounded">add</span> New</button></div></dialog><dialog id="new-show-modal"><div class="modal-header"><span class="modal-title">Create Show</span></div><input type="text" id="new-show-name" placeholder="Show name..."><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('new-show-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);createNewProject()">Create</button></div></dialog><dialog id="edit-show-modal"><div class="modal-header"><span class="modal-title">Edit Show</span></div><input type="text" id="edit-show-name"><button class="action-btn" style="width:100%;margin-bottom:12px" onclick="haptic(15);exportShow()"><span class="material-symbols-rounded">download</span> Export File</button><button class="action-btn" style="width:100%;margin-bottom:20px;background:rgba(0,122,255,.15);color:var(--accent);border:1px solid var(--accent)" onclick="haptic(15);duplicateShow()"><span class="material-symbols-rounded">content_copy</span> Duplicate Show</button><div style="display:flex;gap:12px;margin-bottom:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('edit-show-modal')" autofocus>Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);saveShowEdit()">Save</button></div><button class="btn-delete" onclick="haptic([30,50,30]);deleteShow()">Delete Show</button></dialog><dialog id="cue-menu-modal"><div class="modal-header"><span class="modal-title">Cue Options</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('cue-menu-modal')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><input type="text" id="rename-cue-input" placeholder="Name"><div style="display:flex;gap:12px;margin-bottom:12px"><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);saveCueRename()">Rename</button></div><div class="action-row" style="margin-bottom:15px"><button class="action-btn" onclick="haptic(15);toggleCueSkip()"><span class="material-symbols-rounded" id="skip-cue-icon">block</span> <span id="skip-cue-text">Skip Cue</span></button><button class="action-btn" onclick="haptic(15);duplicateCue()"><span class="material-symbols-rounded">content_copy</span> Duplicate</button></div><div class="action-row" style="margin-bottom:0"><button class="action-btn" style="width:100%" onclick="haptic(15);createGroupFromMenu()"><span class="material-symbols-rounded">folder</span> Create Group</button></div></dialog>
+<h2>Instant Cues</h2><div id="instant-grid"></div><div id="pocket-mode-overlay"><button id="pocket-exit-btn" onclick="haptic(15);openModal('pocket-confirm-modal')"><span class="material-symbols-rounded" style="font-size:32px">lock</span></button></div><dialog id="pocket-confirm-modal"><div class="modal-header"><span class="modal-title">Unlock Workspace?</span></div><div style="margin-bottom:25px;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);padding:12px;border-radius:12px"><input type="checkbox" class="custom-toggle" id="pocket-unlock-check"><label style="font-size:15px;font-weight:600">Confirm Unlock</label></div><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('pocket-confirm-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="confirmPocketExit()">Unlock</button></div></dialog><dialog id="custom-alert-modal"><div class="modal-header"><span class="modal-title" id="alert-title">Notice</span></div><p id="alert-msg" style="color:var(--text-muted);margin-bottom:25px;line-height:1.5;"></p><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10);closeModal('custom-alert-modal')">OK</button></dialog><dialog id="sideload-modal"><div class="modal-header"><span class="modal-title" id="sideload-title">Sideload</span><button class="icon-btn" style="width:48px;height:48px;border-radius:16px" onclick="haptic(10);closeSideload()"><span class="material-symbols-rounded">close</span></button></div><div id="sideload-extract-zone" style="padding:16px;text-align:center;border:2px dashed var(--glass-border);border-radius:16px;margin-bottom:15px;display:none;background:rgba(255,255,255,.05);"><span class="material-symbols-rounded" style="font-size:24px;vertical-align:middle;margin-right:8px;color:var(--text-muted)">move_up</span> Drop here to move to Main Show</div><div class="master-grid" style="margin-bottom:20px;"><button id="sideload-master-play" onclick="playSideloadNextCue(false, true)"><span class="material-symbols-rounded">play_arrow</span><span id="sideload-play-text">Start Show</span></button><button id="sideload-pause-btn" onclick="haptic(15);toggleSideloadPause()"><span class="material-symbols-rounded" id="sideload-pause-icon">pause</span></button><button id="sideload-reset-btn" onclick="haptic([15,30,15]);triggerSideloadReset()"><span class="material-symbols-rounded">restart_alt</span></button></div><div class="action-row" style="margin-bottom:15px"><button class="action-btn" onclick="haptic(15);$('sideload-file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button></div><div style="flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;padding:10px 24px 100px;margin:0 -24px;"><h2 style="margin:0 0 10px 5px" id="sideload-queue-label">Queue</h2><div id="sideload-track-list" style="display:flex;flex-direction:column;gap:12px;margin-bottom:25px;"></div><h2 style="margin:0 0 10px 5px">Instant Cues</h2><div id="sideload-instant-grid"></div></div></dialog><dialog id="nfc-write-modal" oncancel="cancelNfcWrite()"><div class="modal-header"><span class="modal-title">Program NFC</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="cancelNfcWrite()" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><div class="nfc-pulse"><span class="material-symbols-rounded" style="font-size:40px;color:var(--accent)">nfc</span></div><p id="nfc-write-text" style="text-align:center;font-weight:600;font-size:16px;margin:20px 0">Hold an NFC chip near your phone...</p><button class="action-btn" style="width:100%;border:none" onclick="cancelNfcWrite()">Cancel</button></dialog><dialog id="nfc-success-modal"><div class="modal-header"><span class="modal-title">Success!</span></div><div style="text-align:center;margin:20px 0"><span class="material-symbols-rounded" style="font-size:60px;color:#34c759">check_circle</span></div><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10);closeModal('nfc-success-modal')">Done</button></dialog><dialog id="projects-modal"><div class="modal-header"><span class="modal-title">My Shows</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('projects-modal')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><div id="projects-list-container" style="max-height:300px;overflow-y:auto;margin-bottom:20px"></div><div style="display:flex;gap:12px"><button class="action-btn" id="show-import-btn" style="flex:1" onclick="haptic(15);$('import-file-input').click()"><span class="material-symbols-rounded">upload</span> Import</button><button class="action-btn" id="show-new-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);closeModal('projects-modal');openModal('new-show-modal')"><span class="material-symbols-rounded">add</span> New</button></div></dialog><dialog id="new-show-modal"><div class="modal-header"><span class="modal-title">Create Show</span></div><input type="text" id="new-show-name" placeholder="Show name..."><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('new-show-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);createNewProject()">Create</button></div></dialog>
 
-<!-- Clean & Coherent App Settings -->
+<dialog id="edit-show-modal">
+    <div class="modal-header">
+        <span class="modal-title">Edit Show</span>
+        <button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('edit-show-modal')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button>
+    </div>
+    <input type="text" id="edit-show-name">
+    <button class="action-btn" id="show-export-btn" style="width:100%;margin-bottom:12px" onclick="haptic(15);exportShow()"><span class="material-symbols-rounded">download</span> Export File</button>
+    <button class="action-btn" id="show-dup-btn" style="width:100%;margin-bottom:20px;background:rgba(0,122,255,.15);color:var(--accent);border:1px solid var(--accent)" onclick="haptic(15);duplicateShow()"><span class="material-symbols-rounded">content_copy</span> Duplicate Show</button>
+    <div style="display:flex;gap:12px;margin-bottom:12px">
+        <button class="action-btn" style="border:none" onclick="haptic(10);closeModal('edit-show-modal')">Cancel</button>
+        <button class="action-btn" id="show-save-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);saveShowEdit()">Save</button>
+    </div>
+    <button class="btn-delete" id="show-delete-btn" onclick="haptic([30,50,30]);deleteShow()">Delete Show</button>
+</dialog>
+
+<dialog id="cue-menu-modal"><div class="modal-header"><span class="modal-title">Cue Options</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('cue-menu-modal')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><input type="text" id="rename-cue-input" placeholder="Name"><div style="display:flex;gap:12px;margin-bottom:12px"><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);saveCueRename()">Rename</button></div><div class="action-row" style="margin-bottom:15px"><button class="action-btn" id="ctx-skip-btn" onclick="haptic(15);toggleCueSkip()"><span class="material-symbols-rounded" id="skip-cue-icon">block</span> <span id="skip-cue-text">Skip Cue</span></button><button class="action-btn" id="ctx-dup-btn" onclick="haptic(15);duplicateCue()"><span class="material-symbols-rounded">content_copy</span> Duplicate</button></div><div class="action-row" style="margin-bottom:0"><button class="action-btn" id="ctx-group-btn" style="width:100%" onclick="haptic(15);createGroupFromMenu()"><span class="material-symbols-rounded">folder</span> Create Group</button></div></dialog>
+
+<!-- App Settings -->
 <dialog id="app-settings">
     <div class="modal-header">
         <span class="modal-title">App Settings</span>
         <button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('app-settings')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button>
     </div>
     
-    <div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
+    <div class="setting-row" id="app-theme-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
         <label>Theme</label>
         <div class="segmented-control" id="theme-controls">
             <button id="btn-auto" onclick="haptic(10);setTheme('auto')">Auto</button>
@@ -201,7 +216,7 @@ html[data-theme="high-vis"] .tut-section-badge { background: #ff0; color: #000; 
         </div>
     </div>
     
-    <div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
+    <div class="setting-row" id="app-lang-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
         <label>Speech Language</label>
         <div class="segmented-control" id="lang-controls">
             <button id="lang-en" class="active" onclick="haptic(10);setLang('en-US')">English</button>
@@ -209,7 +224,7 @@ html[data-theme="high-vis"] .tut-section-badge { background: #ff0; color: #000; 
         </div>
     </div>
     
-    <div class="setting-row">
+    <div class="setting-row" id="app-size-row">
         <label style="flex-shrink:0; margin-right:15px;">UI Size</label>
         <input type="range" min="50" max="150" step="25" id="ui-size-slider" oninput="this.style.setProperty('--v', ((this.value-50)/100)*100+'%'); haptic(10);updSet('uiSize',this.value);applyUISize()" style="max-width:140px; margin-left:auto;">
     </div>
@@ -315,7 +330,6 @@ html[data-theme="high-vis"] .tut-section-badge { background: #ff0; color: #000; 
             </div>
         </div>
     </div>
-    
     <div class="swipe-dots" style="margin-top:10px;">
         <div class="swipe-dot active" id="gf-dot-0" onclick="swpGF(0)"></div>
         <div class="swipe-dot" id="gf-dot-1" onclick="swpGF(1)"></div>
@@ -479,7 +493,7 @@ html[data-theme="high-vis"] .tut-section-badge { background: #ff0; color: #000; 
             <span class="material-symbols-rounded" style="font-size: 16px;">close</span>
         </button>
     </div>
-    <p id="tut-bar-text" style="margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-muted); font-weight: 500;"></p>
+    <p id="tut-bar-text" style="margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-main); font-weight: 500;"></p>
     <div style="display: flex; justify-content: flex-end; gap: 8px;" id="tut-bar-actions">
         <button class="action-btn" id="tut-bar-prev" style="padding: 8px 16px; font-size: 13px; border-radius: 10px; flex: none; width: auto;" onclick="prevTutStep()">Back</button>
         <button class="action-btn" id="tut-bar-next" style="padding: 8px 16px; font-size: 13px; background: var(--accent); color: #fff; border-radius: 10px; flex: none; width: auto;" onclick="nextTutStep()">Next</button>
@@ -526,21 +540,7 @@ const openModal = id => {
     $(id).showModal(); 
     adjustTutorialBarParent();
     if (tutActive) {
-        if (tutType === 'basic') {
-            if (tutStep === 2 && id === 'app-settings') {
-                openTutorial(3);
-            } else if (tutStep === 3 && id === 'global-fades-modal') {
-                openTutorial(4);
-            }
-        } else if (tutType === 'advanced') {
-            if (advStep === 0 && id === 'settings-modal') {
-                openAdvancedTutorial(1);
-            } else if (advStep === 2 && id === 'trim-modal') {
-                openAdvancedTutorial(3);
-            } else if (advStep === 4 && id === 'timing-modal') {
-                openAdvancedTutorial(5);
-            }
-        }
+        evalTutorialStep();
     }
 };  
 
@@ -549,15 +549,7 @@ const closeModal = id => {
     if(!document.querySelectorAll('dialog[open]').length) document.body.classList.remove('modal-open'); 
     adjustTutorialBarParent();
     if (tutActive) {
-        if (tutType === 'basic') {
-            if (tutStep === 4 && id === 'global-fades-modal') {
-                openTutorial(5);
-            }
-        } else if (tutType === 'advanced') {
-            if (advStep === 3 && id === 'trim-modal') {
-                openAdvancedTutorial(4);
-            }
-        }
+        evalTutorialStep();
     }
 };  
 
@@ -735,7 +727,7 @@ const save = () => db&&db.transaction('store','readwrite').objectStore('store').
 const saveSide = () => { if(actSideId){ let p=tracks.find(x=>x.id===actSideId); if(p){ p.showData=sideTrks.map(t=>({...t,blobUrl:undefined})); save(); } } };
 
 let cuePTm, cLng=!1, aMenuId=null, isSideMenu=!1;
-const stCuePrs = (e,id,s) => { if(e.target.closest('.drag-handle,.edit-trigger'))return; cLng=!1; cuePTm=setTimeout(()=>{haptic([30,40]); cLng=!0; aMenuId=id; isSideMenu=s; let t=(s?sideTrks:tracks).find(x=>x.id===id); $('rename-cue-input').value=t.name; let typeText = t.isCueGroup ? 'Group' : (t.isExternalShow ? 'Show' : 'Cue'); $('skip-cue-text').innerText=t.skip?`Unskip ${typeText}`:`Skip ${typeText}`; $('skip-cue-icon').innerText=t.skip?'play_circle':'block'; openModal('cue-menu-modal'); setTimeout(() => $('rename-cue-input').blur(), 10); if (tutActive && tutType === 'basic' && tutStep === 1) { openTutorial(2); } },600); };
+const stCuePrs = (e,id,s) => { if(e.target.closest('.drag-handle,.edit-trigger'))return; cLng=!1; cuePTm=setTimeout(()=>{haptic([30,40]); cLng=!0; aMenuId=id; isSideMenu=s; let t=(s?sideTrks:tracks).find(x=>x.id===id); $('rename-cue-input').value=t.name; let typeText = t.isCueGroup ? 'Group' : (t.isExternalShow ? 'Show' : 'Cue'); $('skip-cue-text').innerText=t.skip?`Unskip ${typeText}`:`Skip ${typeText}`; $('skip-cue-icon').innerText=t.skip?'play_circle':'block'; openModal('cue-menu-modal'); setTimeout(() => $('rename-cue-input').blur(), 10); if (tutActive && tutType === 'basic' && tutStep === 7) { openTutorial(8); } },600); };
 const ccCuePrs = () => clearTimeout(cuePTm);
 const clickCue = (id,s) => { if(cLng||locked)return; let tl=s?sideTrks:tracks, t=tl.find(x=>x.id===id); if(!t)return; t.type==='queue'?(s?(sideIdx=sideTrks.filter(x=>x.type==='queue').findIndex(x=>x.id===id),playSideloadNextCue(!0, true)):playCue(id)):(s?playSidePad(t):playPad(t)); };
 const updMenu = () => { isSideMenu?(saveSide(),renderSide()):(save(),render()); closeModal('cue-menu-modal'); };
@@ -876,13 +868,13 @@ const openTimingModal = (id, s) => {
     let isQ = t.type === 'queue';
     
     let h = ``;
-    h += `<div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
+    h += `<div class="setting-row" id="automation-delay-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
             <label style="margin-bottom:8px;font-size:15px;font-weight:600">Pre-Delay (Seconds)</label>
             <input type="number" step="0.5" min="0" max="60" value="${t.delay||0}" onchange="haptic(10);updTrk('delay',this.value)" style="width:100%;text-align:left;">
           </div>`;
           
     if(isQ) {
-        h += `<div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
+        h += `<div class="setting-row" id="automation-follow-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
                 <div style="width:100%;display:flex;justify-content:space-between;align-items:center;">
                     <label style="font-size:15px;font-weight:600">Auto-Follow</label>
                     <input type="checkbox" class="custom-toggle" ${t.autoFollow?'checked':''} onchange="haptic(10);updTrk('autoFollow',this.checked);openTimingModal('${id}',${s})">
@@ -904,13 +896,13 @@ const openTimingModal = (id, s) => {
         h += `</div>`;
     }
 
-    h += `<div class="setting-row" style="width:100%;display:flex;justify-content:space-between;align-items:center;">
+    h += `<div class="setting-row" id="automation-stopbg-row" style="width:100%;display:flex;justify-content:space-between;align-items:center;">
             <label style="font-size:15px;font-weight:600">Stop BG Audio on Play</label>
             <input type="checkbox" class="custom-toggle" ${t.stopsBg?'checked':''} onchange="haptic(10);updTrk('stopsBg',this.checked)">
           </div>`;
 
     h += `
-        <div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
+        <div class="setting-row" id="automation-bg-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
             <div style="width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
                 <label style="font-size:15px;font-weight:600">Background Mode</label>
                 <input type="checkbox" class="custom-toggle" ${t.isBackground?'checked':''} onchange="haptic(10);updTrk('isBackground',this.checked);openTimingModal('${id}',${s})">
@@ -947,15 +939,15 @@ const openTimingModal = (id, s) => {
 const openSet = (id,s=!1) => { 
     actId=id; isSetSide=s; 
     let t=(s?sideTrks:tracks).find(x=>x.id===id), isQ=t.type==='queue'; 
-    let h=`<div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto; padding-bottom:20px"><label style="font-size:15px;font-weight:600">Cue Type</label><div class="segmented-control"><button class="${isQ?'active':''}" onclick="haptic(10);updTrk('type','queue')" style="font-size:14px">Main</button><button class="${!isQ?'active':''}" onclick="haptic(10);updTrk('type','pad')" style="font-size:14px">Instant</button></div></div>`; 
+    let h=`<div class="setting-row" id="cue-type-selector-row" style="flex-direction:column;align-items:flex-start; min-height:auto; padding-bottom:20px"><label style="font-size:15px;font-weight:600">Cue Type</label><div class="segmented-control"><button class="${isQ?'active':''}" onclick="haptic(10);updTrk('type','queue')" style="font-size:14px">Main</button><button class="${!isQ?'active':''}" onclick="haptic(10);updTrk('type','pad')" style="font-size:14px">Instant</button></div></div>`; 
     
     if(t.isExternalShow) h+=`<div class="setting-row"><label style="font-size:15px;font-weight:600">Auto-Start</label><input type="checkbox" class="custom-toggle" ${t.autoStartShow?'checked':''} onchange="haptic(10);updTrk('autoStartShow',this.checked)"></div>`; 
-    else h+=`<div class="setting-row"><label style="font-size:15px;font-weight:600">Volume</label><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="this.style.setProperty('--v', this.value*100+'%'); haptic(5);updTrk('volume',this.value)" style="flex:1; margin-left:15px; --v:${(t.volume??1)*100}%"></div>`; 
+    else h+=`<div class="setting-row" id="cue-volume-slider-row"><label style="font-size:15px;font-weight:600">Volume</label><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="this.style.setProperty('--v', this.value*100+'%'); haptic(5);updTrk('volume',this.value)" style="flex:1; margin-left:15px; --v:${(t.volume??1)*100}%"></div>`; 
     
-    h+=`<details onselect="haptic(10)"><summary onclick="haptic(10)">Voice Triggers</summary><div class="details-content" style="padding:0 16px 16px;"><div class="mini-row"><label style="font-size:14px; font-weight:500;">Phrase</label><input type="text" style="width:140px;margin:0;padding:8px 12px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--input-bg); border-radius:10px; border:1px solid var(--glass-border); color:var(--text-main);" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div><div class="mini-row"><label style="font-size:14px; font-weight:500;">Global</label><input type="checkbox" class="custom-toggle" ${t.globalVoice?'checked':''} onchange="haptic(10);updTrk('globalVoice',this.checked)"></div></div></details>`; 
+    h+=`<details id="cue-voice-details" ontoggle="evalTutorialStep()"><summary onclick="haptic(10)">Voice Triggers</summary><div class="details-content" style="padding:0 16px 16px;"><div class="mini-row"><label style="font-size:14px; font-weight:500;">Phrase</label><input type="text" style="width:140px;margin:0;padding:8px 12px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--input-bg); border-radius:10px; border:1px solid var(--glass-border); color:var(--text-main);" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div><div class="mini-row"><label style="font-size:14px; font-weight:500;">Global</label><input type="checkbox" class="custom-toggle" ${t.globalVoice?'checked':''} onchange="haptic(10);updTrk('globalVoice',this.checked)"></div></div></details>`; 
     
     if(!t.isExternalShow){ 
-        h+=`<details id="tut-cue-adv-details" ontoggle="checkTutDetailsExpand()">
+        h+=`<details id="cue-advanced-details" ontoggle="evalTutorialStep()">
                 <summary onclick="haptic(10)">Advanced Settings</summary>
                 <div class="details-content" style="padding:0; display:flex; flex-direction:column; gap:0;">`;
             
@@ -992,10 +984,6 @@ const openSet = (id,s=!1) => {
     } 
     $('modal-content').innerHTML=h; 
     if(!$('settings-modal').open) openModal('settings-modal'); 
-
-    if (!settings.advancedTutorialCompleted && !tutActive) {
-        setTimeout(() => { openAdvancedTutorial(0); }, 300);
-    }
 };
 
 let ws = null, wsRegions = null, tempTrimStart = 0, tempTrimEnd = 0, tempCutStart = 0, tempCutEnd = 0, trTab = 0;
@@ -1675,7 +1663,7 @@ const closeSideload = () => {
 
 const isPly = () => activeCues.size||activePads.size||actSideCues.size||actSidePads.size;  
 const toggleGlobalPause = () => { 
-    if (!isPly()) return;
+    if (!isPly()) return; 
     paused=!paused; 
     let now = audioCtx ? audioCtx.currentTime : 0;
     [activeCues,activePads,actSideCues,actSidePads].forEach(m=>m.forEach((a, id)=>{
@@ -1779,119 +1767,135 @@ const initSortables = () => {
     sortExtract=new Sortable($('sideload-extract-zone'),{group:'shared',onAdd:e=>{haptic([40,60,40]);let id=e.item.id.replace('side-','').replace('tile-',''), i=sideTrks.findIndex(x=>x.id===id); if(i>-1){let t=sideTrks.splice(i,1)[0];t.type='queue';tracks.push(t);!chkGrpDemote()&&(saveSide(),renderSide());save();render();} e.item.remove();$('sideload-extract-zone').style.display='none';}});
 };  
 
-// --- Interactive Onboarding Tutorial Engine ---
-let tutActive = false;
-let tutType = 'basic'; 
-let tutStep = 0;
-let advStep = 0;
-
-const basicSteps = [
+// --- Simple Draggable Step-by-Step Onboarding Engine ---
+const tutSteps = [
     {
-        title: "Import Your Track",
-        badge: "Step 1: Import Track",
-        text: "Welcome to Magic Cues Pro! To begin, select your own performance track or sound effect file. Tap <strong>Add Cue</strong> below to choose an audio file from your device.",
+        title: "Import Your Music",
+        badge: "Step 1: Add a Track",
+        text: "Let's build your cue list. Click the <strong>Add Cue</strong> button below to choose an audio track from your phone.",
         target: () => $('add-cue-btn'),
         waitForAction: true
     },
     {
-        title: "Context Options",
-        badge: "Step 2: Context Options",
-        text: "Great, track loaded! Let's explore contextual options. <strong>Long-press</strong> (press and hold) the center area of your new cue track until options open.",
+        title: "Access Cue Settings",
+        badge: "Step 2: Cue Configuration",
+        text: "Excellent! Your track has been loaded. Now, tap the small <strong>Settings Gear (⚙)</strong> on the right side of the cue card.",
+        target: () => document.querySelector('.tile .edit-trigger'),
+        waitForAction: true
+    },
+    {
+        title: "Cue Playback Modes",
+        badge: "Step 3: Cue Types",
+        text: "<strong>Cue Types</strong> configure playing actions:<br>• <strong>Main</strong>: Runs sequentially in the main show flow list.<br>• <strong>Instant</strong>: Converts the track into a quick trigger pad in the lower grid.",
+        target: () => $('cue-type-selector-row'),
+        waitForAction: false
+    },
+    {
+        title: "Individual Volume Level",
+        badge: "Step 4: Custom Gains",
+        text: "Use the <strong>Volume Slider</strong> to gain-stage this specific track individually relative to your show's master output.",
+        target: () => $('cue-volume-slider-row'),
+        waitForAction: false
+    },
+    {
+        title: "Voice Commands",
+        badge: "Step 5: Voice Recognition",
+        text: "Speak phrase commands to trigger triggers hands-free. Set commands as <strong>Global</strong> to listen for triggers even when the track is not next in line.",
+        target: () => $('cue-voice-details'),
+        waitForAction: false
+    },
+    {
+        title: "Timelines & Atmospheric Ducking",
+        badge: "Step 6: Advanced Settings",
+        text: "The <strong>Advanced Settings</strong> fold holds timeline cropping trimmers, custom crossfades, sequential auto-follow continuous loops, background atmospheres, and ducking gain automation rule sets.",
+        target: () => $('cue-advanced-details'),
+        waitForAction: false
+    },
+    {
+        title: "Close Options Panel",
+        badge: "Step 7: Return to Main",
+        text: "Let's head back. Tap the top-right <strong>Close (X)</strong> button to exit Settings.",
+        target: () => document.querySelector('#settings-modal .icon-btn'),
+        waitForAction: true
+    },
+    {
+        title: "Context Options Menu",
+        badge: "Step 8: Long-Press Menu",
+        text: "Now, <strong>long-press</strong> (press and hold) the center of your cue card to open the quick actions menu.",
         target: () => document.querySelector('.tile-info'),
         waitForAction: true
     },
     {
-        title: "Configure App Parameters",
-        badge: "Step 3: App Config",
-        text: "Let's explore show configurations. Close that modal and open global settings by tapping the <strong>Settings Cog (⚙)</strong> in the top header.",
+        title: "Sequence Bypassing",
+        badge: "Step 9: Skipping Tracks",
+        text: "Toggle <strong>Skip Cue</strong> to bypass the track during sequence playback without deleting it from your show sheet.",
+        target: () => $('ctx-skip-btn'),
+        waitForAction: false
+    },
+    {
+        title: "Cloning",
+        badge: "Step 10: Duplications",
+        text: "Tap <strong>Duplicate</strong> to instantly clone this audio track, reproducing all settings, boundaries, and notes.",
+        target: () => $('ctx-dup-btn'),
+        waitForAction: false
+    },
+    {
+        title: "Create Group Container",
+        badge: "Step 11: Set Folders",
+        text: "Tap <strong>Create Group</strong> to combine tracks. This opens a nested sideload player. Dismiss the context menu by tapping the <strong>Close (X)</strong> icon.",
+        target: () => document.querySelector('#cue-menu-modal .icon-btn'),
+        waitForAction: true
+    },
+    {
+        title: "Reordering & Grouping",
+        badge: "Step 12: Manual Sorting",
+        text: "Fling cues by dragging their <strong>Indicator lines (☰)</strong> on the left. Drag one cue card and hover it directly over another to group them.",
+        target: () => document.querySelector('.tile .drag-handle'),
+        waitForAction: false
+    },
+    {
+        title: "Manage Shows",
+        badge: "Step 13: Project Files",
+        text: "Tap your **Show Title Header ('Magic Cues')** at the top of the screen to open the show manager.",
+        target: () => $('show-title-header'),
+        waitForAction: true
+    },
+    {
+        title: "Clean Show Sheets",
+        badge: "Step 14: New Show Files",
+        text: "Tap <strong>New</strong> to initiate a clean show canvas.",
+        target: () => $('show-new-btn'),
+        waitForAction: false
+    },
+    {
+        title: "File Imports",
+        badge: "Step 15: Restores",
+        text: "Tap <strong>Import</strong> to restore backup files exported with the '.magic' extension.",
+        target: () => $('show-import-btn'),
+        waitForAction: false
+    },
+    {
+        title: "Context Projects Customization",
+        badge: "Step 16: Edit projects list",
+        text: "<strong>Long-press</strong> any show in the list to trigger the Rename, Duplicate, Export, and Delete panel. Close the Project list using the **Close (X)** button.",
+        target: () => document.querySelector('#projects-modal .icon-btn'),
+        waitForAction: true
+    },
+    {
+        title: "Adjust Haptics & Fade Speed",
+        badge: "Step 17: App Settings",
+        text: "Open App Settings using the **Settings Cog (⚙)** in the header to modify themes, languages, custom haptics, and global sequence fades.",
         target: () => $('header-settings-btn'),
         waitForAction: true
     },
     {
-        title: "Program Default Fades",
-        badge: "Step 4: Default Fades",
-        text: "To modify transitions, select <strong>Fade In / Out</strong> inside this App Settings menu.",
-        target: () => $('app-settings-fades-btn'),
-        waitForAction: true
-    },
-    {
-        title: "Adjust Timing Parameters",
-        badge: "Step 5: Transition Physics",
-        text: "Change parameters to modify default curves. Tap the <strong>Done</strong> button to return back to your main workspace.",
-        target: () => document.querySelector('#global-fades-modal .action-btn'),
-        waitForAction: true
-    },
-    {
-        title: "Activate Safety Protections",
-        badge: "Step 6: Show Safety",
-        text: "Tap the <strong>Lock (🔓)</strong> icon in the header to activate Pocket Mode. This locks inputs to avoid misfires when your phone is in your pocket.",
-        target: () => $('header-lock-btn'),
-        waitForAction: true
-    },
-    {
-        title: "Explore Performance Safety",
-        badge: "Step 7: Reset & Mic Options",
-        text: "Check these final safe live show actions: <strong>Mic</strong> activates hands-free phrase triggers, and <strong>Reset</strong> cuts all playbacks instantly. Tap the <strong>Mic</strong> icon now to end this walkthrough.",
-        target: () => $('mic-btn'),
-        waitForAction: true
-    },
-    {
-        title: "Setup Concluded",
-        badge: "Step 8: Performance Ready",
-        text: "Awesome! Your core guide is complete. Tap <strong>Finish</strong>. Advanced guides for Trim / Fades and Automations will trigger contextually if you open those sections.",
+        title: "Onboarding Sequence Concluded",
+        badge: "Step 18: Ready to Go",
+        text: "Congratulations! You've learned all of Magic Cues Pro's controls. Tap <strong>Finish</strong> to exit this onboarding sequence.",
         target: null,
         waitForAction: false
     }
 ];
-
-const advancedSteps = [
-    {
-        title: "Cue Options Panel",
-        badge: "Advanced Step 1: Volume Settings",
-        text: "Change cue volume or choose colors here. To see timing rules, expand the <strong>Advanced Settings</strong> panel below.",
-        target: () => document.querySelector('#settings-modal details'),
-        waitForAction: true
-    },
-    {
-        title: "Open Timeline Editor",
-        badge: "Advanced Step 2: Custom Boundaries",
-        text: "Tap <strong>Trim & Fades</strong> to access precise boundary editors.",
-        target: () => document.querySelector('.nested-nav-row'),
-        waitForAction: true
-    },
-    {
-        title: "Timeline Waveform Controls",
-        badge: "Advanced Step 3: Curve Equations",
-        text: "Pinch or crop values here. Swipe the slider panels left or right to change fade rates (Linear, Logarithmic, or Exponential). Tap <strong>Save</strong> when done.",
-        target: () => $('trim-swipe-container'),
-        waitForAction: true
-    },
-    {
-        title: "Continuous Flows",
-        badge: "Advanced Step 4: Automations",
-        text: "Open the automation timeline by tapping <strong>Timing & Automations</strong>.",
-        target: () => document.querySelectorAll('.nested-nav-row')[1],
-        waitForAction: true
-    },
-    {
-        title: "Configure Timing Rules",
-        badge: "Advanced Step 5: Automations Logic",
-        text: "Program automations:<br>• <strong>Pre-Delay</strong>: Delays start.<br>• <strong>Auto-Follow</strong>: Automatically triggers subsequent cues.<br>• <strong>Stop BG Audio</strong>: Silences atmospherics instantly.<br>• <strong>Background Mode</strong>: Loop atmospherics with ducking volume levels.<br><br>Tap the close (X) icon to conclude.",
-        target: () => document.querySelector('#timing-modal .icon-btn'),
-        waitForAction: true
-    },
-    {
-        title: "Mastery Complete",
-        badge: "Mastery Complete",
-        text: "You are fully trained on Magic Cues Pro's timeline and automation engine. Tap <strong>Close</strong> to begin!",
-        target: null,
-        waitForAction: false
-    }
-];
-
-const checkTutDetailsExpand = () => {
-    if (tutActive && tutType === 'advanced' && advStep === 0) openAdvancedTutorial(1);
-};
 
 const adjustTutorialBarParent = () => {
     const activeDialog = document.querySelector('dialog[open]');
@@ -1901,9 +1905,8 @@ const adjustTutorialBarParent = () => {
         if (tutBar.parentElement !== activeDialog) {
             activeDialog.appendChild(tutBar);
         }
-        // Force rendering inside dialog viewport but anchored to fixed coordinates at screen bottom
         tutBar.style.position = 'fixed';
-        tutBar.style.bottom = '16px';  // Keep safe margin from visual modal boundaries
+        tutBar.style.bottom = '16px';  
         tutBar.style.top = 'auto';
         tutBar.style.left = '16px';
         tutBar.style.right = '16px';
@@ -1941,30 +1944,50 @@ const openTutorial = (stepIdx = 0) => {
     tutType = 'basic';
     tutStep = stepIdx;
     
-    // Automatically close context choices modal if transitioning from step 2 to step 3
+    // Auto-advance modal overlays smoothly to keep transitions clear
     if (stepIdx === 2) {
         closeModal('cue-menu-modal');
     }
     
-    const step = basicSteps[tutStep];
+    const step = tutSteps[tutStep];
     if (!step) return;
 
-    $('tut-bar-step').innerText = `Step ${tutStep + 1} of ${basicSteps.length}`;
+    $('tut-bar-step').innerText = `Step ${tutStep + 1} of ${tutSteps.length}`;
     $('tut-bar-badge').innerText = step.badge;
     $('tut-bar-text').innerHTML = step.text;
 
     applyTutHighlight(step.target);
     adjustTutorialBarParent();
 
+    // Position popover intelligently near targeted element
+    const targetEl = step.target ? step.target() : null;
+    const bar = $('tutorial-bar');
+    if (targetEl && bar) {
+        const rect = targetEl.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        
+        // Render popover at viewport top if targeted settings are on the lower half to avoid overlap
+        if (rect.bottom > viewportHeight / 2) {
+            bar.style.bottom = 'auto';
+            bar.style.top = '16px';
+        } else {
+            bar.style.bottom = '16px';
+            bar.style.top = 'auto';
+        }
+    } else if (bar) {
+        bar.style.bottom = '24px';
+        bar.style.top = 'auto';
+    }
+
     $('tut-bar-prev').style.display = tutStep === 0 ? 'none' : 'block';
     $('tut-bar-next').style.display = step.waitForAction ? 'none' : 'block';
-    $('tut-bar-next').innerText = tutStep === basicSteps.length - 1 ? 'Finish' : 'Next';
+    $('tut-bar-next').innerText = tutStep === tutSteps.length - 1 ? 'Finish' : 'Next';
     $('tutorial-bar').style.display = 'flex';
 };
 
 const nextTutStep = () => {
     haptic(10);
-    if (tutStep < basicSteps.length - 1) {
+    if (tutStep < tutSteps.length - 1) {
         openTutorial(tutStep + 1);
     } else {
         finishTutorial();
@@ -1981,7 +2004,6 @@ const prevTutStep = () => {
 const skipTutorial = () => {
     haptic([15, 30]);
     finishTutorial();
-    finishAdvancedTutorial();
 };
 
 const finishTutorial = () => {
@@ -1992,51 +2014,32 @@ const finishTutorial = () => {
     adjustTutorialBarParent();
 };
 
-// --- Advanced Modal Step Engine ---
-const openAdvancedTutorial = (stepIdx = 0) => {
-    tutActive = true;
-    tutType = 'advanced';
-    advStep = stepIdx;
-    const step = advancedSteps[advStep];
-    if (!step) return;
+const evalTutorialStep = () => {
+    if (!tutActive) return;
+    
+    // Evaluate modal triggers step-by-step
+    const settingsOpen = $('settings-modal').open;
+    const cueMenuOpen = $('cue-menu-modal').open;
+    const projectsOpen = $('projects-modal').open;
+    const appSettingsOpen = $('app-settings').open;
+    const fadesOpen = $('global-fades-modal').open;
 
-    $('tut-bar-step').innerText = `Adv Step ${advStep + 1} of ${advancedSteps.length}`;
-    $('tut-bar-badge').innerText = step.badge;
-    $('tut-bar-text').innerHTML = step.text;
-
-    applyTutHighlight(step.target);
-    adjustTutorialBarParent();
-
-    $('tut-bar-prev').style.display = 'none';
-    $('tut-bar-next').style.display = step.waitForAction ? 'none' : 'block';
-    $('tut-bar-next').innerText = advStep === advancedSteps.length - 1 ? 'Close' : 'Next';
-    $('tutorial-bar').style.display = 'flex';
-};
-
-const nextAdvStep = () => {
-    haptic(10);
-    if (advStep < advancedSteps.length - 1) {
-        openAdvancedTutorial(advStep + 1);
-    } else {
-        finishAdvancedTutorial();
-    }
-};
-
-const finishAdvancedTutorial = () => {
-    clearTutHighlights();
-    tutActive = false;
-    updSet('advancedTutorialCompleted', true);
-    $('tutorial-bar').style.display = 'none';
-    adjustTutorialBarParent();
-};
-
-// Redirect general buttons based on mode
-const originalNextTutStep = nextTutStep;
-window.nextTutStep = () => {
-    if (tutType === 'advanced') {
-        nextAdvStep();
-    } else {
-        originalNextTutStep();
+    if (tutStep === 0 && tracks.length > 0) {
+        openTutorial(1);
+    } else if (tutStep === 1 && settingsOpen) {
+        openTutorial(2);
+    } else if (tutStep === 6 && !settingsOpen) {
+        openTutorial(7);
+    } else if (tutStep === 7 && cueMenuOpen) {
+        openTutorial(8);
+    } else if (tutStep === 10 && !cueMenuOpen) {
+        openTutorial(11);
+    } else if (tutStep === 12 && projectsOpen) {
+        openTutorial(13);
+    } else if (tutStep === 15 && !projectsOpen) {
+        openTutorial(16);
+    } else if (tutStep === 16 && appSettingsOpen) {
+        openTutorial(17);
     }
 };
 
@@ -2044,7 +2047,7 @@ if('mediaSession' in navigator){ navigator.mediaSession.setActionHandler('nexttr
 window.addEventListener('load',()=>sessionStorage.getItem('mc_pocket')==='true'&&setTimeout(()=>toggleLock(!0),500));  
 document.fonts.ready.then(()=>{
     document.body.style.opacity="1";
-    // Launch basic onboarding sequence on initial start up if not completed
+    // Launch onboarding tour on initial start up if not completed
     if (!settings.tutorialCompleted) {
         setTimeout(() => openTutorial(0), 1000);
     }
