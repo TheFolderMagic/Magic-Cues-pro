@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"><title>Magic Cues Pro</title><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /><script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script><script src="https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.min.js"></script><script src="https://unpkg.com/wavesurfer.js@7/dist/plugins/regions.min.js"></script><style>
-*,::before,*::after{box-sizing:border-box}:root{--bg-top:#1c1c1e;--bg-bot:#09090b;--glass:rgba(30,30,35,.8);--glass-border:rgba(255,255,255,.1);--accent:#007AFF;--accent-glow:rgba(0,122,255,.3);--text-main:#f4f4f5;--text-muted:#a1a1aa;--danger:#ff453a;--modal-bg:#18181b;--input-bg:#09090b;--nested-glass:rgba(50,45,75,.8);--nested-border:rgba(120,100,255,.2)}html[data-theme="light"]{--bg-top:#f4f4f7;--bg-bot:#e2e2e7;--glass:rgba(255,255,255,.9);--glass-border:rgba(0,0,0,.1);--accent-glow:rgba(0,122,255,.2);--text-main:#1c1c1e;--text-muted:#636366;--modal-bg:#fff;--input-bg:#e2e2e7;--nested-glass:rgba(240,235,250,.9);--nested-border:rgba(100,50,255,.15)}html[data-theme="high-vis"]{--bg-top:#000;--bg-bot:#000;--glass:#000;--glass-border:#ff0;--accent:#ff0;--accent-glow:rgba(255,255,0,.3);--text-main:#fff;--text-muted:#ff0;--modal-bg:#000;--input-bg:#000;--danger:#ff453a;--nested-glass:#000;--nested-border:#0ff}body{background:linear-gradient(180deg,var(--bg-top),var(--bg-bot)) fixed;color:var(--text-main);font-family:'Inter',sans-serif;margin:0;padding:24px 24px 140px;-webkit-user-select:none;opacity:0;transition:opacity .3s}body.modal-open{overflow:hidden}.material-symbols-rounded{font-variation-settings:'FILL' 1,'wght' 400}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px}h1{font-weight:700;font-size:28px;letter-spacing:-1px;margin:0;display:flex;align-items:center;gap:6px;cursor:pointer}h1:active{opacity:.7}h2{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;margin:35px 0 15px 5px;font-weight:800}button{font-family:inherit;cursor:pointer;border:none;outline:none;transition:all .2s;-webkit-tap-highlight-color:transparent}.icon-btn{background:var(--glass);color:var(--text-main);width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;border:1px solid var(--glass-border)}.master-grid{display:grid;grid-template-columns:1fr 64px 64px;gap:12px;margin-bottom:12px}#master-play,#sideload-master-play{background:var(--accent);color:#fff;padding:22px;font-size:18px;font-weight:700;border-radius:20px;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 10px 20px var(--accent-glow)}html[data-theme="high-vis"] #master-play,html[data-theme="high-vis"] #sideload-master-play{color:#000}#pause-btn,#mic-btn,#sideload-pause-btn,#sideload-reset-btn{background:var(--glass);color:var(--text-main);border-radius:20px;border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center}.mic-active{background:var(--danger)!important;color:#fff!important;border-color:var(--danger)!important;box-shadow:0 0 15px rgba(255,69,58,.5)}.mic-paused{background:var(--text-muted)!important;color:#fff!important;border-color:var(--text-muted)!important}#speech-debug{display:none;color:var(--text-muted);font-size:14px;margin-bottom:24px;padding:12px 16px;background:var(--glass);border-radius:12px;border:1px solid var(--glass-border);height:70px;overflow-y:hidden;scroll-behavior:smooth}#speech-text{color:var(--text-main);font-weight:600;line-height:1.4}.action-row{display:flex;gap:10px;margin-bottom:30px}.action-btn{flex:1;background:var(--glass);color:var(--text-main);padding:16px;border-radius:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;border:1px solid var(--glass-border)}#track-list{display:flex;flex-direction:column;gap:12px}.tile,.cue-pad{background:var(--glass);border-radius:20px!important;position:relative;overflow:hidden!important;border:1px solid var(--glass-border);backdrop-filter:blur(10px);outline:none!important;-webkit-tap-highlight-color:transparent}.sortable-ghost{opacity:0.4;background:var(--accent-glow);border-color:var(--accent)}.is-playing{border:1px solid var(--accent)!important;box-shadow:0 0 20px var(--accent-glow)!important;border-radius:20px!important;outline:none!important}html[data-theme="high-vis"] .is-playing{border-color:#ff0!important}.is-skipped{opacity:0.4;text-decoration:line-through}.tile.is-nested-show,.cue-pad.is-nested-show{background:var(--nested-glass);border:1px solid var(--nested-border)}.group-hover-highlight{border:2px dashed var(--accent)!important;box-shadow:0 0 20px var(--accent-glow)!important;transform:scale(1.02);transition:all .2s ease;z-index:10}.tile-content,.cue-pad>span,.pad-settings-trigger,.pad-number{position:relative;z-index:2}.tile-content{padding:22px;display:flex;align-items:center;gap:16px}.tile-info{flex:1;min-width:0}.tile-name-text{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}.progress-fill{position:absolute;top:0;left:0;height:100%;background:var(--accent-glow);width:0%;z-index:1;pointer-events:none;display:none}body.show-progress .is-playing .progress-fill{display:block}#instant-grid,#sideload-instant-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.cue-pad{aspect-ratio:1.5/1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;cursor:pointer}.cue-pad span{font-size:15px;font-weight:700;line-height:1.3}.pad-settings-trigger{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:10px;background:rgba(128,128,128,.2);color:var(--text-main);display:flex;align-items:center;justify-content:center}.pad-number{position:absolute;top:12px;left:12px;font-size:12px;font-weight:800;color:var(--text-muted);opacity:.7}.pad-drag-handle{position:absolute!important;bottom:12px!important;left:12px!important;z-index:3;color:var(--text-muted);opacity:0.6;font-size:24px!important;cursor:grab}dialog{background:var(--modal-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:32px;padding:30px;width:calc(100% - 32px);max-width:400px;margin:auto;box-shadow:0 40px 80px rgba(0,0,0,.8);backdrop-filter:blur(20px);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}dialog::backdrop{background:rgba(0,0,0,.85);backdrop-filter:blur(4px)}input, textarea {-webkit-user-select:auto !important;user-select:auto !important;}.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.modal-title{font-size:22px;font-weight:800}
+,::before,::after{box-sizing:border-box}:root{--bg-top:#1c1c1e;--bg-bot:#09090b;--glass:rgba(30,30,35,.8);--glass-border:rgba(255,255,255,.1);--accent:#007AFF;--accent-glow:rgba(0,122,255,.3);--text-main:#f4f4f5;--text-muted:#a1a1aa;--danger:#ff453a;--modal-bg:#18181b;--input-bg:#09090b;--nested-glass:rgba(50,45,75,.8);--nested-border:rgba(120,100,255,.2)}html[data-theme="light"]{--bg-top:#f4f4f7;--bg-bot:#e2e2e7;--glass:rgba(255,255,255,.9);--glass-border:rgba(0,0,0,.1);--accent-glow:rgba(0,122,255,.2);--text-main:#1c1c1e;--text-muted:#636366;--modal-bg:#fff;--input-bg:#e2e2e7;--nested-glass:rgba(240,235,250,.9);--nested-border:rgba(100,50,255,.15)}html[data-theme="high-vis"]{--bg-top:#000;--bg-bot:#000;--glass:#000;--glass-border:#ff0;--accent:#ff0;--accent-glow:rgba(255,255,0,.3);--text-main:#fff;--text-muted:#ff0;--modal-bg:#000;--input-bg:#000;--danger:#ff453a;--nested-glass:#000;--nested-border:#0ff}body{background:linear-gradient(180deg,var(--bg-top),var(--bg-bot)) fixed;color:var(--text-main);font-family:'Inter',sans-serif;margin:0;padding:24px 24px 140px;-webkit-user-select:none;opacity:0;transition:opacity .3s}body.modal-open{overflow:hidden}.material-symbols-rounded{font-variation-settings:'FILL' 1,'wght' 400}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px}h1{font-weight:700;font-size:28px;letter-spacing:-1px;margin:0;display:flex;align-items:center;gap:6px;cursor:pointer}h1:active{opacity:.7}h2{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;margin:35px 0 15px 5px;font-weight:800}button{font-family:inherit;cursor:pointer;border:none;outline:none;transition:all .2s;-webkit-tap-highlight-color:transparent}.icon-btn{background:var(--glass);color:var(--text-main);width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;border:1px solid var(--glass-border)}.master-grid{display:grid;grid-template-columns:1fr 64px 64px;gap:12px;margin-bottom:12px}#master-play,#sideload-master-play{background:var(--accent);color:#fff;padding:22px;font-size:18px;font-weight:700;border-radius:20px;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 10px 20px var(--accent-glow)}html[data-theme="high-vis"] #master-play,html[data-theme="high-vis"] #sideload-master-play{color:#000}#pause-btn,#mic-btn,#sideload-pause-btn,#sideload-reset-btn{background:var(--glass);color:var(--text-main);border-radius:20px;border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center}.mic-active{background:var(--danger)!important;color:#fff!important;border-color:var(--danger)!important;box-shadow:0 0 15px rgba(255,69,58,.5)}.mic-paused{background:var(--text-muted)!important;color:#fff!important;border-color:var(--text-muted)!important}#speech-debug{display:none;color:var(--text-muted);font-size:14px;margin-bottom:24px;padding:12px 16px;background:var(--glass);border-radius:12px;border:1px solid var(--glass-border);height:70px;overflow-y:hidden;scroll-behavior:smooth}#speech-text{color:var(--text-main);font-weight:600;line-height:1.4}.action-row{display:flex;gap:10px;margin-bottom:30px}.action-btn{flex:1;background:var(--glass);color:var(--text-main);padding:16px;border-radius:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;border:1px solid var(--glass-border)}#track-list{display:flex;flex-direction:column;gap:12px}.tile,.cue-pad{background:var(--glass);border-radius:20px!important;position:relative;overflow:hidden!important;border:1px solid var(--glass-border);backdrop-filter:blur(10px);outline:none!important;-webkit-tap-highlight-color:transparent}.sortable-ghost{opacity:0.4;background:var(--accent-glow);border-color:var(--accent)}.is-playing{border:1px solid var(--accent)!important;box-shadow:0 0 20px var(--accent-glow)!important;border-radius:20px!important;outline:none!important}html[data-theme="high-vis"] .is-playing{border-color:#ff0!important}.is-skipped{opacity:0.4;text-decoration:line-through}.tile.is-nested-show,.cue-pad.is-nested-show{background:var(--nested-glass);border:1px solid var(--nested-border)}.group-hover-highlight{border:2px dashed var(--accent)!important;box-shadow:0 0 20px var(--accent-glow)!important;transform:scale(1.02);transition:all .2s ease;z-index:10}.tile-content,.cue-pad>span,.pad-settings-trigger,.pad-number{position:relative;z-index:2}.tile-content{padding:22px;display:flex;align-items:center;gap:16px}.tile-info{flex:1;min-width:0}.tile-name-text{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}.progress-fill{position:absolute;top:0;left:0;height:100%;background:var(--accent-glow);width:0%;z-index:1;pointer-events:none;display:none}body.show-progress .is-playing .progress-fill{display:block}#instant-grid,#sideload-instant-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.cue-pad{aspect-ratio:1.5/1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;cursor:pointer}.cue-pad span{font-size:15px;font-weight:700;line-height:1.3}.pad-settings-trigger{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:10px;background:rgba(128,128,128,.2);color:var(--text-main);display:flex;align-items:center;justify-content:center}.pad-number{position:absolute;top:12px;left:12px;font-size:12px;font-weight:800;color:var(--text-muted);opacity:.7}.pad-drag-handle{position:absolute!important;bottom:12px!important;left:12px!important;z-index:3;color:var(--text-muted);opacity:0.6;font-size:24px!important;cursor:grab}dialog{background:var(--modal-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:32px;padding:30px;width:calc(100% - 32px);max-width:400px;margin:auto;box-shadow:0 40px 80px rgba(0,0,0,.8);backdrop-filter:blur(20px);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}dialog::backdrop{background:rgba(0,0,0,.85);backdrop-filter:blur(4px)}input, textarea {-webkit-user-select:auto !important;user-select:auto !important;}.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.modal-title{font-size:22px;font-weight:800}
 
 /* Standardized Settings Menus */
 .setting-row, .menu-nav-row, details { box-sizing: border-box; width: 100%; margin-bottom: 12px; background: rgba(128,128,128,.1); border-radius: 18px; }
@@ -130,22 +130,6 @@ display: flex; align-items: center; justify-content: center; flex-direction: col
 }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Interactive Onboarding Highlight Animations */
-.tut-step-indicator { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; display: block; }
-.tut-section-badge { display: inline-block; padding: 4px 10px; border-radius: 8px; background: var(--accent-glow); color: var(--accent); font-size: 11px; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-html[data-theme="high-vis"] .tut-section-badge { background: #ff0; color: #000; }
-
-@keyframes tut-glow {
-0% { box-shadow: 0 0 0 0 var(--accent-glow); outline: 2px solid transparent; }
-50% { box-shadow: 0 0 0 10px var(--accent-glow); outline: 2px solid var(--accent); }
-100% { box-shadow: 0 0 0 0 var(--accent-glow); outline: 2px solid transparent; }
-}
-.tut-highlight {
-animation: tut-glow 1.5s infinite !important;
-position: relative !important;
-z-index: 10001 !important;
-}
-
 /* Restructured Context Menu to Avoid Squishing */
 #cue-menu-modal {
 padding: 32px 24px !important;
@@ -187,13 +171,13 @@ font-weight: 600;
 <div id="speech-debug"><div id="speech-text">...</div></div>
 
 <div class="action-row">
-<button class="action-btn" id="add-cue-btn" onclick="haptic(15);$('file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button>
+<button class="action-btn" id="add-cue-btn" onclick="haptic(15);$`('file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button>
 <button class="action-btn" id="reset-show-btn" onclick="haptic([15,30,15]);triggerReset()"><span class="material-symbols-rounded">restart_alt</span> Reset</button>
 </div>
 
-<input type="file" id="file-input" accept="audio/*,.magic,.json" multiple onchange="handleFiles(this)" style="display:none">
+<input type="file" id="file-input" accept="audio/,.magic,.json" multiple onchange="handleFiles(this)" style="display:none">
 <input type="file" id="import-file-input" accept=".magic,.json" style="display:none" onchange="importShow(this)">
-<input type="file" id="sideload-file-input" accept="audio/*,.magic,.json" multiple onchange="handleSideloadFiles(this)" style="display:none">
+<input type="file" id="sideload-file-input" accept="audio/,.magic,.json" multiple onchange="handleSideloadFiles(this)" style="display:none">
 
 <div id="queue-container">
 <h2 id="queue-label">Main Queue</h2>
@@ -239,7 +223,7 @@ font-weight: 600;
 <button id="sideload-reset-btn" onclick="haptic([15,30,15]);triggerSideloadReset()"><span class="material-symbols-rounded">restart_alt</span></button>
 </div>
 <div class="action-row" style="margin-bottom:15px">
-<button class="action-btn" onclick="haptic(15);$('sideload-file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button>
+<button class="action-btn" onclick="haptic(15);`$('sideload-file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button>
 </div>
 <div style="flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;padding:10px 24px 100px;margin:0 -24px;">
 <h2 style="margin:0 0 10px 5px" id="sideload-queue-label">Queue</h2>
@@ -272,7 +256,7 @@ font-weight: 600;
 </div>
 <div id="projects-list-container" style="max-height:300px;overflow-y:auto;margin-bottom:20px"></div>
 <div style="display:flex;gap:12px">
-<button class="action-btn" style="flex:1" onclick="haptic(15);$('import-file-input').click()"><span class="material-symbols-rounded">upload</span> Import</button>
+<button class="action-btn" style="flex:1" onclick="haptic(15);$`('import-file-input').click()"><span class="material-symbols-rounded">upload</span> Import</button>
 <button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);closeModal('projects-modal');openModal('new-show-modal')"><span class="material-symbols-rounded">add</span> New</button>
 </div>
 </dialog>
@@ -362,10 +346,6 @@ Fade In / Out
 <div class="mini-row"><label>Pocket Mode</label><input type="checkbox" class="custom-toggle" id="pocket-toggle" onchange="haptic(10);updSet('pocketMode',this.checked)"></div>
 <div class="mini-row"><label>Strong Pocket Haptics</label><input type="checkbox" class="custom-toggle" id="strong-pocket-haptics-toggle" onchange="haptic(10);updSet('strongPocketHaptics',this.checked)"></div>
 <div class="mini-row"><label>NFC Tag Reader</label><input type="checkbox" class="custom-toggle" id="nfc-toggle" onchange="haptic(10);updSet('nfcEnabled',this.checked);toggleNFC(this.checked)"></div>
-<div class="nested-nav-row" style="border-top: 1px solid var(--glass-border); padding: 16px 0;" onclick="haptic(10); closeModal('app-settings'); openTutorial(0)">
-<span>Interactive Guide</span>
-<span class="material-symbols-rounded" style="color:var(--accent)">play_circle</span>
-</div>
 <details style="background:rgba(0,0,0,0.2);margin-top:10px;" onselect="haptic(10)">
 <summary onclick="haptic(10)">Program NFC Tags</summary>
 <div class="details-content" id="nfc-dynamic-list" style="padding-top:0;"></div>
@@ -624,35 +604,15 @@ Fade In / Out
 <div style="display:flex; gap:10px; padding: 0 20px 20px;"><button class="action-btn" style="border:none; padding:12px" onclick="closeTrimModal()">Cancel</button><button class="action-btn" style="flex:1; background:var(--accent); color:#fff; border:none; padding:12px" onclick="saveTrim()">Save</button></div>
 </dialog>
 
-<!-- Interactive Floating Onboarding Guide Bar -->
-<div id="tutorial-bar" style="position: fixed; bottom: 24px; left: 24px; right: 24px; background: var(--modal-bg); border: 2px solid var(--accent); border-radius: 24px; padding: 20px; z-index: 10000; box-shadow: 0 20px 50px rgba(0,0,0,0.6); display: none; flex-direction: column; gap: 12px; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);">
-<div style="display: flex; justify-content: space-between; align-items: flex-start;">
-<div>
-<span class="tut-step-indicator" id="tut-bar-step">Step 1</span>
-<span class="tut-section-badge" id="tut-bar-badge">Onboarding</span>
-<h4 id="tut-bar-title" style="margin: 4px 0 0 0; font-size: 16px; font-weight: 700;">Tutorial</h4>
-</div>
-<button class="icon-btn" style="width: 32px; height: 32px; border-radius: 10px; background: rgba(128,128,128,0.15); border: none;" onclick="skipTutorial()">
-<span class="material-symbols-rounded" style="font-size: 16px;">close</span>
-</button>
-</div>
-<p id="tut-bar-text" style="margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-muted); font-weight: 500;"></p>
-<div style="display: flex; justify-content: flex-end; gap: 8px;" id="tut-bar-actions">
-<button class="action-btn" id="tut-bar-prev" style="padding: 8px 16px; font-size: 13px; border-radius: 10px; flex: none; width: auto;" onclick="prevTutStep()">Back</button>
-<button class="action-btn" id="tut-bar-next" style="padding: 8px 16px; font-size: 13px; background: var(--accent); color: #fff; border-radius: 10px; flex: none; width: auto;" onclick="nextTutStep()">Next</button>
-</div>
-</div>
-
 <script>
-const $ = id => document.getElementById(id);
+const `$ = id => document.getElementById(id);
 let tracks=[], curIdx=0, locked=!1, actId=null, activeCues=new Map(), activePads=new Map(), paused=!1, wakeLock=null;
 let db, projectsList=[], curProjId='default', editProjId=null;
 let defSet = {
 showProgress:!0, theme:'auto', lang:'en-US', uiSize:100, confirmReset:!1, autoPauseMic:!0,
 pocketMode:!0, strongPocketHaptics:!1, nfcEnabled:!1, enableHaptics:!0, enableDragging:!0,
 globalFadeIn: 0, globalFadeOut: 0, globalFadeInCurve: 'linear', globalFadeOutCurve: 'linear',
-gfInSkip: true, gfInPause: true, gfOutSkip: true, gfOutPause: true,
-tutorialCompleted: false, advancedTutorialCompleted: false
+gfInSkip: true, gfInPause: true, gfOutSkip: true, gfOutPause: true
 };
 let settings = {...defSet, ...(JSON.parse(localStorage.getItem('mc_settings'))||{})};
 let sortQueue, sortGrid, sortSideQueue, sortSideGrid, sortExtract;
@@ -675,48 +635,17 @@ navigator.vibrate(p);
 }
 };
 
-const showAlert = (t,m) => { $('alert-title').innerText=t; $('alert-msg').innerText=m; openModal('custom-alert-modal'); };
+const showAlert = (t,m) => { ('alert-msg').innerText=m; openModal('custom-alert-modal'); };
 
 const openModal = id => {
 if(id==='app-settings') buildNfcMenu();
 document.body.classList.add('modal-open');
-$(id).showModal();
-adjustTutorialBarParent();
-if (tutActive) {
-if (tutType === 'basic') {
-if (tutStep === 2 && id === 'app-settings') {
-openTutorial(3);
-} else if (tutStep === 3 && id === 'global-fades-modal') {
-openTutorial(4);
-}
-} else if (tutType === 'advanced') {
-if (advStep === 0 && id === 'settings-modal') {
-openAdvancedTutorial(1);
-} else if (advStep === 2 && id === 'trim-modal') {
-openAdvancedTutorial(3);
-} else if (advStep === 4 && id === 'timing-modal') {
-openAdvancedTutorial(5);
-}
-}
-}
+$`(id).showModal();
 };
 
 const closeModal = id => {
-$(id).close();
-$(id).querySelectorAll('details').forEach(d => d.removeAttribute('open'));
+$(id).close(); $(id).querySelectorAll('details').forEach(d => d.removeAttribute('open'));
 if(!document.querySelectorAll('dialog[open]').length) document.body.classList.remove('modal-open');
-adjustTutorialBarParent();
-if (tutActive) {
-if (tutType === 'basic') {
-if (tutStep === 4 && id === 'global-fades-modal') {
-openTutorial(5);
-}
-} else if (tutType === 'advanced') {
-if (advStep === 3 && id === 'trim-modal') {
-openAdvancedTutorial(4);
-}
-}
-}
 };
 
 const getCurveVal = (p, c) => c === 'exponential' ? (Math.pow(10, p) - 1) / 9 : c === 'logarithmic' ? Math.log10(1 + 9 * p) : p;
@@ -724,15 +653,12 @@ const getCurveVal = (p, c) => c === 'exponential' ? (Math.pow(10, p) - 1) / 9 : 
 // App Fades Modal Logic
 let gfTab = 0;
 const openGlobalFadesModal = () => {
-$('gf-in-input').value = (parseFloat(settings.globalFadeIn) || 0).toFixed(1);
-$('gf-out-input').value = (parseFloat(settings.globalFadeOut) || 0).toFixed(1);
+$('gf-in-input').value = (parseFloat(settings.globalFadeIn) || 0).toFixed(1); $('gf-out-input').value = (parseFloat(settings.globalFadeOut) || 0).toFixed(1);
 updateGCurveUI('in', settings.globalFadeInCurve || 'linear');
 updateGCurveUI('out', settings.globalFadeOutCurve || 'linear');
-$('gf-in-skip-chk').checked = settings.gfInSkip !== false;
-$('gf-in-pause-chk').checked = settings.gfInPause !== false;
-$('gf-out-skip-chk').checked = settings.gfOutSkip !== false;
-$('gf-out-pause-chk').checked = settings.gfOutPause !== false;
-$('gf-swipe-container').scrollLeft = 0;
+$('gf-in-skip-chk').checked = settings.gfInSkip !== false; $('gf-in-pause-chk').checked = settings.gfInPause !== false;
+$('gf-out-skip-chk').checked = settings.gfOutSkip !== false; $('gf-out-pause-chk').checked = settings.gfOutPause !== false;
+`$('gf-swipe-container').scrollLeft = 0;
 swpGF(0);
 openModal('global-fades-modal');
 };
@@ -741,7 +667,7 @@ const manGFade = (type, val) => {
 haptic(15);
 let v = Math.max(0, parseFloat(val) || 0);
 updSet(type === 'in' ? 'globalFadeIn' : 'globalFadeOut', v);
-$(type === 'in' ? 'gf-in-input' : 'gf-out-input').value = v.toFixed(1);
+$`(type === 'in' ? 'gf-in-input' : 'gf-out-input').value = v.toFixed(1);
 };
 
 const nudgeGFade = (type, amt) => {
@@ -757,8 +683,7 @@ if (!fromScroll) updateGCurveUI(type, curve);
 };
 
 const updateGCurveUI = (type, curve) => {
-let track = $(`gf-cs-track-${type}`);
-let swiper = $(`gf-curve-swiper-${type}`);
+let track = $(gf-cs-track-(gf-curve-swiper-${type}`);
 if (!track) return;
 let curves = ['linear', 'logarithmic', 'exponential'];
 let idx = curves.indexOf(curve);
@@ -773,7 +698,7 @@ swiper.classList.toggle('at-bottom', idx === curves.length - 1);
 let gfCsTimers = {in: null, out: null};
 const handleGCurveScroll = (e, type) => {
 let track = e.target;
-let swiper = $(`gf-curve-swiper-${type}`);
+let swiper = $(gf-curve-swiper-${type});
 let idx = Math.round(track.scrollTop / track.clientHeight);
 let curves = ['linear', 'logarithmic', 'exponential'];
 if(swiper) {
@@ -797,19 +722,16 @@ setGCurve(type, curves[nextIdx], false);
 };
 
 const swpGF = (idx) => {
-let tc = $('gf-swipe-container');
+let tc = `$('gf-swipe-container');
 tc.scrollTo({ left: tc.clientWidth * idx, behavior: 'smooth' });
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-let tc = $('gf-swipe-container');
-if(tc) {
-tc.addEventListener('scroll', () => {
-let idx = Math.round(tc.scrollLeft / tc.clientWidth);
-if(idx !== gfTab) {
-gfTab = idx;
-$('gf-dot-0').classList.toggle('active', idx === 0);
-$('gf-dot-1').classList.toggle('active', idx === 1);
+let tc = latex
+('gf-swipe-container'); if(tc) { tc.addEventListener('scroll', () =&gt; { let idx = Math.round(tc.scrollLeft / tc.clientWidth); if(idx !== gfTab) { gfTab = idx; 
+
+('gf-dot-0').classList.toggle('active', idx === 0);
+$`('gf-dot-1').classList.toggle('active', idx === 1);
 }
 }, {passive:true});
 }
@@ -818,7 +740,7 @@ $('gf-dot-1').classList.toggle('active', idx === 1);
 const hideShowNotes = () => {
 clearInterval(currentNoteInt);
 clearTimeout(currentNoteTimeout);
-let c = $('show-notes-container');
+let c = `$('show-notes-container');
 if(c) {
 c.classList.remove('has-notes');
 delete c.dataset.owner;
@@ -826,7 +748,7 @@ delete c.dataset.owner;
 };
 
 const displayShowNote = (tObj, trackDuration) => {
-let text = (tObj.notes || '').trim(), container = $('show-notes-container'), textEl = $('show-notes-text');
+let text = (tObj.notes || '').trim(), container = ('show-notes-text');
 hideShowNotes();
 if (!text) return;
 let duration = parseFloat(tObj.notesDuration);
@@ -878,9 +800,8 @@ return false;
 };
 
 const buildNfcMenu = () => {
-let h=`<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_NEXT', 'Next Cue')"><span class="material-symbols-rounded">nfc</span> Program 'Next Cue'</button><button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PLAYPAUSE', 'Play/Pause')"><span class="material-symbols-rounded">nfc</span> Program 'Toggle Mic'</button>`;
-tracks.filter(t=>t.type==='pad').forEach(p=>h+=`<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PAD_${p.id}', '${p.name.replace(/'/g,"\\'")}')"><span class="material-symbols-rounded">nfc</span> Program '${p.name}'</button>`);
-$('nfc-dynamic-list').innerHTML=h;
+let h=<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_NEXT', 'Next Cue')"&gt;&lt;span class="material-symbols-rounded"&gt;nfc&lt;/span&gt; Program 'Next Cue'&lt;/button&gt;&lt;button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PLAYPAUSE', 'Play/Pause')"&gt;&lt;span class="material-symbols-rounded"&gt;nfc&lt;/span&gt; Program 'Toggle Mic'&lt;/button>;
+tracks.filter(t=>t.type==='pad').forEach(p=>h+=<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PAD_${p.id}', '${p.name.replace(/'/g,"\\'")}')"&gt;&lt;span class="material-symbols-rounded"&gt;nfc&lt;/span&gt; Program '${p.name}'</button>);$('nfc-dynamic-list').innerHTML=h;
 };
 
 const setTheme = t => {
@@ -889,8 +810,7 @@ let isL=window.matchMedia('(prefers-color-scheme: light)').matches;
 document.documentElement.setAttribute('data-theme',isL?'light':'dark');
 }else document.documentElement.setAttribute('data-theme',t);
 document.querySelectorAll('#theme-controls button').forEach(b=>b.classList.remove('active'));
-let btnId = t==='high-vis'?'btn-vis':`btn-${t}`;
-let btn = $(btnId);
+let btnId = t==='high-vis'?'btn-vis':btn-${t}; let btn =$(btnId);
 if(btn) btn.classList.add('active');
 updSet('theme',t);
 };
@@ -899,7 +819,7 @@ const setLang = l => {
 settings.lang=l;
 updSet('lang',l);
 document.querySelectorAll('#lang-controls button').forEach(b=>b.classList.remove('active'));
-let btn = $(l==='en-US'?'lang-en':'lang-de');
+let btn = $`(l==='en-US'?'lang-en':'lang-de');
 if(btn) btn.classList.add('active');
 if(rec) rec.lang=l;
 };
@@ -918,12 +838,10 @@ setTheme(settings.theme);
 setLang(settings.lang);
 ['progress','confirm-reset','auto-pause-mic','haptics','dragging','pocket','strong-pocket-haptics','nfc'].forEach(k=>{
 let p=k.replace(/-([a-z])/g,g=>g[1].toUpperCase());
-let toggle = $(`${k}-toggle`);
-if(toggle) toggle.checked=settings[p==='progress'?'showProgress':p==='nfc'?'nfcEnabled':p==='haptics'?'enableHaptics':p==='dragging'?'enableDragging':p];
-});
-document.body.classList.toggle('show-progress',settings.showProgress);
-applyUISize();
-$('ui-size-slider').value=settings.uiSize||100;
+let toggle = $(latex
+{k}-toggle`); if(toggle) toggle.checked=settings[p==='progress'?'showProgress':p==='nfc'?'nfcEnabled':p==='haptics'?'enableHaptics':p==='dragging'?'enableDragging':p]; }); document.body.classList.toggle('show-progress',settings.showProgress); applyUISize(); 
+
+('ui-size-slider').value=settings.uiSize||100;
 };
 
 window.matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>settings.theme==='auto'&&setTheme('auto'));
@@ -976,31 +894,10 @@ window.onNfcRead(t.trim());
 } catch(err){}
 },
 () => {},
-err => { $('nfc-toggle').checked = false; updSet('nfcEnabled', false); }
-);
-return;
-}
-if(window.Android && typeof window.Android.startNFC === 'function') {
-window.Android.startNFC();
-return;
-}
-if(!("NDEFReader" in window)) return showAlert("Error", "NFC is not supported on this browser.");
-try{
-if(nfcAb) nfcAb.abort();
-nfcAb=new AbortController();
-if(!nfcR){
-nfcR=new NDEFReader();
-nfcR.addEventListener("reading",({message})=>{
-for(const r of message.records){
-if(r.recordType==="text"){
-let t=new TextDecoder(r.encoding).decode(r.data);
-window.onNfcRead(t);
-}
-}
-});
-}
-await nfcR.scan({signal:nfcAb.signal});
-}catch(err){$('nfc-toggle').checked=false; updSet('nfcEnabled',false);}
+err => { latex
+('nfc-toggle').checked = false; updSet('nfcEnabled', false); } ); return; } if(window.Android && typeof window.Android.startNFC === 'function') { window.Android.startNFC(); return; } if(!("NDEFReader" in window)) return showAlert("Error", "NFC is not supported on this browser."); try{ if(nfcAb) nfcAb.abort(); nfcAb=new AbortController(); if(!nfcR){ nfcR=new NDEFReader(); nfcR.addEventListener("reading",({message})=&gt;{ for(const r of message.records){ if(r.recordType==="text"){ let t=new TextDecoder(r.encoding).decode(r.data); window.onNfcRead(t); } } }); } await nfcR.scan({signal:nfcAb.signal}); }catch(err){
+
+('nfc-toggle').checked=false; updSet('nfcEnabled',false);}
 }else{
 if(window.nfc && typeof window.nfc.removeNdefListener === 'function') {
 window.nfc.removeNdefListener();
@@ -1014,26 +911,7 @@ if(nfcAb){ nfcAb.abort(); nfcAb=null; }
 
 const programNfcTag = async(c,n) => {
 if(window.nfc && typeof window.nfc.write === 'function') {
-$('nfc-write-text').innerText=`Programming: ${n}`;
-openModal('nfc-write-modal');
-let record = window.ndef ? window.ndef.textRecord(c) : { tnf: 1, type: [84], id: [], payload: [2, 101, 110, ...[...c].map(x=>x.charCodeAt(0))] };
-window.nfc.write(
-[record],
-() => { window.onNfcWriteResult(true, ""); },
-err => { window.onNfcWriteResult(false, err); }
-);
-return;
-}
-if(window.Android && typeof window.Android.writeNFC === 'function') {
-$('nfc-write-text').innerText=`Programming: ${n}`;
-openModal('nfc-write-modal');
-window.Android.writeNFC(c);
-return;
-}
-if(!("NDEFReader" in window))return showAlert("Error","NFC not supported.");
-if(nfcWrAb)nfcWrAb.abort();
-nfcWrAb=new AbortController();
-$('nfc-write-text').innerText=`Programming: ${n}`;
+{n}; openModal('nfc-write-modal'); let record = window.ndef ? window.ndef.textRecord(c) : { tnf: 1, type: [84], id: [], payload: [2, 101, 110, ...[...c].map(x=&gt;x.charCodeAt(0))] }; window.nfc.write( [record], () =&gt; { window.onNfcWriteResult(true, ""); }, err =&gt; { window.onNfcWriteResult(false, err); } ); return; } if(window.Android && typeof window.Android.writeNFC === 'function') { $('nfc-write-text').innerText=Programming:${n}; openModal('nfc-write-modal'); window.Android.writeNFC(c); return; } if(!("NDEFReader" in window))return showAlert("Error","NFC not supported."); if(nfcWrAb)nfcWrAb.abort(); nfcWrAb=new AbortController(); $('nfc-write-text').innerText=Programming:${n}`;
 openModal('nfc-write-modal');
 try{
 await new NDEFReader().write(c,{signal:nfcWrAb.signal});
@@ -1062,7 +940,7 @@ st.get('projectList').onsuccess=res=>{
 projectsList=res.target.result||[{id:'default',name:'Main Show'}];
 if(!res.target.result) st.put(projectsList,'projectList');
 curProjId=localStorage.getItem('mc_curProj')||projectsList[0].id;
-$('header-title-text').innerText=(projectsList.find(x=>x.id===curProjId)||projectsList[0]).name;
+$`('header-title-text').innerText=(projectsList.find(x=>x.id===curProjId)||projectsList[0]).name;
 st.get('proj_'+curProjId).onsuccess=r=>{
 tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:t.file?URL.createObjectURL(t.file):undefined})):[];
 render();
@@ -1085,36 +963,22 @@ aMenuId=id;
 isSideMenu=s;
 let t=(s?sideTrks:tracks).find(x=>x.id===id);
 let typeText = t.type==='queue'?'Cue':'Pad';
-$('skip-cue-text').innerText=t.skip?`Unskip ${typeText}`:`Skip ${typeText}`;
-$('rename-cue-input').value = t.name;
+$('skip-cue-text').innerText=t.skip?Unskip {typeText}; $('rename-cue-input').value = t.name;
 openModal('cue-menu-modal');
-setTimeout(() => $('rename-cue-input').blur(), 10);
-if (tutActive && tutType === 'basic' && tutStep === 1) {
-openTutorial(2);
-}
+setTimeout(() => `$('rename-cue-input').blur(), 10);
 },600);
 };
 
 const ccCuePrs = () => clearTimeout(cuePTm);
 const clickCue = (id,s) => { if(cLng||locked)return; let tl=s?sideTrks:tracks, t=tl.find(x=>x.id===id); if(!t)return; t.type==='queue'?(s?(sideIdx=sideTrks.filter(x=>x.type==='queue').findIndex(x=>x.id===id),playSideloadNextCue(true, true)):playCue(id)):(s?playSidePad(t):playPad(t)); };
 const updMenu = () => { isSideMenu?(saveSide(),renderSide()):(save(),render()); closeModal('cue-menu-modal'); };
-const saveCueRename = () => { let t=(isSideMenu?sideTrks:tracks).find(x=>x.id===aMenuId); if(t){ t.name=$('rename-cue-input').value||'Unnamed Cue'; updMenu(); } };
+const saveCueRename = () => { let t=(isSideMenu?sideTrks:tracks).find(x=>x.id===aMenuId); if(t){ t.name=$`('rename-cue-input').value||'Unnamed Cue'; updMenu(); } };
 const toggleCueSkip = () => { let t=(isSideMenu?sideTrks:tracks).find(x=>x.id===aMenuId); if(t){ t.skip=!t.skip; updMenu(); } };
 const duplicateCue = () => { let l=isSideMenu?sideTrks:tracks, i=l.findIndex(x=>x.id===aMenuId); if(i>-1){ let n=JSON.parse(JSON.stringify(l[i])); n.id='id'+Date.now(); n.name+=' (Copy)'; l.splice(i+1,0,n); updMenu(); } };
 const createGroupFromMenu = () => { let l=isSideMenu?sideTrks:tracks, i=l.findIndex(x=>x.id===aMenuId); if(i>-1){ let t=l[i], n={id:'id'+Date.now(), name:'Cue Group '+(tracks.filter(x=>x.isCueGroup).length+1), type:t.type, delay:0, fadeIn:0, fadeOut:0, volume:1, autoFollow:false, overlap:0, postDelay:0, triggerPhrase:'', globalVoice:false, isExternalShow:true, isCueGroup:true, autoStartShow:false, skip:false, showData:[t]}; l.splice(i,1,n); updMenu(); } };
 
 const getHTML = (t,i,s,c,p) => {
-let m=t.triggerPhrase?`<span class="material-symbols-rounded" style="color:var(--text-muted);font-size:14px;margin-left:4px;vertical-align:middle">mic</span>${t.globalVoice?'<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;margin-left:2px;vertical-align:middle">public</span>':''}`:'';
-let bg=t.isBackground?`<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;margin-left:4px;vertical-align:middle">all_inclusive</span>`:'';
-let si=t.isExternalShow?`<span class="material-symbols-rounded" style="opacity:0.6;font-size:16px;margin-left:6px;vertical-align:middle">folder_open</span>`:'';
-let sk=t.skip?'is-skipped':'';
-let pr=s?'side-':'';
-let ns=s?'nested-show':'';
-let bCol = t.borderColor ? `style="border:1.5px solid ${t.borderColor};box-shadow:0 0 10px ${t.borderColor}33;"` : '';
-if(t.type==='queue') {
-return `<div id="${pr}tile-${t.id}" class="tile ${c?'is-current':''} ${t.isCueGroup?'is-nested-show':''} ${sk}" ${bCol}><div class="progress-fill" id="${pr}prog-${t.id}"></div><div class="tile-content"><span class="material-symbols-rounded drag-handle">drag_indicator</span><div class="tile-info" style="cursor:pointer" onpointerdown="stCuePrs(event,'${t.id}',${s})" onpointerup="ccCuePrs()" onpointercancel="ccCuePrs()" onclick="clickCue('${t.id}',${s})"><span class="tile-name-text">${t.name}${bg}${m}${si}</span></div><div class="edit-trigger" style="cursor:pointer;padding:8px" onclick="haptic(15);openSet('${t.id}',${s})"><span class="material-symbols-rounded" style="font-size:18px">settings</span></div></div></div>`;
-} else {
-return `<div id="${pr}tile-${t.id}" class="cue-pad ${p?'is-playing':''} ${t.isCueGroup?'is-nested-show':''} ${sk}" ${bCol} onpointerdown="stCuePrs(event,'${t.id}',${s})" onpointerup="ccCuePrs()" onpointercancel="ccCuePrs()" onclick="clickCue('${t.id}',${s})"><div class="progress-fill" id="${pr}prog-${t.id}"></div><span class="pad-number">${i}</span><span class="pad-drag-handle material-symbols-rounded drag-handle">drag_indicator</span><span>${t.name}${bg}${m}${si}</span><div class="pad-settings-trigger" onclick="event.stopPropagation();haptic(15);openSet('${t.id}',${s})"><span class="material-symbols-rounded" style="font-size:16px">settings</span></div></div>`;
+let m=t.triggerPhrase?<span class="material-symbols-rounded" style="color:var(--text-muted);font-size:14px;margin-left:4px;vertical-align:middle"&gt;mic&lt;/span&gt;${t.globalVoice?'<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;margin-left:2px;vertical-align:middle">public</span>':''}:''; let bg=t.isBackground?<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;margin-left:4px;vertical-align:middle">all_inclusive</span>:''; let si=t.isExternalShow?<span class="material-symbols-rounded" style="opacity:0.6;font-size:16px;margin-left:6px;vertical-align:middle">folder_open</span>:''; let sk=t.skip?'is-skipped':''; let pr=s?'side-':''; let ns=s?'nested-show':''; let bCol = t.borderColor ?style="border:1.5px solid {t.borderColor}33;": ''; if(t.type==='queue') { return<div id="{t.id}" class="tile {t.isCueGroup?'is-nested-show':''} {bCol}><div class="progress-fill" id="{t.id}"></div><div class="tile-content"><span class="material-symbols-rounded drag-handle">drag_indicator</span><div class="tile-info" style="cursor:pointer" onpointerdown="stCuePrs(event,'{s})" onpointerup="ccCuePrs()" onpointercancel="ccCuePrs()" onclick="clickCue('{s})"><span class="tile-name-text">{bg}{si}</span></div><div class="edit-trigger" style="cursor:pointer;padding:8px" onclick="haptic(15);openSet('{s})"><span class="material-symbols-rounded" style="font-size:18px">settings</span></div></div></div>; } else { return<div id="{t.id}" class="cue-pad {t.isCueGroup?'is-nested-show':''} {bCol} onpointerdown="stCuePrs(event,'{s})" onpointerup="ccCuePrs()" onpointercancel="ccCuePrs()" onclick="clickCue('{s})"><div class="progress-fill" id="{t.id}"></div><span class="pad-number">{t.name}{m}{t.id}',${s})"&gt;&lt;span class="material-symbols-rounded" style="font-size:16px"&gt;settings&lt;/span&gt;&lt;/div&gt;&lt;/div>;
 }
 };
 
@@ -1123,8 +987,7 @@ let q='',p='',qi=1,pi=1;
 l.forEach((t,i)=>{
 t.type==='queue'?q+=getHTML(t,qi++,s,s?i===sideIdx:i===curIdx,(s?actSideCues:activeCues).has(t.id)):p+=getHTML(t,pi++,s,false,(s?actSidePads:activePads).has(t.id));
 });
-$(qI).innerHTML=q;
-$(pI).innerHTML=p;
+$(qI).innerHTML=q; $(pI).innerHTML=p;
 };
 
 const render = () => drwLst(tracks,'track-list','instant-grid',false);
@@ -1132,7 +995,7 @@ const renderSide = () => drwLst(sideTrks,'sideload-track-list','sideload-instant
 
 const mkTrk = (f,d) => ({
 id:'id'+Date.now()+Math.random().toString(36).slice(2),
-name:f?f.name.replace(/\.[^/.]+$/,""):"★ Loaded Audio Cue",
+name:f?f.name.replace(/.[^/.]+`$/,""):"★ Loaded Audio Cue",
 type:'queue',delay:0,fadeIn:0,fadeOut:0,volume:1,autoFollow:false,overlap:0,postDelay:0,
 triggerPhrase:'',globalVoice:false,isExternalShow:!!d,isCueGroup:false,showData:d,autoStartShow:false,
 skip:false,trimStart:0,trimEnd:0,borderColor:null,notes:'',notesTrigger:'start',notesDuration:0,
@@ -1154,9 +1017,6 @@ l.push(t);
 r();
 s();
 i.value='';
-if (tutActive && tutType === 'basic' && tutStep === 0 && tracks.length > 0) {
-openTutorial(1);
-}
 };
 
 const handleFiles = i => hFiles(i,tracks,render,save);
@@ -1205,7 +1065,7 @@ a.click();
 const importShow = async i => {
 let f=i.files[0];
 if(!f)return;
-let d=JSON.parse(await f.text()), id=Date.now().toString(), name=f.name.replace(/\.[^/.]+$/,"");
+let d=JSON.parse(await f.text()), id=Date.now().toString(), name=f.name.replace(/.[^/.]+$`/,"");
 projectsList.push({id,name});
 let nt=[];
 for(let st of d){
@@ -1236,7 +1096,7 @@ pTm=setTimeout(()=>{
 haptic(30);
 dLng=true;
 editProjId=id;
-$('edit-show-name').value=projectsList.find(x=>x.id===id).name;
+`$('edit-show-name').value=projectsList.find(x=>x.id===id).name;
 openModal('edit-show-modal');
 },600);
 };
@@ -1245,28 +1105,20 @@ const cPrs=()=>clearTimeout(pTm);
 const clPrj=id=>{cPrs(); if(!dLng){haptic(15);swPrj(id);}};
 
 const openProjects = () => {
-$('projects-list-container').innerHTML=projectsList.map(p=>`<div class="project-item ${p.id===curProjId?'active':''}" oncontextmenu="return false;" onpointerdown="sPrs('${p.id}')" onpointerup="clPrj('${p.id}')" onpointercancel="cPrs()"><span style="font-weight:700">${p.name}</span>${p.id===curProjId?'<span class="material-symbols-rounded">check_circle</span>':''}</div>`).join('');
+{p.id===curProjId?'active':''}" oncontextmenu="return false;" onpointerdown="sPrs('{p.id}')" onpointercancel="cPrs()"><span style="font-weight:700">{p.id===curProjId?'<span class="material-symbols-rounded">check_circle</span>':''}</div>`).join('');
 openModal('projects-modal');
 };
 
 const createNewProject = () => {
-let n=$('new-show-name').value.trim();
-if(!n)return;
-let id=Date.now().toString();
-projectsList.push({id,name:n});
-db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList');
-closeModal('new-show-modal');
-$('new-show-name').value='';
+let n=('new-show-name').value='';
 swPrj(id);
 };
 
 const saveShowEdit = () => {
-let n=$('edit-show-name').value.trim();
-if(n&&editProjId){
-let p=projectsList.find(x=>x.id===editProjId);
-if(p)p.name=n;
-db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList');
-if(editProjId===curProjId) $('header-title-text').innerText=n;
+let n=latex
+('edit-show-name').value.trim(); if(n&&editProjId){ let p=projectsList.find(x=&gt;x.id===editProjId); if(p)p.name=n; db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList'); if(editProjId===curProjId) 
+
+('header-title-text').innerText=n;
 }
 closeModal('edit-show-modal');
 openProjects();
@@ -1308,7 +1160,7 @@ executeReset();
 tracks.forEach(t=>t.blobUrl&&URL.revokeObjectURL(t.blobUrl));
 curProjId=id;
 localStorage.setItem('mc_curProj',id);
-$('header-title-text').innerText=projectsList.find(x=>x.id===id).name;
+$`('header-title-text').innerText=projectsList.find(x=>x.id===id).name;
 closeModal('projects-modal');
 db.transaction('store').objectStore('store').get('proj_'+id).onsuccess=r=>{
 tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:t.file?URL.createObjectURL(t.file):undefined})):[];
@@ -1399,12 +1251,12 @@ if(isSideAct)closeSideload(); closeModal('reset-modal'); curIdx=0; clearInterval
 let trk = tracks.find(x=>x.id===id);
 stopAudioWithFade(a, trk, 'reset');
 }));
-activeCues.clear(); activePads.clear(); paused=false; $('play-text').innerText='Start Show'; evalDucking(); render(); mngMic();
+activeCues.clear(); activePads.clear(); paused=false; `$('play-text').innerText='Start Show'; evalDucking(); render(); mngMic();
 };
 
 const toggleOverlapWait = (mode, btn) => {
 let w = mode === 'wait';
-$('prow').style.display = w ? 'flex' : 'none';
+$`('prow').style.display = w ? 'flex' : 'none';
 updTrk(w ? 'overlap' : 'postDelay', 0);
 let sc = btn.closest('.segmented-control');
 if(sc) { sc.querySelectorAll('button').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
@@ -1423,104 +1275,57 @@ let t = (s?sideTrks:tracks).find(x=>x.id===id);
 if(!t) return;
 let isQ = t.type === 'queue';
 
-let h = `<div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
-<label style="margin-bottom:8px;font-size:15px;font-weight:600">Pre-Delay (Seconds)</label>
-<p style="margin:0 0 8px 0; font-size:12px; color:var(--text-muted); font-weight:500;">Delays the start of the audio playback by the specified duration.</p>
-<input type="number" step="0.5" min="0" max="60" value="${t.delay||0}" onchange="haptic(10);updTrk('delay',this.value)" style="width:100%;text-align:left;">
+let h = <div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;"&gt; &lt;label style="margin-bottom:8px;font-size:15px;font-weight:600"&gt;Pre-Delay (Seconds)&lt;/label&gt; &lt;p style="margin:0 0 8px 0; font-size:12px; color:var(--text-muted); font-weight:500;"&gt;Delays the start of the audio playback by the specified duration.&lt;/p&gt; &lt;input type="number" step="0.5" min="0" max="60" value="${t.delay||0}" onchange="haptic(10);updTrk('delay',this.value)" style="width:100%;text-align:left;">
 </div>`;
 
 if(isQ) {
-h += `<div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
-<div style="width:100%;display:flex;justify-content:space-between;align-items:center;">
-<div>
-<label style="font-size:15px;font-weight:600;display:block;">Auto-Follow</label>
-<span style="font-size:12px; color:var(--text-muted); font-weight:500;">Automatically starts the subsequent queue track.</span>
-</div>
-<input type="checkbox" class="custom-toggle" ${t.autoFollow?'checked':''} onchange="haptic(10);updTrk('autoFollow',this.checked);openTimingModal('${id}',${s})">
-</div>`;
-if(t.autoFollow) {
-h += `<div class="segmented-control" style="margin-top:12px; margin-bottom:12px;">
-<button class="${t.postDelay>0?'active':''}" onclick="haptic(10);toggleOverlapWait('wait',this)" style="font-size:14px">Delay</button>
-</div>
-<div class="mini-row" id="prow" style="display:${t.postDelay>0?'flex':'none'}" onchange="haptic(10);updTrk('postDelay',this.value)">
-</div>`;
-}
-h += `</div>`;
+h += <div class="setting-row" style="width:100%;display:flex;justify-content:space-between;align-items:center;"&gt; &lt;div&gt; &lt;label style="font-size:15px;font-weight:600;display:block;"&gt;Auto-Follow&lt;/label&gt; &lt;span style="font-size:12px; color:var(--text-muted); font-weight:500;"&gt;Automatically starts the subsequent queue track.&lt;/span&gt; &lt;/div&gt; &lt;input type="checkbox" class="custom-toggle" ${t.autoFollow?'checked':''} onchange="haptic(10);updTrk('autoFollow',this.checked);openTimingModal('${id}',${s})">
+</div>; if(t.autoFollow) { h +=<div class="segmented-control" style="margin-top:12px; margin-bottom:12px;">
+<button class="${t.postDelay&gt;0?'active':''}" onclick="haptic(10);toggleOverlapWait('wait',this)" style="font-size:14px"&gt;Delay&lt;/button&gt; &lt;/div&gt; &lt;div class="mini-row" id="prow" style="display:${t.postDelay>0?'flex':'none'}" onchange="haptic(10);updTrk('postDelay',this.value)">
+</div>; } h +=`;
 }
 
-h += `<div class="setting-row" style="width:100%;display:flex;justify-content:space-between;align-items:center;">
-<div>
-<label style="font-size:15px;font-weight:600;display:block;">Stop BG Audio on Play</label>
-<span style="font-size:12px; color:var(--text-muted); font-weight:500;">Stops all background atmosphere cues instantly when this track starts.</span>
-</div>
-<input type="checkbox" class="custom-toggle" ${t.stopsBg?'checked':''} onchange="haptic(10);updTrk('stopsBg',this.checked)">
+h += <div class="setting-row" style="width:100%;display:flex;justify-content:space-between;align-items:center;"&gt; &lt;div&gt; &lt;label style="font-size:15px;font-weight:600;display:block;"&gt;Stop BG Audio on Play&lt;/label&gt; &lt;span style="font-size:12px; color:var(--text-muted); font-weight:500;"&gt;Stops all background atmosphere cues instantly when this track starts.&lt;/span&gt; &lt;/div&gt; &lt;input type="checkbox" class="custom-toggle"${t.stopsBg?'checked':''} onchange="haptic(10);updTrk('stopsBg',this.checked)">
 </div>`;
 
-h += `<div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
-<div style="width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-<div>
-<label style="font-size:15px;font-weight:600;display:block;">Background Mode</label>
-<span style="font-size:12px; color:var(--text-muted); font-weight:500;">Runs cue as background atmospheric loops that bypass normal master play controls.</span>
-</div>
-<input type="checkbox" class="custom-toggle" ${t.isBackground?'checked':''} onchange="haptic(10);updTrk('isBackground',this.checked);openTimingModal('${id}',${s})">
+h += <div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;"&gt; &lt;div style="width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"&gt; &lt;div&gt; &lt;label style="font-size:15px;font-weight:600;display:block;"&gt;Background Mode&lt;/label&gt; &lt;span style="font-size:12px; color:var(--text-muted); font-weight:500;"&gt;Runs cue as background atmospheric loops that bypass normal master play controls.&lt;/span&gt; &lt;/div&gt; &lt;input type="checkbox" class="custom-toggle" ${t.isBackground?'checked':''} onchange="haptic(10);updTrk('isBackground',this.checked);openTimingModal('${id}',${s})">
 </div>
 </div>`;
 
 if (t.isBackground) {
-h += `<div class="setting-row" style="width:100%;display:flex;justify-content:space-between;align-items:center;">
-<label style="font-size:15px;font-weight:600">Loop Track Infinitely</label>
-<input type="checkbox" class="custom-toggle" ${t.bgLoop!==false?'checked':''} onchange="haptic(10);updTrk('bgLoop',this.checked)">
+h += <div class="setting-row" style="width:100%;display:flex;justify-content:space-between;align-items:center;"&gt; &lt;label style="font-size:15px;font-weight:600"&gt;Loop Track Infinitely&lt;/label&gt; &lt;input type="checkbox" class="custom-toggle"${t.bgLoop!==false?'checked':''} onchange="haptic(10);updTrk('bgLoop',this.checked)">
 </div>`;
 
-h += `<div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto; margin-bottom:12px;">
-<div style="width:100%;display:flex;justify-content:space-between;margin-bottom:8px;">
-<div>
-<label style="font-size:15px;font-weight:600;display:block;">Ducking Volume</label>
-<span style="font-size:12px; color:var(--text-muted); font-weight:500;">Attenuates background loop volume to this level whenever a main queue track is active.</span>
+h += <div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto; margin-bottom:12px;"&gt; &lt;div style="width:100%;display:flex;justify-content:space-between;margin-bottom:8px;"&gt; &lt;div&gt; &lt;label style="font-size:15px;font-weight:600;display:block;"&gt;Ducking Volume&lt;/label&gt; &lt;span style="font-size:12px; color:var(--text-muted); font-weight:500;"&gt;Attenuates background loop volume to this level whenever a main queue track is active.&lt;/span&gt; &lt;/div&gt; &lt;span id="duck-vol-text" style="font-weight:700;color:var(--accent)"&gt;${Math.round((t.duckVol??0.3)100)}%</span>
 </div>
-<span id="duck-vol-text" style="font-weight:700;color:var(--accent)">${Math.round((t.duckVol??0.3)*100)}%</span>
-</div>
-<input type="range" id="duck-vol-sld" min="0" max="1" step="0.05" value="${t.duckVol??0.3}" oninput="this.style.setProperty('--v', this.value*100+'%'); $('duck-vol-text').innerText=Math.round(this.value*100)+'%'; let tr=(isSetSide?sideTrks:tracks).find(x=>x.id===actId); if(tr){tr.duckVol=parseFloat(this.value); evalDucking();}" onchange="haptic(10);updTrk('duckVol',this.value)" style="width:100%; --v:${(t.duckVol??0.3)*100}%">
-</div>`;
+<input type="range" id="duck-vol-sld" min="0" max="1" step="0.05" value="${t.duckVol??0.3}" oninput="this.style.setProperty('--v', this.value*100+'%'); $('duck-vol-text').innerText=Math.round(this.value100)+'%'; let tr=(isSetSide?sideTrks:tracks).find(x=>x.id===actId); if(tr){tr.duckVol=parseFloat(this.value); evalDucking();}" onchange="haptic(10);updTrk('duckVol',this.value)" style="width:100%; --v:${(t.duckVol??0.3)*100}%"&gt; &lt;/div>;
 }
 
-$('timing-content').innerHTML = h;
-if (!$('timing-modal').open) openModal('timing-modal');
+('timing-modal').open) openModal('timing-modal');
 };
 
 const openSet = (id,s=false) => {
 actId=id; isSetSide=s;
 let t=(s?sideTrks:tracks).find(x=>x.id===id), isQ=t.type==='queue';
-let h=`<div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto; padding-bottom:20px"><label style="font-size:15px;font-weight:600">Cue Type</label><div class="segmented-control"><button class="${isQ?'active':''}" onclick="haptic(10);updTrk('type','queue')" style="font-size:14px">Main Queue</button><button class="${!isQ?'active':''}" onclick="haptic(10);updTrk('type','pad')" style="font-size:14px">Instant Pad</button></div></div>`;
+let h=<div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto; padding-bottom:20px"&gt;&lt;label style="font-size:15px;font-weight:600"&gt;Cue Type&lt;/label&gt;&lt;div class="segmented-control"&gt;&lt;button class="${isQ?'active':''}" onclick="haptic(10);updTrk('type','queue')" style="font-size:14px">Main Queue</button><button class="${!isQ?'active':''}" onclick="haptic(10);updTrk('type','pad')" style="font-size:14px"&gt;Instant Pad&lt;/button&gt;&lt;/div&gt;&lt;/div>;
 
 if(t.isExternalShow) {
-h+=`<div class="setting-row"><label style="font-size:15px;font-weight:600">Auto-Start</label><input type="checkbox" class="custom-toggle" ${t.autoStartShow?'checked':''} onchange="haptic(10);updTrk('autoStartShow',this.checked)"></div>`;
-} else {
-h+=`<div class="setting-row"><div style="width:100%; display:flex; justify-content:space-between; margin-bottom:8px;"><label style="font-size:15px;font-weight:600">Volume</label><span id="vol-lbl-text" style="font-weight:700;color:var(--accent)">${Math.round((t.volume??1)*100)}%</span></div><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="this.style.setProperty('--v', this.value*100+'%'); $('vol-lbl-text').innerText=Math.round(this.value*100)+'%'; let tr=(isSetSide?sideTrks:tracks).find(x=>x.id===actId); if(tr){tr.volume=parseFloat(this.value); [activeCues,activePads,actSideCues,actSidePads].forEach(m=>m.has(actId)&&(m.get(actId).volume=tr.volume));}" onchange="haptic(10);updTrk('volume',this.value)" style="width:100%;--v:${(t.volume??1)*100}%"></div>`;
+h+=<div class="setting-row"&gt;&lt;label style="font-size:15px;font-weight:600"&gt;Auto-Start&lt;/label&gt;&lt;input type="checkbox" class="custom-toggle" ${t.autoStartShow?'checked':''} onchange="haptic(10);updTrk('autoStartShow',this.checked)"></div>; } else { h+=<div class="setting-row"><div style="width:100%; display:flex; justify-content:space-between; margin-bottom:8px;"><label style="font-size:15px;font-weight:600">Volume</label><span id="vol-lbl-text" style="font-weight:700;color:var(--accent)">${Math.round((t.volume??1)*100)}%&lt;/span&gt;&lt;/div&gt;&lt;input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="this.style.setProperty('--v', this.value*100+'%'); $('vol-lbl-text').innerText=Math.round(this.value*100)+'%'; let tr=(isSetSide?sideTrks:tracks).find(x=&gt;x.id===actId); if(tr){tr.volume=parseFloat(this.value); [activeCues,activePads,actSideCues,actSidePads].forEach(m=&gt;m.has(actId)&&(m.get(actId).volume=tr.volume));}" onchange="haptic(10);updTrk('volume',this.value)" style="width:100%;--v:${(t.volume??1)*100}%"></div>`;
 }
 
-h+=`<details onselect="haptic(10)"><summary onclick="haptic(10)">Voice Triggers</summary><div class="details-content" style="padding:0 16px 16px;"><p style="margin:0 0 10px 0; font-size:12px; color:var(--text-muted); font-weight:500;">Speak the trigger phrase to play this track. "Global" allows the phrase to be detected even if the cue isn't next in line.</p><div class="mini-row"><label style="font-size:14px; font-weight:500;">Phrase</label><input type="text" style="width:140px;margin:0;padding:8px 12px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--input-bg); border-radius:10px; border:1px solid var(--glass-border); color:var(--text-main);" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div><div class="mini-row"><label style="font-size:14px; font-weight:500;">Global</label><input type="checkbox" class="custom-toggle" ${t.globalVoice?'checked':''} onchange="haptic(10);updTrk('globalVoice',this.checked)"></div></div></details>`;
+h+=<details onselect="haptic(10)"&gt;&lt;summary onclick="haptic(10)"&gt;Voice Triggers&lt;/summary&gt;&lt;div class="details-content" style="padding:0 16px 16px;"&gt;&lt;p style="margin:0 0 10px 0; font-size:12px; color:var(--text-muted); font-weight:500;"&gt;Speak the trigger phrase to play this track. "Global" allows the phrase to be detected even if the cue isn't next in line.&lt;/p&gt;&lt;div class="mini-row"&gt;&lt;label style="font-size:14px; font-weight:500;"&gt;Phrase&lt;/label&gt;&lt;input type="text" style="width:140px;margin:0;padding:8px 12px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--input-bg); border-radius:10px; border:1px solid var(--glass-border); color:var(--text-main);" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div><div class="mini-row"><label style="font-size:14px; font-weight:500;">Global</label><input type="checkbox" class="custom-toggle" ${t.globalVoice?'checked':''} onchange="haptic(10);updTrk('globalVoice',this.checked)"&gt;&lt;/div&gt;&lt;/div&gt;&lt;/details>;
 
 if(!t.isExternalShow){
-h+=`<details id="tut-cue-adv-details" ontoggle="checkTutDetailsExpand()"><summary onclick="haptic(10)">Advanced Settings</summary><div class="details-content" style="padding:0; display:flex; flex-direction:column; gap:0;">`;
-h+=`<div class="nested-nav-row" style="border-top:none;" onclick="haptic(10);closeModal('settings-modal');openTrimModal('${t.id}')"><span>Trim & Fades</span><span class="material-symbols-rounded">chevron_right</span></div>`;
-h+=`<details style="background:transparent; margin:0; border-radius:0; border-top:1px solid var(--glass-border);"><summary onclick="haptic(10)">Director's Notes</summary><div class="details-content" style="padding:0 16px 16px;display:flex;flex-direction:column;gap:12px"><textarea id="notes-text" placeholder="Type notes..." oninput="updTrk('notes',this.value)" style="width:100%;height:100px;background:var(--input-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:12px;padding:12px;font-family:inherit;font-size:14px;resize:none;outline:none">${t.notes||''}</textarea><div class="mini-row"><label style="font-size:14px; font-weight:500;">Trigger</label><div class="segmented-control" style="margin-top:0"><button class="${t.notesTrigger!=='end'?'active':''}" onclick="haptic(10);updNotesTrig(this,'start')" style="font-size:14px">Near Start</button><button class="${t.notesTrigger==='end'?'active':''}" onclick="haptic(10);updNotesTrig(this,'end')" style="font-size:14px">Near End</button></div></div><div class="mini-row"><label style="font-size:14px; font-weight:500;">Duration</label><input type="number" step="0.5" value="${t.notesDuration||0}" onchange="haptic(10);updTrk('notesDuration',this.value)" style="width:60px;font-size:14px;padding:6px;text-align:center"><span style="font-size:13px;color:var(--text-muted);font-weight:700">s</span></div></div><div class="setting-row" style="padding:12px; margin:0; min-height:auto;"><label style="font-size:14px;color:var(--text-main);font-weight:500">Split by Line</label><input type="checkbox" class="custom-toggle" ${t.notesSplit?'checked':''} onchange="haptic(10);updTrk('notesSplit',this.checked)"></div></details>`;
-h+=`<div class="nested-nav-row" onclick="haptic(10);closeModal('settings-modal');openTimingModal('${t.id}', ${s})"><span>Timing & Automations</span><span class="material-symbols-rounded">chevron_right</span></div>`;
-h+=`</div></details>`;
+h+=<details><summary onclick="haptic(10)">Advanced Settings</summary><div class="details-content" style="padding:0; display:flex; flex-direction:column; gap:0;">;
+h+=<div class="nested-nav-row" style="border-top:none;" onclick="haptic(10);closeModal('settings-modal');openTrimModal('${t.id}')"><span>Trim & Fades</span><span class="material-symbols-rounded">chevron_right</span></div>; h+=<details style="background:transparent; margin:0; border-radius:0; border-top:1px solid var(--glass-border);"><summary onclick="haptic(10)">Director's Notes</summary><div class="details-content" style="padding:0 16px 16px;display:flex;flex-direction:column;gap:12px"><textarea id="notes-text" placeholder="Type notes..." oninput="updTrk('notes',this.value)" style="width:100%;height:100px;background:var(--input-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:12px;padding:12px;font-family:inherit;font-size:14px;resize:none;outline:none">{t.notesTrigger!=='end'?'active':''}" onclick="haptic(10);updNotesTrig(this,'start')" style="font-size:14px">Near Start</button><button class="{t.notesDuration||0}" onchange="haptic(10);updTrk('notesDuration',this.value)" style="width:60px;font-size:14px;padding:6px;text-align:center"><span style="font-size:13px;color:var(--text-muted);font-weight:700">s</span></div></div><div class="setting-row" style="padding:12px; margin:0; min-height:auto;"><label style="font-size:14px;color:var(--text-main);font-weight:500">Split by Line</label><input type="checkbox" class="custom-toggle" {t.id}', ${s})"&gt;&lt;span&gt;Timing & Automations&lt;/span&gt;&lt;span class="material-symbols-rounded"&gt;chevron_right&lt;/span&gt;&lt;/div>;
+h+=</div&gt;&lt;/details>;
 
 let selCol=t.borderColor||'';
 let colors=['#ff3b30','#ff9500','#ffcc00','#34c759','#00c7be','#32ade6','#007aff','#5856d6','#af52de','#ff2d55'];
-let swatches=`<div class="color-swatch ${!selCol?'active':''}" style="background:rgba(128,128,128,0.2);border:2px dashed var(--text-muted);display:flex;align-items:center;justify-content:center;box-sizing:border-box;border-radius:12px;width:40px;height:40px;flex-shrink:0;" onclick="haptic(10);updTrk('borderColor',null);this.parentElement.querySelectorAll('.color-swatch').forEach(el=>el.classList.remove('active'));this.classList.add('active')"><span class="material-symbols-rounded" style="font-size:20px;color:var(--text-main)">format_color_reset</span></div>`;
-colors.forEach(c=>{swatches+=`<div class="color-swatch ${selCol===c?'active':''}" style="background:${c};box-shadow:0 4px 12px ${c}44;" onclick="haptic(10);updTrk('borderColor','${c}');this.parentElement.querySelectorAll('.color-swatch').forEach(el=>el.classList.remove('active'));this.classList.add('active')"></div>`;});
-h+=`<div style="display:flex; flex-direction:column; align-items:flex-start; margin-top:20px; margin-bottom:12px;"><label style="font-size:15px;font-weight:600;margin-bottom:12px;margin-left:5px; color:var(--text-main);">Cue Color Tag</label><div style="display:flex;gap:14px;width:100%;overflow-x:auto;padding:4px 4px 12px 4px;scroll-behavior:smooth" class="no-scrollbar">${swatches}</div></div>`;
+let swatches=<div class="color-swatch${!selCol?'active':''}" style="background:rgba(128,128,128,0.2);border:2px dashed var(--text-muted);display:flex;align-items:center;justify-content:center;box-sizing:border-box;border-radius:12px;width:40px;height:40px;flex-shrink:0;" onclick="haptic(10);updTrk('borderColor',null);this.parentElement.querySelectorAll('.color-swatch').forEach(el=>el.classList.remove('active'));this.classList.add('active')"><span class="material-symbols-rounded" style="font-size:20px;color:var(--text-main)">format_color_reset</span></div>; colors.forEach(c=&gt;{swatches+=<div class="color-swatch {c};box-shadow:0 4px 12px {c}');this.parentElement.querySelectorAll('.color-swatch').forEach(el=>el.classList.remove('active'));this.classList.add('active')"></div>;}); h+=<div style="display:flex; flex-direction:column; align-items:flex-start; margin-top:20px; margin-bottom:12px;"><label style="font-size:15px;font-weight:600;margin-bottom:12px;margin-left:5px; color:var(--text-main);">Cue Color Tag</label><div style="display:flex;gap:14px;width:100%;overflow-x:auto;padding:4px 4px 12px 4px;scroll-behavior:smooth" class="no-scrollbar">${swatches}&lt;/div&gt;&lt;/div>;
 }
 
-$('modal-content').innerHTML=h;
-if (!$('settings-modal').open) openModal('settings-modal');
-
-if (!settings.advancedTutorialCompleted && !tutActive) {
-setTimeout(() => { openAdvancedTutorial(0); }, 300);
-}
+$('modal-content').innerHTML=h; if (!$('settings-modal').open) openModal('settings-modal');
 };
 
 let ws = null, wsRegions = null, tempTrimStart = 0, tempTrimEnd = 0, tempCutStart = 0, tempCutEnd = 0, trTab = 0;
@@ -1536,8 +1341,7 @@ updVisFade();
 };
 
 window.updateFadeCurveUI = (type, curve) => {
-let track = $(`cs-track-${type}`);
-let swiper = $(`curve-swiper-${type}`);
+let track = $(cs-track-(curve-swiper-${type}`);
 if(!track) return;
 let curves = ['linear', 'logarithmic', 'exponential'];
 let idx = curves.indexOf(curve);
@@ -1552,7 +1356,7 @@ swiper.classList.toggle('at-bottom', idx === curves.length - 1);
 let csTimers = {in: null, out: null};
 window.handleCurveScroll = (e, type) => {
 let track = e.target;
-let swiper = $(`curve-swiper-${type}`);
+let swiper = $(curve-swiper-${type});
 let idx = Math.round(track.scrollTop / track.clientHeight);
 let curves = ['linear', 'logarithmic', 'exponential'];
 if(swiper) {
@@ -1575,13 +1379,13 @@ setFadeCurve(type, curves[nextIdx], false);
 };
 
 const swpTr = (idx) => {
-let tc = $('trim-swipe-container');
+let tc = `$('trim-swipe-container');
 tc.scrollTo({ left: tc.clientWidth * idx, behavior: 'smooth' });
 };
 
 const initFadeSwipes = () => {
 ['tc-start', 'tc-end', 'fc-in', 'fc-out'].forEach(id => {
-let el = $(id); if(!el) return;
+let el = $`(id); if(!el) return;
 let views = el.querySelector('.fc-views');
 let sy = 0, sx = 0, isSwp = false, isAnim = false;
 el.addEventListener('touchstart', e => {
@@ -1622,7 +1426,7 @@ el.addEventListener('touchend', () => isSwp = false);
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-let tc = $('trim-swipe-container');
+let tc = `$('trim-swipe-container');
 tc.addEventListener('scroll', () => {
 let idx = Math.round(tc.scrollLeft / tc.clientWidth);
 if(idx !== trTab) {
@@ -1635,22 +1439,21 @@ initFadeSwipes();
 
 const updVisFade = () => {
 if(!ws)return;
-let dur=ws.getDuration(), fi=parseFloat($('trim-fade-in').value)||0, fo=parseFloat($('trim-fade-out').value)||0, m=tempTrimEnd-tempTrimStart;
-if(fi>m){fi=m; $('trim-fade-in').value=fi.toFixed(1); $('trim-fade-in-sld').value=fi; $('fi-val-sld').innerText=fi.toFixed(1)+'s';}
-if(fo>m){fo=m; $('trim-fade-out').value=fo.toFixed(1); $('trim-fade-out-sld').value=fo; $('fo-val-sld').innerText=fo.toFixed(1)+'s';}
-$('trim-fade-in-sld').max=m.toFixed(1);
-$('trim-fade-out-sld').max=m.toFixed(1);
-let fInV=$('fade-in-vis'), fOutV=$('fade-out-vis'), dimL=$('dim-left-vis'), dimR=$('dim-right-vis');
+let dur=ws.getDuration(), fi=parseFloat(('trim-fade-out').value)||0, m=tempTrimEnd-tempTrimStart;
+if(fi>m){fi=m; ('trim-fade-in-sld').value=fi; latex
+('fi-val-sld').innerText=fi.toFixed(1)+'s';} if(fo&gt;m){fo=m; 
+
+('trim-fade-out').value=fo.toFixed(1); ('fo-val-sld').innerText=fo.toFixed(1)+'s';}
+('trim-fade-out-sld').max=m.toFixed(1);
+let fInV=('fade-out-vis'), dimL=('dim-right-vis');
 
 if(!dimL){
 dimL=document.createElement('div'); dimL.id='dim-left-vis';
 dimL.style.cssText='position:absolute; top:0; bottom:0; left:0; background:rgba(0,0,0,0.6); backdrop-filter:grayscale(100%); pointer-events:none; z-index:3;';
-$('waveform').appendChild(dimL);
-}
-if(!dimR){
-dimR=document.createElement('div'); dimR.id='dim-right-vis';
-dimR.style.cssText='position:absolute; top:0; bottom:0; right:0; background:rgba(0,0,0,0.6); backdrop-filter:grayscale(100%); pointer-events:none; z-index:3;';
-$('waveform').appendChild(dimR);
+latex
+('waveform').appendChild(dimL); } if(!dimR){ dimR=document.createElement('div'); dimR.id='dim-right-vis'; dimR.style.cssText='position:absolute; top:0; bottom:0; right:0; background:rgba(0,0,0,0.6); backdrop-filter:grayscale(100%); pointer-events:none; z-index:3;'; 
+
+('waveform').appendChild(dimR);
 }
 
 let inPath = tempFadeInCurve === 'exponential' ? 'M 0,100 Q 80,100 100,0' :
@@ -1661,9 +1464,10 @@ tempFadeInCurve === 'logarithmic' ? 'M 0,100 Q 20,0 100,0 L 100,100 Z' : 'M 0,10
 if(!fInV){
 fInV=document.createElement('div'); fInV.id='fade-in-vis';
 fInV.style.cssText='position:absolute; bottom:0; height:100%; pointer-events:none; z-index:4;';
-$('waveform').appendChild(fInV);
-}
-fInV.innerHTML=`<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:100%;"><path d="${inFill}" fill="var(--accent)" opacity="0.15"/><path d="${inPath}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
+latex
+('waveform').appendChild(fInV); } fInV.innerHTML=`<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:100%;"&gt;&lt;path d="
+
+{inFill}" fill="var(--accent)" opacity="0.15"/><path d="${inPath}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/&gt;&lt;/svg>;
 
 let outPath = tempFadeOutCurve === 'exponential' ? 'M 0,0 Q 20,100 100,100' :
 tempFadeOutCurve === 'logarithmic' ? 'M 0,0 Q 80,0 100,100' : 'M 0,0 L 100,100';
@@ -1673,9 +1477,7 @@ tempFadeOutCurve === 'logarithmic' ? 'M 0,0 Q 80,0 100,100 L 0,100 Z' : 'M 0,0 L
 if(!fOutV){
 fOutV=document.createElement('div'); fOutV.id='fade-out-vis';
 fOutV.style.cssText='position:absolute; bottom:0; height:100%; pointer-events:none; z-index:4;';
-$('waveform').appendChild(fOutV);
-}
-fOutV.innerHTML=`<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:100%;"><path d="${outFill}" fill="var(--accent)" opacity="0.15"/><path d="${outPath}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
+$('waveform').appendChild(fOutV); } fOutV.innerHTML=<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:100%;"><path d="{outPath}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
 
 let sPct=(tempTrimStart/dur)*100, ePct=(tempTrimEnd/dur)*100;
 dimL.style.width=sPct+'%';
@@ -1697,17 +1499,12 @@ tempFadeInCurve = t.fadeInCurve || 'linear';
 tempFadeOutCurve = t.fadeOutCurve || 'linear';
 
 tempCutStart = 0; tempCutEnd = 0;
-$('cut-start-input').value = '0.00';
-$('cut-end-input').value = '0.00';
+('cut-end-input').value = '0.00';
 
-$('waveform').innerHTML = '';
-$('trim-fade-in').value = (t.fadeIn||0).toFixed(1);
-$('trim-fade-in-sld').value = t.fadeIn||0;
-$('fi-val-sld').innerText = (t.fadeIn||0).toFixed(1)+'s';
-$('trim-fade-out').value = (t.fadeOut||0).toFixed(1);
-$('trim-fade-out-sld').value = t.fadeOut||0;
-$('fo-val-sld').innerText = (t.fadeOut||0).toFixed(1)+'s';
-$('trim-swipe-container').scrollLeft = 0;
+('trim-fade-in').value = (t.fadeIn||0).toFixed(1);
+('fi-val-sld').innerText = (t.fadeIn||0).toFixed(1)+'s';
+('trim-fade-out-sld').value = t.fadeOut||0;
+('trim-swipe-container').scrollLeft = 0;
 swpTr(0);
 openModal('trim-modal');
 
@@ -1718,25 +1515,21 @@ wsRegions = ws.registerPlugin(WaveSurfer.Regions.create());
 ws.on('ready', () => {
 let dur = ws.getDuration();
 if(tempTrimEnd===0) tempTrimEnd=dur;
-$('trim-time-start-input').value = tempTrimStart.toFixed(2);
-$('trim-time-end-input').value = tempTrimEnd.toFixed(2);
+('trim-time-end-input').value = tempTrimEnd.toFixed(2);
 
-$('trim-fade-in-sld').style.setProperty('--v', ((t.fadeIn||0)/tempTrimEnd)*100+'%');
-$('trim-fade-out-sld').style.setProperty('--v', ((t.fadeOut||0)/tempTrimEnd)*100+'%');
+('trim-fade-out-sld').style.setProperty('--v', ((t.fadeOut||0)/tempTrimEnd)*100+'%');
 
 let region = wsRegions.addRegion({ start: tempTrimStart, end: tempTrimEnd, color: 'transparent', drag: false, resize: true, minLength: 0.1 });
 region.on('update', () => {
 tempTrimStart = region.start;
 tempTrimEnd = region.end;
-$('trim-time-start-input').value = tempTrimStart.toFixed(2);
-$('trim-time-end-input').value = tempTrimEnd.toFixed(2);
+('trim-time-end-input').value = tempTrimEnd.toFixed(2);
 updVisFade();
 });
 
 tempCutStart = 0;
 tempCutEnd = dur;
-$('cut-start-input').value = '0.00';
-$('cut-end-input').value = dur.toFixed(2);
+('cut-end-input').value = dur.toFixed(2);
 
 rCutStart = wsRegions.addRegion({ id: 'cut-start', start: tempCutStart, end: tempCutStart + 0.05, color: 'rgba(255, 69, 58, 0.8)', drag: true, resize: false });
 rCutEnd = wsRegions.addRegion({ id: 'cut-end', start: tempCutEnd - 0.05, end: tempCutEnd, color: 'rgba(255, 150, 58, 0.8)', drag: true, resize: false });
@@ -1744,21 +1537,22 @@ rCutEnd = wsRegions.addRegion({ id: 'cut-end', start: tempCutEnd - 0.05, end: te
 rCutStart.element.style.display = 'none';
 rCutEnd.element.style.display = 'none';
 
-rCutStart.on('update', () => { tempCutStart = rCutStart.start; $('cut-start-input').value = tempCutStart.toFixed(2); });
-rCutEnd.on('update', () => { tempCutEnd = rCutEnd.end; $('cut-end-input').value = tempCutEnd.toFixed(2); });
+rCutStart.on('update', () => { tempCutStart = rCutStart.start; latex
+('cut-start-input').value = tempCutStart.toFixed(2); }); rCutEnd.on('update', () =&gt; { tempCutEnd = rCutEnd.end; 
+
+('cut-end-input').value = tempCutEnd.toFixed(2); });
 
 updateFadeCurveUI('in', tempFadeInCurve);
 updateFadeCurveUI('out', tempFadeOutCurve);
 updVisFade();
 });
-ws.on('finish', () => $('trim-play-icon').innerText = 'play_arrow');
-ws.on('pause', () => $('trim-play-icon').innerText = 'play_arrow');
-ws.on('play', () => $('trim-play-icon').innerText = 'pause');
+ws.on('finish', () => ('trim-play-icon').innerText = 'play_arrow');
+ws.on('play', () => $`('trim-play-icon').innerText = 'pause');
 };
 
-const manTrim = (type, val) => { if(!ws||!wsRegions)return; haptic(15); let v=parseFloat(val), r=wsRegions.getRegions()[0], dur=ws.getDuration(); if(type==='start'){if(v<0)v=0; if(v>=r.end)v=r.end-0.1; r.setOptions({start:v}); tempTrimStart=v; $('trim-time-start-input').value=v.toFixed(2);}else{if(v>dur)v=dur; if(v<=r.start)v=r.start+0.1; r.setOptions({end:v}); tempTrimEnd=v; $('trim-time-end-input').value=v.toFixed(2);} updVisFade(); };
+const manTrim = (type, val) => { if(!ws||!wsRegions)return; haptic(15); let v=parseFloat(val), r=wsRegions.getRegions()[0], dur=ws.getDuration(); if(type==='start'){if(v<0)v=0; if(v>=r.end)v=r.end-0.1; r.setOptions({start:v}); tempTrimStart=v; $('trim-time-start-input').value=v.toFixed(2);}else{if(v&gt;dur)v=dur; if(v&lt;=r.start)v=r.start+0.1; r.setOptions({end:v}); tempTrimEnd=v; $('trim-time-end-input').value=v.toFixed(2);} updVisFade(); };
 const nudgeTrim = (type, amount) => { if(!ws || !wsRegions) return; haptic(5); let r = wsRegions.getRegions()[0], dur = ws.getDuration(); if(type === 'start') { let v = Math.max(0, Math.min(r.start + amount, r.end - 0.1)); r.setOptions({start: v}); tempTrimStart = v; $('trim-time-start-input').value = v.toFixed(2); } else { let v = Math.max(r.start + 0.1, Math.min(r.end + amount, dur)); r.setOptions({end: v}); tempTrimEnd = v; $('trim-time-end-input').value = v.toFixed(2); } updVisFade(); };
-const setTrimPos = (type) => { if(!ws || !wsRegions) return; haptic(15); let t = ws.getCurrentTime(), r = wsRegions.getRegions()[0]; if(type === 'start') { if(t >= r.end) t = Math.max(0, r.end - 0.1); r.setOptions({start: t}); tempTrimStart = t; $('trim-time-start-input').value = tempTrimStart.toFixed(2); } else { if(t <= r.start) t = Math.min(ws.getDuration(), r.start + 0.1); r.setOptions({end: t}); tempTrimEnd = t; $('trim-time-end-input').value = tempTrimEnd.toFixed(2); } updVisFade(); };
+const setTrimPos = (type) => { if(!ws || !wsRegions) return; haptic(15); let t = ws.getCurrentTime(), r = wsRegions.getRegions()[0]; if(type === 'start') { if(t >= r.end) t = Math.max(0, r.end - 0.1); r.setOptions({start: t}); tempTrimStart = t; $('trim-time-start-input').value = tempTrimStart.toFixed(2); } else { if(t &lt;= r.start) t = Math.min(ws.getDuration(), r.start + 0.1); r.setOptions({end: t}); tempTrimEnd = t; $('trim-time-end-input').value = tempTrimEnd.toFixed(2); } updVisFade(); };
 
 const manCut = (type, val) => {
 if(!ws) return;
@@ -1767,14 +1561,7 @@ let dur = ws.getDuration();
 let v = Math.max(0, Math.min(dur, parseFloat(val)));
 if (type === 'start') {
 tempCutStart = v;
-$('cut-start-input').value = v.toFixed(2);
-if(rCutStart) {
-rCutStart.setOptions({start: v, end: v + 0.05});
-rCutStart.element.style.display = (v > 0 && v < dur) ? 'block' : 'none';
-}
-} else {
-tempCutEnd = v;
-$('cut-end-input').value = v.toFixed(2);
+$('cut-start-input').value = v.toFixed(2); if(rCutStart) { rCutStart.setOptions({start: v, end: v + 0.05}); rCutStart.element.style.display = (v &gt; 0 && v &lt; dur) ? 'block' : 'none'; } } else { tempCutEnd = v; $('cut-end-input').value = v.toFixed(2);
 if(rCutEnd) {
 rCutEnd.setOptions({start: Math.max(0, v - 0.05), end: v});
 rCutEnd.element.style.display = (v > 0 && v < dur) ? 'block' : 'none';
@@ -1837,16 +1624,16 @@ isSetSide ? saveSide() : save();
 isSetSide ? renderSide() : render();
 
 tempTrimEnd = validCuts[0];
-$('trim-time-end-input').value = tempTrimEnd.toFixed(2);
+`$('trim-time-end-input').value = tempTrimEnd.toFixed(2);
 let r = wsRegions.getRegions().find(x => x.id !== 'cut-start' && x.id !== 'cut-end');
 if (r) r.setOptions({end: tempTrimEnd});
 
 tempCutStart = 0; tempCutEnd = dur;
-$('cut-start-input').value = '0.00'; $('cut-end-input').value = dur.toFixed(2);
+('cut-end-input').value = dur.toFixed(2);
 if(rCutStart) rCutStart.element.style.display = 'none';
 if(rCutEnd) rCutEnd.element.style.display = 'none';
 updVisFade();
-showAlert("Success", `Track split into ${validCuts.length + 1} sections successfully!`);
+showAlert("Success", Track split into ${validCuts.length + 1} sections successfully!`);
 };
 
 const updFadeVals = (type, val) => {
@@ -1854,24 +1641,26 @@ let m=tempTrimEnd-tempTrimStart;
 if(val>m)val=m;
 if(val<0)val=0;
 val=parseFloat(val.toFixed(1));
-let sld=$(type==='in'?'trim-fade-in-sld':'trim-fade-out-sld');
-let input=$(type==='in'?'trim-fade-in':'trim-fade-out');
+let sld=$(type==='in'?'trim-fade-in-sld':'trim-fade-out-sld'); let input=$(type==='in'?'trim-fade-in':'trim-fade-out');
 if (input) input.value=val.toFixed(1);
 if (sld) {
 sld.value=val;
 sld.max=m.toFixed(1);
 sld.style.setProperty('--v', (val/m*100)+'%');
 }
-$(type==='in'?'fi-val-sld':'fo-val-sld').innerText=val.toFixed(1)+'s';
+`$(type==='in'?'fi-val-sld':'fo-val-sld').innerText=val.toFixed(1)+'s';
 updVisFade();
 };
 
 const sldInp = (e, type) => {
-let v=parseFloat(e.target.value), old=parseFloat($(type==='in'?'trim-fade-in':'trim-fade-out').value);
-if(v!==old){if(v===0||v===parseFloat(e.target.max))haptic([20,30]); else haptic(5); updFadeVals(type, v);}
+let v=parseFloat(e.target.value), old=parseFloat(latex
+(type==='in'?'trim-fade-in':'trim-fade-out').value); if(v!==old){if(v===0||v===parseFloat(e.target.max))haptic([20,30]); else haptic(5); updFadeVals(type, v);} }; const manFade = (type, val) =&gt; { haptic(15); updFadeVals(type, parseFloat(val)); }; const nudgeFade = (type, amt) =&gt; { haptic(5); updFadeVals(type, (parseFloat(
+
+(type==='in'?'trim-fade-in':'trim-fade-out').value)||0) + amt); };
+
+const closeModalSafe = (id) => {
+closeModal(id);
 };
-const manFade = (type, val) => { haptic(15); updFadeVals(type, parseFloat(val)); };
-const nudgeFade = (type, amt) => { haptic(5); updFadeVals(type, (parseFloat($(type==='in'?'trim-fade-in':'trim-fade-out').value)||0) + amt); };
 
 const closeTrimModal = () => {
 haptic(10);
@@ -1880,7 +1669,7 @@ document.querySelectorAll('.fc-views').forEach(v => {
 let sld = v.querySelector('.fc-slider-view');
 if (v.firstElementChild !== sld) { v.insertBefore(sld, v.firstElementChild); }
 });
-closeModal('trim-modal');
+closeModalSafe('trim-modal');
 };
 
 const playTrimRegion = () => { if(!ws||!wsRegions)return; if(ws.isPlaying()) ws.pause(); else { let r=wsRegions.getRegions().find(x => x.id !== 'cut-start' && x.id !== 'cut-end'); if(r) r.play(); else ws.play(); } };
@@ -1888,8 +1677,7 @@ const saveTrim = () => {
 haptic(15);
 updTrk('trimStart', tempTrimStart);
 updTrk('trimEnd', tempTrimEnd);
-updTrk('fadeIn', parseFloat($('trim-fade-in').value)||0);
-updTrk('fadeOut', parseFloat($('trim-fade-out').value)||0);
+updTrk('fadeIn', parseFloat(('trim-fade-out').value)||0);
 updTrk('fadeInCurve', tempFadeInCurve);
 updTrk('fadeOutCurve', tempFadeOutCurve);
 closeTrimModal();
@@ -1923,12 +1711,7 @@ isSetSide ? (sideTrks = sideTrks.filter(x => x.id !== actId), closeModal('settin
 let mainDelayInt=null, sideloadDelayInt=null;
 const doDelayCountdown = (delay, textEl, isSide, cb) => {
 let r=Math.ceil(delay);
-$(textEl).innerText=`${r}s...`;
-if(isSide)clearInterval(sideloadDelayInt); else clearInterval(mainDelayInt);
-let intv=setInterval(()=>{
-r--;
-if(r<=0){if(isSide)clearInterval(sideloadDelayInt); else clearInterval(mainDelayInt); cb();}
-else $(textEl).innerText=`${r}s...`;
+{r}s...; if(isSide)clearInterval(sideloadDelayInt); else clearInterval(mainDelayInt); let intv=setInterval(()=&gt;{ r--; if(r&lt;=0){if(isSide)clearInterval(sideloadDelayInt); else clearInterval(mainDelayInt); cb();} else $(textEl).innerText=``${r}s...`;
 },1000);
 if(isSide)sideloadDelayInt=intv; else mainDelayInt=intv;
 };
@@ -1985,7 +1768,7 @@ if(manual) hideShowNotes();
 if(isSideAct)return playSideloadNextCue(L, manual);
 let q=tracks.filter(x=>x.type==='queue');
 while(curIdx<q.length&&q[curIdx].skip)curIdx++;
-if(curIdx>=q.length)return $('play-text').innerText='End of Show';
+if(curIdx>=q.length)return $`('play-text').innerText='End of Show';
 if(!L)haptic(25);
 let t=q[curIdx++];
 clearInterval(mainDelayInt);
@@ -2069,7 +1852,7 @@ let out=false, af=false, ov=t.overlap||0, pd=t.postDelay||0;
 
 a.ontimeupdate=()=>{
 let d=t.trimEnd||a.duration||0; if(!d)return;
-let p=$(s?'side-prog-'+t.id:'prog-'+t.id); if(p)p.style.width=Math.max(0,Math.min(100,(a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100))+'%';
+let p=`$(s?'side-prog-'+t.id:'prog-'+t.id); if(p)p.style.width=Math.max(0,Math.min(100,(a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100))+'%';
 
 if(t.notes && t.notesTrigger !== 'after') {
 let cTime = a.currentTime - (t.trimStart || 0);
@@ -2087,7 +1870,7 @@ sEnd = nDur > 0 ? Math.min(nDur, actualDur) : actualDur;
 }
 
 if (cTime >= sStart && cTime <= sEnd) {
-let container = $('show-notes-container'); let textEl = $('show-notes-text');
+let container = ('show-notes-text');
 let sentences = t.notesSplit ? (t.notes||'').split('\n').map(s=>s.trim()).filter(s=>s) : [t.notes];
 if(!sentences.length) sentences = [t.notes||''];
 let idx = 0;
@@ -2108,7 +1891,7 @@ textEl.style.animation = 'fadeIn 0.3s ease';
 }
 a._showingNote = true;
 } else if (a._showingNote) {
-if ($('show-notes-container').dataset.owner === t.id) hideShowNotes();
+if ($`('show-notes-container').dataset.owner === t.id) hideShowNotes();
 a._showingNote = false;
 }
 }
@@ -2123,12 +1906,7 @@ a.pause(); let fn=a.onended; if(fn){a.onended=null;fn();}
 }
 }
 };
-a.play().catch(()=>{}); $(s?'sideload-play-text':'play-text').innerText=t.name; s||mngMic(); if(locked&&settings.pocketMode&&settings.strongPocketHaptics)navigator.vibrate?.([150,100,250]); evalDucking();
-a.onended=()=>{
-let fn=a.onended; if(!fn)return;
-a.onended=null;
-a.ontimeupdate=null;
-if (a._showingNote) { if ($('show-notes-container').dataset.owner === t.id) hideShowNotes(); a._showingNote = false; }
+a.play().catch(()=>{}); $(s?'sideload-play-text':'play-text').innerText=t.name; s||mngMic(); if(locked&&settings.pocketMode&&settings.strongPocketHaptics)navigator.vibrate?.([150,100,250]); evalDucking(); a.onended=()=&gt;{ let fn=a.onended; if(!fn)return; a.onended=null; a.ontimeupdate=null; if (a._showingNote) { if ($('show-notes-container').dataset.owner === t.id) hideShowNotes(); a._showingNote = false; }
 if(t.notes && t.notesTrigger === 'after') displayShowNote(t, t.notesDuration || 10);
 if(t.autoFollow&&!af){ af=true; pd>0? doDelayCountdown(pd, s?'sideload-play-text':'play-text', s, ()=>s?playSideloadNextCue(false):playNextCue(false)) : s?playSideloadNextCue(false):playNextCue(false); }
 acts.delete(t.id);
@@ -2136,7 +1914,7 @@ evalDucking();
 if(!acts.size){
 let q=(s?sideTrks:tracks).filter(x=>x.type==='queue'), nx=s?sideIdx:curIdx;
 while(nx<q.length&&q[nx].skip)nx++;
-$(s?'sideload-play-text':'play-text').innerText=nx<q.length?'Next Cue':(s?'':'End of Show');
+`$(s?'sideload-play-text':'play-text').innerText=nx<q.length?'Next Cue':(s?'':'End of Show');
 s&&nx>=q.length&&closeSideload();
 }
 s?renderSide():(render(),mngMic());
@@ -2165,12 +1943,12 @@ acts.delete(t.id); evalDucking(); s?renderSide():(render(),mngMic()); return;
 }
 let a=new Audio(t.blobUrl); setupAudioNode(a); a.isRealPlay = true; a.currentTime=t.trimStart||0; a.volume=t.volume??1; acts.set(t.id,a); s?renderSide():render();
 a.ontimeupdate=()=>{
-let d=t.trimEnd||a.duration; let p=$(s?'side-prog-'+t.id:'prog-'+t.id); if(p)p.style.width=Math.max(0,Math.min(100,(a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100))+'%'; if(a.currentTime>=d){ if(t.isBackground && (t.bgLoop !== false)){ a.currentTime=t.trimStart||0; } else { a.pause();acts.delete(t.id);evalDucking();s?renderSide():(render(),mngMic()); } } }; s?(sidePaused=false,$('sideload-pause-icon').innerText='pause'):(paused=false,$('pause-icon').innerText='pause');
+let d=t.trimEnd||a.duration; let p=('sideload-pause-icon').innerText='pause'):(paused=false,$`('pause-icon').innerText='pause');
 a.play().catch(()=>{}); s||mngMic(); if(locked&&settings.pocketMode&&settings.strongPocketHaptics)navigator.vibrate?.([150,100,250]); evalDucking();
 };
 const playPad = t => pPad(t,false); const playSidePad = t => pPad(t,true);
 
-const openSide = async (t,a=false) => { if(isSideAct)return; isSideAct=true; actSideId=t.id; sideIdx=0; sidePaused=false; sideTrks=[]; actSidePads.clear(); actSideCues.clear(); $('sideload-track-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--text-muted)">Loading...</div>'; openModal('sideload-modal'); try{ for(let s of t.showData){ if(s.isExternalShow||(!s.file&&!s.fileData))sideTrks.push({...s}); else sideTrks.push({...s,blobUrl:URL.createObjectURL(s.file||await(await fetch(s.fileData)).blob())}); } $('sideload-play-text').innerText='Start Show'; $('sideload-pause-icon').innerText='pause'; renderSide(); if(a)playSideloadNextCue(); }catch(e){showAlert("Error","Failed to load.");closeSideload();} };
+const openSide = async (t,a=false) => { if(isSideAct)return; isSideAct=true; actSideId=t.id; sideIdx=0; sidePaused=false; sideTrks=[]; actSidePads.clear(); actSideCues.clear(); $('sideload-track-list').innerHTML='&lt;div style="text-align:center;padding:20px;color:var(--text-muted)"&gt;Loading...&lt;/div&gt;'; openModal('sideload-modal'); try{ for(let s of t.showData){ if(s.isExternalShow||(!s.file&&!s.fileData))sideTrks.push({...s}); else sideTrks.push({...s,blobUrl:URL.createObjectURL(s.file||await(await fetch(s.fileData)).blob())}); } $('sideload-play-text').innerText='Start Show'; `$('sideload-pause-icon').innerText='pause'; renderSide(); if(a)playSideloadNextCue(); }catch(e){showAlert("Error","Failed to load.");closeSideload();} };
 const toggleSideloadPause = () => {
 sidePaused=!sidePaused;
 let now = audioCtx ? audioCtx.currentTime : 0;
@@ -2216,7 +1994,13 @@ a.gainNode.gain.value = a._isDucked && trk?.isBackground ? (trk.duckVol??0.3) : 
 }
 }
 }));
-$('sideload-pause-icon').innerText=sidePaused?'play_arrow':'pause'; if(!sidePaused) evalDucking(); }; const triggerSideloadReset = () => settings.confirmReset?openModal('sideload-reset-modal'):executeSideloadReset(); const executeSideloadReset = () => { haptic([50,50,50]); closeModal('sideload-reset-modal'); clearInterval(sideloadDelayInt); hideShowNotes(); [actSideCues,actSidePads].forEach(m=>m.forEach((a, id)=>{ let trk = sideTrks.find(x=>x.id===id); stopAudioWithFade(a, trk, 'reset'); })); actSideCues.clear(); actSidePads.clear(); sideIdx=0; sidePaused=false; $('sideload-play-text').innerText='Start Show'; $('sideload-pause-icon').innerText='pause'; evalDucking(); renderSide(); }; const closeSideload = () => { isSideAct=false; clearInterval(sideloadDelayInt); hideShowNotes(); [actSideCues,actSidePads].forEach(m=>m.forEach((a, id)=>{ let trk = sideTrks.find(x=>x.id===id); stopAudioWithFade(a, trk, 'reset'); })); actSideCues.clear(); actSidePads.clear(); sideTrks.forEach(s=>s.blobUrl&&URL.revokeObjectURL(s.blobUrl)); sideTrks=[]; closeModal('sideload-modal'); render(); if(actSideId){ let s=tracks.find(x=>x.id===actSideId); actSideId=null; if(s&&s.type==='queue'&&s.autoFollow){ let pd=s.postDelay||0; if(pd>0)doDelayCountdown(pd,'play-text',false,()=>playNextCue(false)); else playNextCue(false); }else $('play-text').innerText=curIdx<tracks.filter(x=>x.type==='queue').length?'Next Cue':'End of Show'; } evalDucking();
+latex
+('sideload-pause-icon').innerText=sidePaused?'play_arrow':'pause'; if(!sidePaused) evalDucking(); }; const triggerSideloadReset = () =&gt; settings.confirmReset?openModal('sideload-reset-modal'):executeSideloadReset(); const executeSideloadReset = () =&gt; { haptic([50,50,50]); closeModal('sideload-reset-modal'); clearInterval(sideloadDelayInt); hideShowNotes(); [actSideCues,actSidePads].forEach(m=&gt;m.forEach((a, id)=&gt;{ let trk = sideTrks.find(x=&gt;x.id===id); stopAudioWithFade(a, trk, 'reset'); })); actSideCues.clear(); actSidePads.clear(); sideIdx=0; sidePaused=false; 
+
+('sideload-play-text').innerText='Start Show'; latex
+('sideload-pause-icon').innerText='pause'; evalDucking(); renderSide(); }; const closeSideload = () =&gt; { isSideAct=false; clearInterval(sideloadDelayInt); hideShowNotes(); [actSideCues,actSidePads].forEach(m=&gt;m.forEach((a, id)=&gt;{ let trk = sideTrks.find(x=&gt;x.id===id); stopAudioWithFade(a, trk, 'reset'); })); actSideCues.clear(); actSidePads.clear(); sideTrks.forEach(s=&gt;s.blobUrl&&URL.revokeObjectURL(s.blobUrl)); sideTrks=[]; closeModal('sideload-modal'); render(); if(actSideId){ let s=tracks.find(x=&gt;x.id===actSideId); actSideId=null; if(s&&s.type==='queue'&&s.autoFollow){ let pd=s.postDelay||0; if(pd&gt;0)doDelayCountdown(pd,'play-text',false,()=&gt;playNextCue(false)); else playNextCue(false); }else 
+
+('play-text').innerText=curIdx<tracks.filter(x=>x.type==='queue').length?'Next Cue':'End of Show'; } evalDucking();
 };
 
 const isPly = () => activeCues.size||activePads.size||actSideCues.size||actSidePads.size;
@@ -2266,28 +2050,17 @@ a.gainNode.gain.value = a._isDucked && trk?.isBackground ? (trk.duckVol??0.3) : 
 }
 }
 }));
-$('pause-icon').innerText=paused?'play_arrow':'pause';
+$`('pause-icon').innerText=paused?'play_arrow':'pause';
 mngMic();
 if(!paused) evalDucking();
 };
 
 const toggleLock = async (f=null) => {
 locked=f!==null?f:!locked;
-document.body.className=`${locked?'locked':'unlocked'} show-progress`;
-$('lock-icon').innerText=locked?'lock':'lock_open';
+document.body.className=``${locked?'locked':'unlocked'} show-progress; $('lock-icon').innerText=locked?'lock':'lock_open';
 render();
 if(locked&&settings.pocketMode){
-$('pocket-mode-overlay').style.display='flex';
-sessionStorage.setItem('mc_pocket','true');
-try{
-document.documentElement.requestFullscreen();
-if("wakeLock" in navigator) wakeLock=await navigator.wakeLock.request("screen");
-}catch(e){}
-if (tutActive && tutType === 'basic' && tutStep === 5) {
-openTutorial(6);
-}
-}else{
-$('pocket-mode-overlay').style.display='none';
+$('pocket-mode-overlay').style.display='flex'; sessionStorage.setItem('mc_pocket','true'); try{ document.documentElement.requestFullscreen(); if("wakeLock" in navigator) wakeLock=await navigator.wakeLock.request("screen"); }catch(e){} }else{ $('pocket-mode-overlay').style.display='none';
 sessionStorage.removeItem('mc_pocket');
 try{
 document.exitFullscreen();
@@ -2297,13 +2070,13 @@ if(wakeLock){wakeLock.release(); wakeLock=null;}
 };
 
 const confirmPocketExit = () => {
-if(!$('pocket-unlock-check').checked){haptic([50,50]); return showAlert("Notice","Check confirm box.");}
+if(!`$('pocket-unlock-check').checked){haptic([50,50]); return showAlert("Notice","Check confirm box.");}
 closeModal('pocket-confirm-modal');
 toggleLock(false);
 };
 
 let rec, isLis=false, spErr=false, prLen=0, micOn=false, spLog=[];
-const upSp = t => { if(t&&t.trim()!==""){spLog.push(t);if(spLog.length>3)spLog.shift();} $('speech-debug').scrollTop=$('speech-debug').scrollHeight; };
+const upSp = t => { if(t&&t.trim()!==""){spLog.push(t);if(spLog.length>3)spLog.shift();} ('speech-debug').scrollHeight; };
 const initSpeech = async () => {
 window.SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
 if(!window.SpeechRecognition)return;
@@ -2316,8 +2089,7 @@ rec.interimResults=true;
 rec.lang=settings.lang;
 rec.onstart=()=>{
 prLen=0;
-$('mic-btn').className='mic-active';
-$('mic-icon').innerText='mic';
+('mic-icon').innerText='mic';
 spLog=["Listening..."];
 upSp("");
 };
@@ -2325,48 +2097,30 @@ rec.onresult=e=>{
 let fl='';
 for(let i=e.resultIndex;i<e.results.length;++i) fl+=e.results[i][0].transcript;
 let nw=fl.substring(prLen);
-$('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">></span> ')+'<br><span style="color:var(--accent);font-weight:800">></span> '+fl;
-$('speech-debug').scrollTop=$('speech-debug').scrollHeight;
-let ss=nw.toLowerCase().replace(/[.,!?]/g,'').trim();
-if(!ss)return;
-let trg=false, q=tracks.filter(x=>x.type==='queue');
-if(curIdx<q.length&&q[curIdx].triggerPhrase&&!q[curIdx].globalVoice&&ss.includes(q[curIdx].triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);playNextCue();trg=true;}
-if(!trg)for(let t of tracks)if(t.globalVoice&&t.triggerPhrase&&ss.includes(t.triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);t.type==='queue'?playCue(t.id):playPad(t);trg=true;break;}
-if(trg)prLen=fl.length;
-};
-rec.onerror=()=>{spErr=true; if(micOn&&!isPly()){isLis=false; micOn=false; $('mic-icon').innerText='mic_off';}};
+('speech-debug').scrollTop=latex
+('speech-debug').scrollHeight; let ss=nw.toLowerCase().replace(/[.,!?]/g,'').trim(); if(!ss)return; let trg=false, q=tracks.filter(x=&gt;x.type==='queue'); if(curIdx&lt;q.length&&q[curIdx].triggerPhrase&&!q[curIdx].globalVoice&&ss.includes(q[curIdx].triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);playNextCue();trg=true;} if(!trg)for(let t of tracks)if(t.globalVoice&&t.triggerPhrase&&ss.includes(t.triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);t.type==='queue'?playCue(t.id):playPad(t);trg=true;break;} if(trg)prLen=fl.length; }; rec.onerror=()=&gt;{spErr=true; if(micOn&&!isPly()){isLis=false; micOn=false; 
+
+('mic-icon').innerText='mic_off';}};
 rec.onend=()=>{prLen=0; if(isLis&&micOn&&!spErr)try{rec.start();}catch(e){} spErr=false;};
 };
 
-const mngMic = () => { if(!micOn||!rec)return; if(settings.autoPauseMic&&isPly()){isLis=false; try{rec.stop();}catch(e){}$('mic-icon').innerText='mic_off';spLog=["Mic paused..."];upSp("");}else if(!isLis){isLis=true; try{rec.start();}catch(e){}} };
-const toggleMic = () => {
-micOn=!micOn;
-if(micOn){
-$('speech-debug').style.display='block';
+const mngMic = () => { if(!micOn||!rec)return; if(settings.autoPauseMic&&isPly()){isLis=false; try{rec.stop();}catch(e){}latex
+('mic-icon').innerText='mic_off';spLog=["Mic paused..."];upSp("");}else if(!isLis){isLis=true; try{rec.start();}catch(e){}} }; const toggleMic = () =&gt; { micOn=!micOn; if(micOn){ 
+
+('speech-debug').style.display='block';
 if(settings.autoPauseMic&&isPly()){
-$('mic-btn').className='mic-paused';
-spLog=["Mic paused..."];
-upSp("");
-}else{
-isLis=true; spErr=false; prLen=0;
-try{rec.start();}catch(e){}
-}
-if (tutActive && tutType === 'basic' && tutStep === 6) {
-openTutorial(7);
-}
-}else{
-isLis=false;
-try{rec.stop();}catch(e){}
-micOn=false;
-$('mic-icon').innerText='mic_off';
-$('speech-debug').style.display='none';
+latex
+('mic-btn').className='mic-paused'; spLog=["Mic paused..."]; upSp(""); }else{ isLis=true; spErr=false; prLen=0; try{rec.start();}catch(e){} } }else{ isLis=false; try{rec.stop();}catch(e){} micOn=false; 
+
+('mic-icon').innerText='mic_off';
+$`('speech-debug').style.display='none';
 }
 };
 
 const initSortables = () => {
 [sortQueue,sortGrid,sortSideQueue,sortSideGrid,sortExtract].forEach(s=>s&&s.destroy());
 let opt = { group:'shared', animation:250, ghostClass:"sortable-ghost", disabled:!settings.enableDragging, swapThreshold:0.65,
-onStart: e => { isGrp=false; curHov=null; clearTimeout(hoverTmr); haptic(15); if(e.from.id.includes('sideload'))$('sideload-extract-zone').style.display='block'; }, onChange: e => haptic(e.to!==e.from?[30,50,30]:5), onMove: e => { if(e.related?.id==='sideload-extract-zone') return true; let t=e.related; if(!t) { clearTimeout(hoverTmr); if(curHov){curHov.classList.remove('group-hover-highlight');curHov=null;} isGrp=false; return true; } let r=t.getBoundingClientRect(); let inY=dragY>r.top+r.height*0.25 && dragY<r.bottom-r.height*0.25; let inX=t.classList.contains('cue-pad')?(dragX>r.left+r.width*0.25 && dragX<r.right-r.width*0.25):(dragX>r.left && dragX<r.right); if(inY&&inX) { if(curHov!==t){ clearTimeout(hoverTmr); if(curHov)curHov.classList.remove('group-hover-highlight'); curHov=t; isGrp=false; hoverTmr=setTimeout(()=>{ if(curHov===t){ curHov.classList.add('group-hover-highlight'); isGrp=true; haptic([20,30,20]); } }, 350); } return false; } else { clearTimeout(hoverTmr); if(curHov){curHov.classList.remove('group-hover-highlight');curHov=null;} isGrp=false; return true; } }, onEnd: e => { let isGd=isGrp&&curHov?.classList.contains('group-hover-highlight'), tEl=curHov; if(isGd && tEl) { let r = tEl.getBoundingClientRect(); if(dragY < r.top || dragY > r.bottom || dragX < r.left || dragX > r.right) { isGd = false; } } clearTimeout(hoverTmr); if(curHov)curHov.classList.remove('group-hover-highlight'); curHov=null; isGrp=false; if(e.from.id.includes('sideload'))$('sideload-extract-zone').style.display='none';
+onStart: e => { isGrp=false; curHov=null; clearTimeout(hoverTmr); haptic(15); if(e.from.id.includes('sideload'))$('sideload-extract-zone').style.display='block'; }, onChange: e =&gt; haptic(e.to!==e.from?[30,50,30]:5), onMove: e =&gt; { if(e.related?.id==='sideload-extract-zone') return true; let t=e.related; if(!t) { clearTimeout(hoverTmr); if(curHov){curHov.classList.remove('group-hover-highlight');curHov=null;} isGrp=false; return true; } let r=t.getBoundingClientRect(); let inY=dragY&gt;r.top+r.height*0.25 && dragY&lt;r.bottom-r.height*0.25; let inX=t.classList.contains('cue-pad')?(dragX&gt;r.left+r.width*0.25 && dragX&lt;r.right-r.width*0.25):(dragX&gt;r.left && dragX&lt;r.right); if(inY&&inX) { if(curHov!==t){ clearTimeout(hoverTmr); if(curHov)curHov.classList.remove('group-hover-highlight'); curHov=t; isGrp=false; hoverTmr=setTimeout(()=&gt;{ if(curHov===t){ curHov.classList.add('group-hover-highlight'); isGrp=true; haptic([20,30,20]); } }, 350); } return false; } else { clearTimeout(hoverTmr); if(curHov){curHov.classList.remove('group-hover-highlight');curHov=null;} isGrp=false; return true; } }, onEnd: e =&gt; { let isGd=isGrp&&curHov?.classList.contains('group-hover-highlight'), tEl=curHov; if(isGd && tEl) { let r = tEl.getBoundingClientRect(); if(dragY &lt; r.top || dragY &gt; r.bottom || dragX &lt; r.left || dragX &gt; r.right) { isGd = false; } } clearTimeout(hoverTmr); if(curHov)curHov.classList.remove('group-hover-highlight'); curHov=null; isGrp=false; if(e.from.id.includes('sideload'))$('sideload-extract-zone').style.display='none';
 let dId=e.item.id.replace('tile-','').replace('side-','');
 if(isGd&&tEl&&tEl.id!==e.item.id){
 let tId=tEl.id.replace('tile-','').replace('side-',''), fS=e.from.id.includes('sideload'), fL=fS?sideTrks:tracks, tS=tEl.id.startsWith('side-'), tL=tS?sideTrks:tracks, dI=fL.findIndex(x=>x.id===dId), tI=tL.findIndex(x=>x.id===tId);
@@ -2379,265 +2133,14 @@ tS?saveSide():save(); fS!==tS&&(fS?saveSide():save()); render(); renderSide(); r
 let fS=e.from.id.includes('sideload'), tS=e.to.id.includes('sideload'), fL=fS?sideTrks:tracks, tL=tS?sideTrks:tracks;
 if(fL!==tL){ let dI=fL.findIndex(x=>x.id===dId); if(dI>-1) tL.push(fL.splice(dI,1)[0]); }
 haptic(e.to!==e.from?[40,60,40]:15); let t=tL.find(x=>x.id===dId); if(t)t.type=e.to.id.includes('grid')?'pad':'queue';
-let qIds=Array.from($(tS?'sideload-track-list':'track-list').children).map(el=>el.id.replace('tile-','').replace('side-','')), pIds=Array.from($(tS?'sideload-instant-grid':'instant-grid').children).map(el=>el.id.replace('tile-','').replace('side-',''));
+let qIds=Array.from($(tS?'sideload-track-list':'track-list').children).map(el=&gt;el.id.replace('tile-','').replace('side-','')), pIds=Array.from($(tS?'sideload-instant-grid':'instant-grid').children).map(el=>el.id.replace('tile-','').replace('side-',''));
 let sL=[...tL.filter(x=>x.type==='queue').sort((a,b)=>qIds.indexOf(a.id)-qIds.indexOf(b.id)), ...tL.filter(x=>x.type==='pad').sort((a,b)=>pIds.indexOf(a.id)-pIds.indexOf(b.id))];
 tS?(sideTrks=sL,saveSide(),renderSide()):(tracks=sL,save(),render()); fL!==tL&&(fS?(saveSide(),renderSide()):(save(),render()));
 }
 };
-sortQueue=new Sortable($('track-list'),{...opt,handle:'.drag-handle'});
-sortGrid=new Sortable($('instant-grid'),{...opt,handle:'.drag-handle',filter:".pad-settings-trigger",preventOnFilter:false});
-sortSideQueue=new Sortable($('sideload-track-list'),{...opt,handle:'.drag-handle'});
-sortSideGrid=new Sortable($('sideload-instant-grid'),{...opt,handle:'.drag-handle',filter:".pad-settings-trigger",preventOnFilter:false});
-sortExtract=new Sortable($('sideload-extract-zone'),{group:'shared',onAdd:e=>{haptic([40,60,40]);let id=e.item.id.replace('side-','').replace('tile-',''), i=sideTrks.findIndex(x=>x.id===id); if(i>-1){let t=sideTrks.splice(i,1)[0];t.type='queue';tracks.push(t);!chkGrpDemote()&&(saveSide(),renderSide());save();render();} e.item.remove();$('sideload-extract-zone').style.display='none';}});
-};
-
-// Interactive Onboarding Tutorial Engine
-let tutActive = false;
-let tutType = 'basic'; // 'basic' or 'advanced'
-let tutStep = 0;
-let advStep = 0;
-
-const basicSteps = [
-{
-title: "Let's Import a Track",
-badge: "Step 1: Import Track",
-text: "Welcome to Magic Cues! To begin the walkthrough, please click the <strong>Add Cue</strong> button to import an audio track of your choice.",
-target: () => $('add-cue-btn'),
-waitForAction: true
-},
-{
-title: "Contextual Long-Press",
-badge: "Step 2: Cue Context Menu",
-text: "Awesome! Your track is now imported. Let's explore its contextual menu. <strong>Long-press</strong> (press and hold) the middle of your new cue track until options pop up.",
-target: () => document.querySelector('.tile-info'),
-waitForAction: true
-},
-{
-title: "Configure Global Settings",
-badge: "Step 3: Global Menu",
-text: "We can close that menu for now. Let's look at show-wide configurations. Tap the <strong>Settings Gear (⚙)</strong> in the top header.",
-target: () => $('header-settings-btn'),
-waitForAction: true
-},
-{
-title: "Set Global Fades",
-badge: "Step 4: Global Fades",
-text: "Let's inspect how global fades work. Tap <strong>Fade In / Out</strong> in this settings panel.",
-target: () => $('app-settings-fades-btn'),
-waitForAction: true
-},
-{
-title: "Adjust Fade Sliders",
-badge: "Step 5: Fades UI",
-text: "Adjust these options to program default fade speeds whenever cues play. Tap <strong>Done</strong> to exit back to the main workspace.",
-target: () => document.querySelector('#global-fades-modal .action-btn'),
-waitForAction: true
-},
-{
-title: "Lock Workspace",
-badge: "Step 6: Show Safety",
-text: "Now, tap the <strong>Lock (🔓)</strong> icon in the header. This activates pocket safety protection, preventing accidental touch triggers during a live show.",
-target: () => $('header-lock-btn'),
-waitForAction: true
-},
-{
-title: "Performance Safety Tools",
-badge: "Step 7: Safe Live Controls",
-text: "Finally, check the performance controls: <strong>Mic Button</strong> enables voice triggers, and <strong>Reset</strong> immediately stops all active audio. Press the <strong>Mic Button</strong> now to conclude this basic overview.",
-target: () => $('mic-btn'),
-waitForAction: true
-},
-{
-title: "Onboarding Completed",
-badge: "Step 8: Ready!",
-text: "Outstanding! You've learned all the core controls. Tap <strong>Finish</strong>. Whenever you try to configure advanced settings (Trim/Fades or timing), a visual tour will appear to guide you.",
-target: null,
-waitForAction: false
-}
-];
-
-const advancedSteps = [
-{
-title: "Welcome to Cue Customization",
-badge: "Advanced Step 1: Cue Settings",
-text: "Inside Cue Settings, you can configure standard attributes. Tap <strong>Advanced Settings</strong> to open our deep timeline and automation configurations.",
-target: () => $('tut-cue-adv-details'),
-waitForAction: true
-},
-{
-title: "Timeline Waveform Editor",
-badge: "Advanced Step 2: Trim & Fades",
-text: "Let's examine trim settings. Tap the <strong>Trim & Fades</strong> menu option.",
-target: () => document.querySelector('.nested-nav-row'),
-waitForAction: true
-},
-{
-title: "Waveform Trimming & Sliders",
-badge: "Advanced Step 3: Curve Physics",
-text: "Adjust the trim boundaries here. Swipe the cards underneath left or right to change fade rates with Linear, Logarithmic, or Exponential equations. Tap <strong>Save</strong> when finished.",
-target: () => $('trim-swipe-container'),
-waitForAction: true
-},
-{
-title: "Timing and Automations",
-badge: "Advanced Step 4: Automations",
-text: "Let's inspect timeline triggers. Tap <strong>Timing & Automations</strong>.",
-target: () => document.querySelectorAll('.nested-nav-row')[1],
-waitForAction: true
-},
-{
-title: "Automated Triggers",
-badge: "Advanced Step 5: Rules Engine",
-text: "Configure triggers here:<br><br>• <strong>Pre-Delay</strong>: Delays cue start.<br>• <strong>Auto-Follow</strong>: Plays the next cue automatically.<br>• <strong>Stop BG Audio</strong>: Instantly silences atmospheric elements when playing this cue.<br>• <strong>Background Mode</strong>: Loop atmospheric audio with custom <strong>Ducking Volumes</strong> that automatically lower when primary tracks play.<br><br>Tap the close button to exit.",
-target: () => document.querySelector('#timing-modal .icon-btn'),
-waitForAction: true
-},
-{
-title: "Advanced Mastery Complete",
-badge: "Advanced Mastery Complete",
-text: "You are fully trained on Magic Cues Pro's timeline and automation engine. Tap <strong>Close</strong> to run your show!",
-target: null,
-waitForAction: false
-}
-];
-
-const checkTutDetailsExpand = () => {
-if (tutActive && tutType === 'advanced' && advStep === 1) openAdvancedTutorial(2);
-};
-
-const adjustTutorialBarParent = () => {
-const activeDialog = document.querySelector('dialog[open]');
-const tutBar = $('tutorial-bar');
-if (!tutBar) return;
-if (activeDialog) {
-if (tutBar.parentElement !== activeDialog) {
-activeDialog.appendChild(tutBar);
-}
-tutBar.style.position = 'absolute';
-tutBar.style.bottom = '16px';
-tutBar.style.left = '16px';
-tutBar.style.right = '16px';
-tutBar.style.zIndex = '10001';
-} else {
-if (tutBar.parentElement !== document.body) {
-document.body.appendChild(tutBar);
-}
-tutBar.style.position = 'fixed';
-tutBar.style.bottom = '24px';
-tutBar.style.left = '24px';
-tutBar.style.right = '24px';
-tutBar.style.zIndex = '10000';
-}
-};
-
-const clearTutHighlights = () => {
-document.querySelectorAll('.tut-highlight').forEach(el => el.classList.remove('tut-highlight'));
-};
-
-const applyTutHighlight = (targetGetter) => {
-clearTutHighlights();
-if (typeof targetGetter === 'function') {
-const el = targetGetter();
-if (el) el.classList.add('tut-highlight');
-}
-};
-
-const openTutorial = (stepIdx = 0) => {
-tutActive = true;
-tutType = 'basic';
-tutStep = stepIdx;
-const step = basicSteps[tutStep];
-if (!step) return;
-
-$('tut-bar-step').innerText = `Step ${tutStep + 1} of ${basicSteps.length}`;
-$('tut-bar-badge').innerText = step.badge;
-$('tut-bar-text').innerHTML = step.text;
-
-applyTutHighlight(step.target);
-adjustTutorialBarParent();
-
-$('tut-bar-prev').style.display = tutStep === 0 ? 'none' : 'block';
-$('tut-bar-next').style.display = step.waitForAction ? 'none' : 'block';
-$('tut-bar-next').innerText = tutStep === basicSteps.length - 1 ? 'Finish' : 'Next';
-$('tutorial-bar').style.display = 'flex';
-};
-
-const nextTutStep = () => {
-haptic(10);
-if (tutStep < basicSteps.length - 1) {
-openTutorial(tutStep + 1);
-} else {
-finishTutorial();
-}
-};
-
-const prevTutStep = () => {
-haptic(10);
-if (tutStep > 0) {
-openTutorial(tutStep - 1);
-}
-};
-
-const skipTutorial = () => {
-haptic([15, 30]);
-finishTutorial();
-finishAdvancedTutorial();
-};
-
-const finishTutorial = () => {
-clearTutHighlights();
-tutActive = false;
-updSet('tutorialCompleted', true);
-$('tutorial-bar').style.display = 'none';
-adjustTutorialBarParent();
-};
-
-// Advanced Tour Engine
-const openAdvancedTutorial = (stepIdx = 0) => {
-tutActive = true;
-tutType = 'advanced';
-advStep = stepIdx;
-const step = advancedSteps[advStep];
-if (!step) return;
-
-$('tut-bar-step').innerText = `Adv Step ${advStep + 1} of ${advancedSteps.length}`;
-$('tut-bar-badge').innerText = step.badge;
-$('tut-bar-text').innerHTML = step.text;
-
-applyTutHighlight(step.target);
-adjustTutorialBarParent();
-
-$('tut-bar-prev').style.display = 'none';
-$('tut-bar-next').style.display = step.waitForAction ? 'none' : 'block';
-$('tut-bar-next').innerText = advStep === advancedSteps.length - 1 ? 'Close' : 'Next';
-$('tutorial-bar').style.display = 'flex';
-};
-
-const nextAdvStep = () => {
-haptic(10);
-if (advStep < advancedSteps.length - 1) {
-openAdvancedTutorial(advStep + 1);
-} else {
-finishAdvancedTutorial();
-}
-};
-
-const finishAdvancedTutorial = () => {
-clearTutHighlights();
-tutActive = false;
-updSet('advancedTutorialCompleted', true);
-$('tutorial-bar').style.display = 'none';
-adjustTutorialBarParent();
-};
-
-// Bind steps directly to action handlers
-const originalNextTutStep = nextTutStep;
-window.nextTutStep = () => {
-if (tutType === 'advanced') {
-nextAdvStep();
-} else {
-originalNextTutStep();
-}
+sortQueue=new Sortable($('track-list'),{...opt,handle:'.drag-handle'}); sortGrid=new Sortable($('instant-grid'),{...opt,handle:'.drag-handle',filter:".pad-settings-trigger",preventOnFilter:false});
+sortSideQueue=new Sortable($('sideload-track-list'),{...opt,handle:'.drag-handle'}); sortSideGrid=new Sortable($('sideload-instant-grid'),{...opt,handle:'.drag-handle',filter:".pad-settings-trigger",preventOnFilter:false});
+sortExtract=new Sortable($('sideload-extract-zone'),{group:'shared',onAdd:e=&gt;{haptic([40,60,40]);let id=e.item.id.replace('side-','').replace('tile-',''), i=sideTrks.findIndex(x=&gt;x.id===id); if(i&gt;-1){let t=sideTrks.splice(i,1)[0];t.type='queue';tracks.push(t);!chkGrpDemote()&&(saveSide(),renderSide());save();render();} e.item.remove();$('sideload-extract-zone').style.display='none';}});
 };
 
 if('mediaSession' in navigator){
@@ -2650,10 +2153,6 @@ window.addEventListener('load',()=>sessionStorage.getItem('mc_pocket')==='true'&
 
 document.fonts.ready.then(()=>{
 document.body.style.opacity="1";
-// Open the basic tutorial if it has not been completed
-if (!settings.tutorialCompleted) {
-setTimeout(() => openTutorial(0), 1000);
-}
 });
 
 applySettings();
@@ -2661,4 +2160,4 @@ initDB();
 initSpeech();
 </script>
 </body>
-    </html>
+</html>
