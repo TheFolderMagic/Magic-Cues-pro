@@ -100,7 +100,6 @@ html[data-theme="high-vis"] .trim-controls button:active { color: #000; }
 .locked .is-current { border: 2px solid var(--accent); border-radius: 20px !important; }
 
 .locked .master-grid { grid-template-columns: 1fr 64px 64px; gap: 12px; margin-bottom: 12px }
-.locked .master-grid.active-lock-layout { grid-template-columns: 1fr 1fr; grid-template-rows: 120px 64px; }
 .locked #master-play, .locked #sideload-master-play { 
     grid-column: 1 / -1; height: 120px; border-radius: 32px; padding: 0 30px; 
     justify-content: flex-start; gap: 20px; overflow: hidden; min-width: 0;
@@ -124,124 +123,10 @@ html[data-theme="high-vis"] .trim-controls button:active { color: #000; }
     display: flex; align-items: center; justify-content: center; flex-direction: column;
 }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-/* Spacing adjustments inside Context Option Modal to prevent squishing */
-#cue-menu-modal {
-    padding: 32px 24px !important;
-}
-#cue-menu-modal .modal-header {
-    margin-bottom: 24px;
-}
-#cue-menu-modal input[type="text"] {
-    margin-bottom: 24px !important;
-    width: 100%;
-}
-#cue-menu-modal .action-row {
-    display: flex;
-    gap: 16px;
-    margin-top: 12px;
-    margin-bottom: 20px !important;
-}
-#cue-menu-modal .action-btn {
-    padding: 18px;
-    border-radius: 16px;
-    font-weight: 600;
-}
-
-/* Custom Dynamic Relative Popover Tooltip styles */
-.tut-step-indicator { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; display: block; }
-.tut-section-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; background: var(--accent-glow); color: var(--accent); font-size: 10px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; }
-
-#tutorial-bar {
-    position: fixed; /* position: fixed is verified to anchor reliably over top layer card boundaries */
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 48px);
-    max-width: 360px;
-    background: var(--modal-bg);
-    border: 2px solid var(--accent);
-    border-radius: 24px;
-    padding: 16px;
-    z-index: 13000; /* Float correctly in front of active dialog panels */
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-    display: none;
-    flex-direction: column;
-    gap: 10px;
-    box-sizing: border-box;
-}
-#tutorial-bar p {
-    font-size: 13px !important;
-    line-height: 1.4 !important;
-    margin: 0 0 6px 0 !important;
-    color: var(--text-main);
-}
-#tutorial-bar .tut-step-indicator {
-    font-size: 9px;
-}
-#tutorial-bar .tut-section-badge {
-    padding: 2px 6px;
-    font-size: 9px;
-    margin-bottom: 4px;
-}
-#tutorial-bar .action-btn {
-    padding: 6px 12px !important;
-    font-size: 12px !important;
-}
-
-/* High-Finesse organic pulsing Squircle Indicator */
-@keyframes squirclePulse {
-  0% {
-    box-shadow: 0 0 0 1px var(--accent), 0 0 0 2px rgba(0, 122, 255, 0.4), 0 4px 16px rgba(0, 122, 255, 0.15);
-  }
-  50% {
-    box-shadow: 0 0 0 3.5px var(--accent), 0 0 0 10px rgba(0, 122, 255, 0.25), 0 12px 30px rgba(0, 122, 255, 0.45);
-  }
-  100% {
-    box-shadow: 0 0 0 1px var(--accent), 0 0 0 2px rgba(0, 122, 255, 0.4), 0 4px 16px rgba(0, 122, 255, 0.15);
-  }
-}
-.tut-highlight {
-  animation: squirclePulse 2s infinite cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-  border-color: var(--accent) !important;
-  border-radius: 20px !important;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  z-index: 13000 !important;
-}
-
-/* Circle overrides for squircle highlights */
-.tut-highlight[style*="border-radius: 50%"],
-.tut-highlight[style*="border-radius:50%"],
-#pocket-exit-btn.tut-highlight,
-#mic-btn.tut-highlight,
-#pause-btn.tut-highlight {
-  border-radius: 50% !important;
-}
-
-/* Fluid dialog-open parent override to avoid screen protrusions */
-dialog[open] #tutorial-bar {
-  position: relative !important;
-  bottom: auto !important;
-  left: auto !important;
-  transform: none !important;
-  width: 100% !important;
-  max-width: none !important;
-  margin: 16px 0 0 0 !important;
-  box-shadow: none !important;
-  border: 1px solid var(--accent) !important;
-  border-radius: 18px !important;
-  background: rgba(128,128,128,0.06) !important;
-}
-body.tut-active dialog {
-  backdrop-filter: none !important;
-}
-body.tut-active dialog::backdrop {
-  backdrop-filter: none !important;
-}
 </style></head>  
-<body class="unlocked show-progress"><header><h1 id="show-title-header" onclick="haptic(15);openProjects()"><span id="header-title-text">Magic Cues</span><span class="material-symbols-rounded" style="font-size:28px">expand_more</span></h1><div style="display:flex;gap:8px"><button class="icon-btn" id="header-settings-btn" onclick="haptic(15);openModal('app-settings')"><span class="material-symbols-rounded">settings</span></button><button class="icon-btn" id="header-lock-btn" onclick="haptic(15);toggleLock()"><span class="material-symbols-rounded" id="lock-icon">lock_open</span></button></div></header><div class="master-grid"><button id="master-play" onclick="playNextCue(false, true)"><span class="material-symbols-rounded">play_arrow</span><span id="play-text">Start Show</span></button><button id="mic-btn" onclick="haptic(15);toggleMic()"><span class="material-symbols-rounded" id="mic-icon">mic_off</span></button><button id="pause-btn" onclick="haptic(15);toggleGlobalPause()"><span class="material-symbols-rounded" id="pause-icon">pause</span></button></div><div id="speech-debug"><div id="speech-text">...</div></div><div class="action-row"><button class="action-btn" id="add-cue-btn" onclick="haptic(15);$('file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button><button class="action-btn" id="reset-show-btn" onclick="haptic([15,30,15]);triggerReset()"><span class="material-symbols-rounded">restart_alt</span> Reset</button></div><input type="file" id="file-input" accept="audio/*,.magic,.json" multiple onchange="handleFiles(this)" style="display:none"><input type="file" id="import-file-input" accept=".magic,.json" style="display:none" onchange="importShow(this)"><input type="file" id="sideload-file-input" accept="audio/*,.magic,.json" multiple onchange="handleSideloadFiles(this)" style="display:none"><div id="queue-container"><h2 id="queue-label">Main Queue</h2><div id="track-list"></div></div>
+<body class="unlocked show-progress"><header><h1 onclick="haptic(15);openProjects()"><span id="header-title-text">Magic Cues</span><span class="material-symbols-rounded" style="font-size:28px">expand_more</span></h1><div style="display:flex;gap:8px"><button class="icon-btn" onclick="haptic(15);openModal('app-settings')"><span class="material-symbols-rounded">settings</span></button><button class="icon-btn" onclick="haptic(15);toggleLock()"><span class="material-symbols-rounded" id="lock-icon">lock_open</span></button></div></header><div class="master-grid"><button id="master-play" onclick="playNextCue(false, true)"><span class="material-symbols-rounded">play_arrow</span><span id="play-text">Start Show</span></button><button id="mic-btn" onclick="haptic(15);toggleMic()"><span class="material-symbols-rounded" id="mic-icon">mic_off</span></button><button id="pause-btn" onclick="haptic(15);toggleGlobalPause()"><span class="material-symbols-rounded" id="pause-icon">pause</span></button></div><div id="speech-debug"><div id="speech-text">...</div></div><div class="action-row"><button class="action-btn" onclick="haptic(15);$('file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button><button class="action-btn" onclick="haptic([15,30,15]);triggerReset()"><span class="material-symbols-rounded">restart_alt</span> Reset</button></div><input type="file" id="file-input" accept="audio/*,.magic,.json" multiple onchange="handleFiles(this)" style="display:none"><input type="file" id="import-file-input" accept=".magic,.json" style="display:none" onchange="importShow(this)"><input type="file" id="sideload-file-input" accept="audio/*,.magic,.json" multiple onchange="handleSideloadFiles(this)" style="display:none"><div id="queue-container"><h2 id="queue-label">Main Queue</h2><div id="track-list"></div></div>
 <div id="show-notes-container"><div id="show-notes-text"></div></div>
-<h2>Instant Cues</h2><div id="instant-grid"></div><div id="pocket-mode-overlay"><button id="pocket-exit-btn" onclick="haptic(15);openModal('pocket-confirm-modal')"><span class="material-symbols-rounded" style="font-size:32px">lock</span></button></div><dialog id="pocket-confirm-modal"><div class="modal-header"><span class="modal-title">Unlock Workspace?</span></div><div style="margin-bottom:25px;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);padding:12px;border-radius:12px"><input type="checkbox" class="custom-toggle" id="pocket-unlock-check"><label style="font-size:15px;font-weight:600">Confirm Unlock</label></div><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('pocket-confirm-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="confirmPocketExit()">Unlock</button></div></dialog><dialog id="custom-alert-modal"><div class="modal-header"><span class="modal-title" id="alert-title">Notice</span></div><p id="alert-msg" style="color:var(--text-muted);margin-bottom:25px;line-height:1.5;"></p><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10);closeModal('custom-alert-modal')">OK</button></dialog><dialog id="sideload-modal"><div class="modal-header"><span class="modal-title" id="sideload-title">Sideload</span><button class="icon-btn" style="width:48px;height:48px;border-radius:16px" onclick="haptic(10);closeSideload()"><span class="material-symbols-rounded">close</span></button></div><div id="sideload-extract-zone" style="padding:16px;text-align:center;border:2px dashed var(--glass-border);border-radius:16px;margin-bottom:15px;display:none;background:rgba(255,255,255,.05);"><span class="material-symbols-rounded" style="font-size:24px;vertical-align:middle;margin-right:8px;color:var(--text-muted)">move_up</span> Drop here to move to Main Show</div><div class="master-grid" style="margin-bottom:20px;"><button id="sideload-master-play" onclick="playSideloadNextCue(false, true)"><span class="material-symbols-rounded">play_arrow</span><span id="sideload-play-text">Start Show</span></button><button id="sideload-pause-btn" onclick="haptic(15);toggleSideloadPause()"><span class="material-symbols-rounded" id="sideload-pause-icon">pause</span></button><button id="sideload-reset-btn" onclick="haptic([15,30,15]);triggerSideloadReset()"><span class="material-symbols-rounded">restart_alt</span></button></div><div class="action-row" style="margin-bottom:15px"><button class="action-btn" onclick="haptic(15);$('sideload-file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button></div><div style="flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;padding:10px 24px 100px;margin:0 -24px;"><h2 style="margin:0 0 10px 5px" id="sideload-queue-label">Queue</h2><div id="sideload-track-list" style="display:flex;flex-direction:column;gap:12px;margin-bottom:25px;"></div><h2 style="margin:0 0 10px 5px">Instant Cues</h2><div id="sideload-instant-grid"></div></div></dialog><dialog id="nfc-write-modal" oncancel="cancelNfcWrite()"><div class="modal-header"><span class="modal-title">Program NFC</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="cancelNfcWrite()" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><div class="nfc-pulse"><span class="material-symbols-rounded" style="font-size:40px;color:var(--accent)">nfc</span></div><p id="nfc-write-text" style="text-align:center;font-weight:600;font-size:16px;margin:20px 0">Hold an NFC chip near your phone...</p><button class="action-btn" style="width:100%;border:none" onclick="cancelNfcWrite()">Cancel</button></dialog><dialog id="nfc-success-modal"><div class="modal-header"><span class="modal-title">Success!</span></div><div style="text-align:center;margin:20px 0"><span class="material-symbols-rounded" style="font-size:60px;color:#34c759">check_circle</span></div><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10);closeModal('nfc-success-modal')">Done</button></dialog><dialog id="projects-modal"><div class="modal-header"><span class="modal-title">My Shows</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('projects-modal')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><div id="projects-list-container" style="max-height:300px;overflow-y:auto;margin-bottom:20px"></div><div style="display:flex;gap:12px"><button class="action-btn" id="show-import-btn" style="flex:1" onclick="haptic(15);$('import-file-input').click()"><span class="material-symbols-rounded">upload</span> Import</button><button class="action-btn" id="show-new-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);closeModal('projects-modal');openModal('new-show-modal')"><span class="material-symbols-rounded">add</span> New</button></div></dialog><dialog id="new-show-modal"><div class="modal-header"><span class="modal-title">Create Show</span></div><input type="text" id="new-show-name" placeholder="Show name..."><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('new-show-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);createNewProject()">Create</button></div></dialog><dialog id="edit-show-modal"><div class="modal-header"><span class="modal-title">Edit Show</span></div><input type="text" id="edit-show-name"><button class="action-btn" id="show-export-btn" style="width:100%;margin-bottom:12px" onclick="haptic(15);exportShow()"><span class="material-symbols-rounded">download</span> Export File</button><button class="action-btn" id="show-dup-btn" style="width:100%;margin-bottom:20px;background:rgba(0,122,255,.15);color:var(--accent);border:1px solid var(--accent)" onclick="haptic(15);duplicateShow()"><span class="material-symbols-rounded">content_copy</span> Duplicate Show</button><div style="display:flex;gap:12px;margin-bottom:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('edit-show-modal')" autofocus>Cancel</button><button class="action-btn" id="show-save-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);saveShowEdit()">Save</button></div><button class="btn-delete" id="show-delete-btn" onclick="haptic([30,50,30]);deleteShow()">Delete Show</button></dialog><dialog id="cue-menu-modal"><div class="modal-header"><span class="modal-title">Cue Options</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('cue-menu-modal')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><input type="text" id="rename-cue-input" placeholder="Name"><div style="display:flex;gap:12px"><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);saveCueRename()">Rename</button></div><div class="action-row" style="margin-bottom:15px"><button class="action-btn" id="ctx-skip-btn" onclick="haptic(15);toggleCueSkip()"><span class="material-symbols-rounded" id="skip-cue-icon">block</span> <span id="skip-cue-text">Skip Cue</span></button><button class="action-btn" id="ctx-dup-btn" onclick="haptic(15);duplicateCue()"><span class="material-symbols-rounded">content_copy</span> Duplicate</button></div><div class="action-row" style="margin-bottom:0"><button class="action-btn" id="ctx-group-btn" onclick="haptic(15);createGroupFromMenu()"><span class="material-symbols-rounded">folder</span> Create Group</button></div></dialog>
+<h2>Instant Cues</h2><div id="instant-grid"></div><div id="pocket-mode-overlay"><button id="pocket-exit-btn" onclick="haptic(15);openModal('pocket-confirm-modal')"><span class="material-symbols-rounded" style="font-size:32px">lock</span></button></div><dialog id="pocket-confirm-modal"><div class="modal-header"><span class="modal-title">Unlock Workspace?</span></div><div style="margin-bottom:25px;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.05);padding:12px;border-radius:12px"><input type="checkbox" class="custom-toggle" id="pocket-unlock-check"><label style="font-size:15px;font-weight:600">Confirm Unlock</label></div><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('pocket-confirm-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="confirmPocketExit()">Unlock</button></div></dialog><dialog id="custom-alert-modal"><div class="modal-header"><span class="modal-title" id="alert-title">Notice</span></div><p id="alert-msg" style="color:var(--text-muted);margin-bottom:25px;line-height:1.5;"></p><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10);closeModal('custom-alert-modal')">OK</button></dialog><dialog id="sideload-modal"><div class="modal-header"><span class="modal-title" id="sideload-title">Sideload</span><button class="icon-btn" style="width:48px;height:48px;border-radius:16px" onclick="haptic(10);closeSideload()"><span class="material-symbols-rounded">close</span></button></div><div id="sideload-extract-zone" style="padding:16px;text-align:center;border:2px dashed var(--glass-border);border-radius:16px;margin-bottom:15px;display:none;background:rgba(255,255,255,.05);"><span class="material-symbols-rounded" style="font-size:24px;vertical-align:middle;margin-right:8px;color:var(--text-muted)">move_up</span> Drop here to move to Main Show</div><div class="master-grid" style="margin-bottom:20px;"><button id="sideload-master-play" onclick="playSideloadNextCue(false, true)"><span class="material-symbols-rounded">play_arrow</span><span id="sideload-play-text">Start Show</span></button><button id="sideload-pause-btn" onclick="haptic(15);toggleSideloadPause()"><span class="material-symbols-rounded" id="sideload-pause-icon">pause</span></button><button id="sideload-reset-btn" onclick="haptic([15,30,15]);triggerSideloadReset()"><span class="material-symbols-rounded">restart_alt</span></button></div><div class="action-row" style="margin-bottom:15px"><button class="action-btn" onclick="haptic(15);$('sideload-file-input').click()"><span class="material-symbols-rounded">add_circle</span> Add Cue</button></div><div style="flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;padding:10px 24px 100px;margin:0 -24px;"><h2 style="margin:0 0 10px 5px" id="sideload-queue-label">Queue</h2><div id="sideload-track-list" style="display:flex;flex-direction:column;gap:12px;margin-bottom:25px;"></div><h2 style="margin:0 0 10px 5px">Instant Cues</h2><div id="sideload-instant-grid"></div></div></dialog><dialog id="nfc-write-modal" oncancel="cancelNfcWrite()"><div class="modal-header"><span class="modal-title">Program NFC</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="cancelNfcWrite()" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><div class="nfc-pulse"><span class="material-symbols-rounded" style="font-size:40px;color:var(--accent)">nfc</span></div><p id="nfc-write-text" style="text-align:center;font-weight:600;font-size:16px;margin:20px 0">Hold an NFC chip near your phone...</p><button class="action-btn" style="width:100%;border:none" onclick="cancelNfcWrite()">Cancel</button></dialog><dialog id="nfc-success-modal"><div class="modal-header"><span class="modal-title">Success!</span></div><div style="text-align:center;margin:20px 0"><span class="material-symbols-rounded" style="font-size:60px;color:#34c759">check_circle</span></div><button class="action-btn" style="width:100%;background:var(--accent);color:#fff;border:none" onclick="haptic(10);closeModal('nfc-success-modal')">Done</button></dialog><dialog id="projects-modal"><div class="modal-header"><span class="modal-title">My Shows</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('projects-modal')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><div id="projects-list-container" style="max-height:300px;overflow-y:auto;margin-bottom:20px"></div><div style="display:flex;gap:12px"><button class="action-btn" style="flex:1" onclick="haptic(15);$('import-file-input').click()"><span class="material-symbols-rounded">upload</span> Import</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);closeModal('projects-modal');openModal('new-show-modal')"><span class="material-symbols-rounded">add</span> New</button></div></dialog><dialog id="new-show-modal"><div class="modal-header"><span class="modal-title">Create Show</span></div><input type="text" id="new-show-name" placeholder="Show name..."><div style="display:flex;gap:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('new-show-modal')">Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);createNewProject()">Create</button></div></dialog><dialog id="edit-show-modal"><div class="modal-header"><span class="modal-title">Edit Show</span></div><input type="text" id="edit-show-name"><button class="action-btn" style="width:100%;margin-bottom:12px" onclick="haptic(15);exportShow()"><span class="material-symbols-rounded">download</span> Export File</button><button class="action-btn" style="width:100%;margin-bottom:20px;background:rgba(0,122,255,.15);color:var(--accent);border:1px solid var(--accent)" onclick="haptic(15);duplicateShow()"><span class="material-symbols-rounded">content_copy</span> Duplicate Show</button><div style="display:flex;gap:12px;margin-bottom:12px"><button class="action-btn" style="border:none" onclick="haptic(10);closeModal('edit-show-modal')" autofocus>Cancel</button><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);saveShowEdit()">Save</button></div><button class="btn-delete" onclick="haptic([30,50,30]);deleteShow()">Delete Show</button></dialog><dialog id="cue-menu-modal"><div class="modal-header"><span class="modal-title">Cue Options</span><button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('cue-menu-modal')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button></div><input type="text" id="rename-cue-input" placeholder="Name"><div style="display:flex;gap:12px"><button class="action-btn" style="flex:1;background:var(--accent);color:#fff;border:none" onclick="haptic(15);saveCueRename()">Rename</button></div><div class="action-row" style="margin-bottom:15px"><button class="action-btn" onclick="haptic(15);toggleCueSkip()"><span class="material-symbols-rounded" id="skip-cue-icon">block</span> <span id="skip-cue-text">Skip Cue</span></button><button class="action-btn" onclick="haptic(15);duplicateCue()"><span class="material-symbols-rounded">content_copy</span> Duplicate</button></div><div class="action-row" style="margin-bottom:0"><button class="action-btn" onclick="haptic(15);createGroupFromMenu()"><span class="material-symbols-rounded">folder</span> Create Group</button></div></dialog>
 
 <!-- Clean & Coherent App Settings -->
 <dialog id="app-settings">
@@ -250,7 +135,7 @@ body.tut-active dialog::backdrop {
         <button class="icon-btn" style="width:36px;height:36px;border-radius:12px" onclick="haptic(10);closeModal('app-settings')" autofocus><span class="material-symbols-rounded" style="font-size:20px">close</span></button>
     </div>
     
-    <div class="setting-row" id="app-theme-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
+    <div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
         <label>Theme</label>
         <div class="segmented-control" id="theme-controls">
             <button id="btn-auto" onclick="haptic(10);setTheme('auto')">Auto</button>
@@ -260,7 +145,7 @@ body.tut-active dialog::backdrop {
         </div>
     </div>
     
-    <div class="setting-row" id="app-lang-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
+    <div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto;">
         <label>Speech Language</label>
         <div class="segmented-control" id="lang-controls">
             <button id="lang-en" class="active" onclick="haptic(10);setLang('en-US')">English</button>
@@ -268,12 +153,12 @@ body.tut-active dialog::backdrop {
         </div>
     </div>
     
-    <div class="setting-row" id="app-size-row">
+    <div class="setting-row">
         <label style="flex-shrink:0; margin-right:15px;">UI Size</label>
         <input type="range" min="50" max="150" step="25" id="ui-size-slider" oninput="this.style.setProperty('--v', ((this.value-50)/100)*100+'%'); haptic(10);updSet('uiSize',this.value);applyUISize()" style="max-width:140px; margin-left:auto;">
     </div>
     
-    <div class="menu-nav-row" id="app-settings-fades-btn" onclick="haptic(10);closeModal('app-settings');openGlobalFadesModal()">
+    <div class="menu-nav-row" onclick="haptic(10);closeModal('app-settings');openGlobalFadesModal()">
         Fade In / Out
         <span class="material-symbols-rounded">chevron_right</span>
     </div>
@@ -291,10 +176,6 @@ body.tut-active dialog::backdrop {
             <div class="mini-row"><label>Pocket Mode</label><input type="checkbox" class="custom-toggle" id="pocket-toggle" onchange="haptic(10);updSet('pocketMode',this.checked)"></div>
             <div class="mini-row"><label>Strong Pocket Haptics</label><input type="checkbox" class="custom-toggle" id="strong-pocket-haptics-toggle" onchange="haptic(10);updSet('strongPocketHaptics',this.checked)"></div>
             <div class="mini-row"><label>NFC Tag Reader</label><input type="checkbox" class="custom-toggle" id="nfc-toggle" onchange="haptic(10);updSet('nfcEnabled',this.checked);toggleNFC(this.checked)"></div>
-            <div class="nested-nav-row" style="border-top: 1px solid var(--glass-border); padding: 16px 0;" onclick="haptic(10); closeModal('app-settings'); if (typeof openTutorial === 'function') setTimeout(() => openTutorial(0), 100)">
-                <span>Interactive Guide</span>
-                <span class="material-symbols-rounded" style="color:var(--accent)">play_circle</span>
-            </div>
             <details style="background:rgba(0,0,0,0.2);margin-top:10px;" onselect="haptic(10)">
                 <summary onclick="haptic(10)">Program NFC Tags</summary>
                 <div class="details-content" id="nfc-dynamic-list" style="padding-top:0;"></div>
@@ -526,25 +407,6 @@ body.tut-active dialog::backdrop {
     <div style="display:flex; gap:10px; padding: 0 20px 20px;"><button class="action-btn" style="border:none; padding:12px" onclick="closeTrimModal()">Cancel</button><button class="action-btn" style="flex:1; background:var(--accent); color:#fff; border:none; padding:12px" onclick="saveTrim()">Save</button></div>
 </dialog>
 
-<!-- Glowing, Interactive Fixed Viewport-Bottom Tutorial Panel -->
-<div id="tutorial-bar">
-    <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-        <div>
-            <span class="tut-step-indicator" id="tut-bar-step">Step 1</span>
-            <span class="tut-section-badge" id="tut-bar-badge">Onboarding</span>
-            <h4 id="tut-bar-title" style="margin: 4px 0 0 0; font-size: 16px; font-weight: 700;">Tutorial</h4>
-        </div>
-        <button class="icon-btn" style="width: 32px; height: 32px; border-radius: 10px; background: rgba(128,128,128,0.15); border: none;" onclick="if (typeof skipTutorial === 'function') skipTutorial()">
-            <span class="material-symbols-rounded" style="font-size: 16px;">close</span>
-        </button>
-    </div>
-    <p id="tut-bar-text" style="margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-main); font-weight: 500;"></p>
-    <div style="display: flex; justify-content: flex-end; gap: 8px;" id="tut-bar-actions">
-        <button class="action-btn" id="tut-bar-prev" style="padding: 8px 16px; font-size: 13px; border-radius: 10px; flex: none; width: auto;" onclick="if (typeof prevTutStep === 'function') prevTutStep()">Back</button>
-        <button class="action-btn" id="tut-bar-next" style="padding: 8px 16px; font-size: 13px; background: var(--accent); color: #fff; border-radius: 10px; flex: none; width: auto;" onclick="if (typeof nextTutStep === 'function') nextTutStep()">Next</button>
-    </div>
-</div>
-
 <script>  
 const $ = id => document.getElementById(id);  
 let tracks=[], curIdx=0, locked=!1, actId=null, activeCues=new Map(), activePads=new Map(), paused=!1, wakeLock=null;  
@@ -553,8 +415,7 @@ let defSet = {
     showProgress:!0, theme:'auto', lang:'en-US', uiSize:100, confirmReset:!1, autoPauseMic:!0, 
     pocketMode:!0, strongPocketHaptics:!1, nfcEnabled:!1, enableHaptics:!0, enableDragging:!0,
     globalFadeIn: 0, globalFadeOut: 0, globalFadeInCurve: 'linear', globalFadeOutCurve: 'linear',
-    gfInSkip: true, gfInPause: true, gfOutSkip: true, gfOutPause: true,
-    tutorialCompleted: false, advancedTutorialCompleted: false
+    gfInSkip: true, gfInPause: true, gfOutSkip: true, gfOutPause: true
 };  
 let settings = {...defSet, ...(JSON.parse(localStorage.getItem('mc_settings'))||{})};  
 let sortQueue, sortGrid, sortSideQueue, sortSideGrid, sortExtract;  
@@ -576,17 +437,8 @@ const haptic = p => {
     } 
 };  
 const showAlert = (t,m) => { $('alert-title').innerText=t; $('alert-msg').innerText=m; openModal('custom-alert-modal'); };  
-const openModal = id => { 
-    if(id==='app-settings') buildNfcMenu(); 
-    document.body.classList.add('modal-open'); 
-    $(id).showModal(); 
-    if (typeof evalTutorialStep === 'function') evalTutorialStep('openModal', id);
-};  
-const closeModal = id => { 
-    $(id).close(); 
-    if(!document.querySelectorAll('dialog[open]').length) document.body.classList.remove('modal-open'); 
-    if (typeof evalTutorialStep === 'function') evalTutorialStep('closeModal', id);
-};  
+const openModal = id => { if(id==='app-settings') buildNfcMenu(); document.body.classList.add('modal-open'); $(id).showModal(); };  
+const closeModal = id => { $(id).close(); if(!document.querySelectorAll('dialog[open]').length) document.body.classList.remove('modal-open'); };  
 
 // Returns Volume factor mapped safely
 const getCurveVal = (p, c) => c === 'exponential' ? (Math.pow(10, p) - 1) / 9 : c === 'logarithmic' ? Math.log10(1 + 9 * p) : p;
@@ -858,7 +710,7 @@ const save = () => db&&db.transaction('store','readwrite').objectStore('store').
 const saveSide = () => { if(actSideId){ let p=tracks.find(x=>x.id===actSideId); if(p){ p.showData=sideTrks.map(t=>({...t,blobUrl:undefined})); save(); } } };
 
 let cuePTm, cLng=!1, aMenuId=null, isSideMenu=!1;
-const stCuePrs = (e,id,s) => { if(e.target.closest('.drag-handle,.edit-trigger'))return; cLng=!1; cuePTm=setTimeout(()=>{haptic([30,40]); cLng=!0; aMenuId=id; isSideMenu=s; let t=(s?sideTrks:tracks).find(x=>x.id===id); $('rename-cue-input').value=t.name; let typeText = t.isCueGroup ? 'Group' : (t.isExternalShow ? 'Show' : 'Cue'); $('skip-cue-text').innerText=t.skip?`Unskip ${typeText}`:`Skip ${typeText}`; $('skip-cue-icon').innerText=t.skip?'play_circle':'block'; openModal('cue-menu-modal'); setTimeout(() => $('rename-cue-input').blur(), 10); if (typeof evalTutorialStep === 'function') evalTutorialStep('stCuePrs', {id, s}); },600); };
+const stCuePrs = (e,id,s) => { if(e.target.closest('.drag-handle,.edit-trigger'))return; cLng=!1; cuePTm=setTimeout(()=>{haptic([30,40]); cLng=!0; aMenuId=id; isSideMenu=s; let t=(s?sideTrks:tracks).find(x=>x.id===id); $('rename-cue-input').value=t.name; let typeText = t.isCueGroup ? 'Group' : (t.isExternalShow ? 'Show' : 'Cue'); $('skip-cue-text').innerText=t.skip?`Unskip ${typeText}`:`Skip ${typeText}`; $('skip-cue-icon').innerText=t.skip?'play_circle':'block'; openModal('cue-menu-modal'); setTimeout(() => $('rename-cue-input').blur(), 10); },600); };
 const ccCuePrs = () => clearTimeout(cuePTm);
 const clickCue = (id,s) => { if(cLng||locked)return; let tl=s?sideTrks:tracks, t=tl.find(x=>x.id===id); if(!t)return; t.type==='queue'?(s?(sideIdx=sideTrks.filter(x=>x.type==='queue').findIndex(x=>x.id===id),playSideloadNextCue(!0, true)):playCue(id)):(s?playSidePad(t):playPad(t)); };
 const updMenu = () => { isSideMenu?(saveSide(),renderSide()):(save(),render()); closeModal('cue-menu-modal'); };
@@ -867,13 +719,13 @@ const toggleCueSkip = () => { let t=(isSideMenu?sideTrks:tracks).find(x=>x.id===
 const duplicateCue = () => { let l=isSideMenu?sideTrks:tracks, i=l.findIndex(x=>x.id===aMenuId); if(i>-1){ let n=JSON.parse(JSON.stringify(l[i])); n.id='id'+Date.now(); n.name+=' (Copy)'; l.splice(i+1,0,n); updMenu(); } };
 const createGroupFromMenu = () => { let l=isSideMenu?sideTrks:tracks, i=l.findIndex(x=>x.id===aMenuId); if(i>-1){ let t=l[i], n={id:'id'+Date.now(), name:'Cue Group '+(tracks.filter(x=>x.isCueGroup).length+1), type:t.type, delay:0, fadeIn:0, fadeOut:0, volume:1, autoFollow:!1, overlap:0, postDelay:0, triggerPhrase:'', globalVoice:!1, isExternalShow:!0, isCueGroup:!0, autoStartShow:!1, skip:!1, showData:[t]}; l.splice(i,1,n); updMenu(); } };
 
-const getHTML = (t,i,s,c,p) => { let m=t.triggerPhrase?`<span class="material-symbols-rounded" style="color:var(--text-muted);font-size:14px;margin-left:4px;vertical-align:middle">mic</span>${t.globalVoice?'<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;margin-left:2px;vertical-align:middle">public</span>':''}`:''; let bg=t.isBackground?`<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;margin-left:4px;vertical-align:middle">all_inclusive</span>`:''; let si=t.isExternalShow?`<span class="material-symbols-rounded" style="opacity:0.6;font-size:16px;margin-left:6px;vertical-align:middle">${t.isCueGroup?'folder':'layers'}</span>`:''; let ns=t.isExternalShow?'is-nested-show':'', sk=t.skip?'is-skipped':'', pr=s?'side-':'', ev=`oncontextmenu="return false;" onpointerdown="stCuePrs(event,'${t.id}',${s})" onpointerup="ccCuePrs()" onpointerleave="ccCuePrs()" onpointercancel="ccCuePrs()"`; let bCol=t.borderColor?`style="border-color:${t.borderColor};"`:''; return t.type==='queue'?`<div id="${pr}tile-${t.id}" class="tile ${ns} ${c?'is-current':''} ${p?'is-playing':''}" ${bCol}><div class="progress-fill" id="${pr}prog-${t.id}"></div><div class="tile-content"><span class="material-symbols-rounded drag-handle">drag_indicator</span><div class="tile-info" style="cursor:pointer" ${ev} onclick="clickCue('${t.id}',${s})"><span class="tile-name-text ${sk}">${i}. ${t.name}${m}${bg}${si}</span></div><button class="icon-btn edit-trigger" id="${pr}edit-${t.id}" style="width:40px;height:40px" onclick="event.stopPropagation();haptic(10);openSet('${t.id}',${s})"><span class="material-symbols-rounded" style="font-size:20px">settings</span></button></div></div>` : `<div id="${pr}tile-${t.id}" class="cue-pad ${ns} ${p?'is-playing':''}" ${bCol} ${ev} onclick="if(!event.target.closest('.pad-settings-trigger,.drag-handle'))clickCue('${t.id}',${s})"><div class="progress-fill" id="${pr}prog-${t.id}"></div><span class="material-symbols-rounded drag-handle pad-drag-handle">drag_indicator</span><div class="pad-number">${i}</div><span class="${sk}">${t.name}${m}${bg}${si}</span><div class="pad-settings-trigger edit-trigger" id="${pr}edit-${t.id}" onclick="event.stopPropagation();haptic(10);openSet('${t.id}',${s})"><span class="material-symbols-rounded" style="font-size:18px">settings</span></div></div>`; };
+const getHTML = (t,i,s,c,p) => { let m=t.triggerPhrase?`<span class="material-symbols-rounded" style="color:var(--text-muted);font-size:14px;margin-left:4px;vertical-align:middle">mic</span>${t.globalVoice?'<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;margin-left:2px;vertical-align:middle">public</span>':''}`:''; let bg=t.isBackground?`<span class="material-symbols-rounded" style="color:var(--accent);font-size:14px;margin-left:4px;vertical-align:middle">all_inclusive</span>`:''; let si=t.isExternalShow?`<span class="material-symbols-rounded" style="opacity:0.6;font-size:16px;margin-left:6px;vertical-align:middle">${t.isCueGroup?'folder':'layers'}</span>`:''; let ns=t.isExternalShow?'is-nested-show':'', sk=t.skip?'is-skipped':'', pr=s?'side-':'', ev=`oncontextmenu="return false;" onpointerdown="stCuePrs(event,'${t.id}',${s})" onpointerup="ccCuePrs()" onpointerleave="ccCuePrs()" onpointercancel="ccCuePrs()"`; let bCol=t.borderColor?`style="border-color:${t.borderColor};"`:''; return t.type==='queue'?`<div id="${pr}tile-${t.id}" class="tile ${ns} ${c?'is-current':''} ${p?'is-playing':''}" ${bCol}><div class="progress-fill" id="${pr}prog-${t.id}"></div><div class="tile-content"><span class="material-symbols-rounded drag-handle">drag_indicator</span><div class="tile-info" style="cursor:pointer" ${ev} onclick="clickCue('${t.id}',${s})"><span class="tile-name-text ${sk}">${i}. ${t.name}${m}${bg}${si}</span></div><button class="icon-btn edit-trigger" style="width:40px;height:40px" onclick="event.stopPropagation();haptic(10);openSet('${t.id}',${s})"><span class="material-symbols-rounded" style="font-size:20px">settings</span></button></div></div>` : `<div id="${pr}tile-${t.id}" class="cue-pad ${ns} ${p?'is-playing':''}" ${bCol} ${ev} onclick="if(!event.target.closest('.pad-settings-trigger,.drag-handle'))clickCue('${t.id}',${s})"><div class="progress-fill" id="${pr}prog-${t.id}"></div><span class="material-symbols-rounded drag-handle pad-drag-handle">drag_indicator</span><div class="pad-number">${i}</div><span class="${sk}">${t.name}${m}${bg}${si}</span><div class="pad-settings-trigger edit-trigger" onclick="event.stopPropagation();haptic(10);openSet('${t.id}',${s})"><span class="material-symbols-rounded" style="font-size:18px">settings</span></div></div>`; };
 const drwLst = (l,qI,pI,s) => { let q='',p='',qi=1,pi=1; l.forEach((t,i)=>{t.type==='queue'?q+=getHTML(t,qi++,s,s?i===sideIdx:i===curIdx,(s?actSideCues:activeCues).has(t.id)):p+=getHTML(t,pi++,s,!1,(s?actSidePads:activePads).has(t.id));}); $(qI).innerHTML=q; $(pI).innerHTML=p; };
 const render = () => drwLst(tracks,'track-list','instant-grid',!1);
 const renderSide = () => drwLst(sideTrks,'sideload-track-list','sideload-instant-grid',!0);
 
-const mkTrk = (f,d) => ({id:'id'+Date.now()+Math.random().toString(36).slice(2),name:f?f.name.replace(/\.[^/.]+$/,""):"★ Loaded Audio Cue",type:'queue',delay:0,fadeIn:0,fadeOut:0,volume:1,autoFollow:!1,overlap:0,postDelay:0,triggerPhrase:'',globalVoice:!1,isExternalShow:!!d,isCueGroup:!1,showData:d,autoStartShow:!1,skip:!1,trimStart:0,trimEnd:0,borderColor:null,notes:'',notesTrigger:'start',notesDuration:0,notesSplit:!1,isBackground:!1,bgLoop:!0,duckVol:0.3,duckTime:1.0,unduckTime:1.0,duckCurve:'linear',fadeInCurve:'linear',fadeOutCurve:'linear',stopsBg:!1});
-const hFiles = async (i,l,r,s) => { for(let f of Array.from(i.files)){ if(f.name.endsWith('.magic')||f.name.endsWith('.json')) l.push(mkTrk(f,JSON.parse(await f.text()))); else{ let b=new Blob([await f.arrayBuffer()],{type:f.type}), t=mkTrk(f,null); t.blobUrl=URL.createObjectURL(b); t.file=b; l.push(t); } } r(); s(); i.value=''; if (typeof evalTutorialStep === 'function') evalTutorialStep('hFiles', {files: i.files}); };
+const mkTrk = (f,d) => ({id:'id'+Date.now()+Math.random().toString(36).slice(2),name:f.name.replace(/\.[^/.]+$/,""),type:'queue',delay:0,fadeIn:0,fadeOut:0,volume:1,autoFollow:!1,overlap:0,postDelay:0,triggerPhrase:'',globalVoice:!1,isExternalShow:!!d,isCueGroup:!1,showData:d,autoStartShow:!1,skip:!1,trimStart:0,trimEnd:0,borderColor:null,notes:'',notesTrigger:'start',notesDuration:0,notesSplit:!1,isBackground:!1,bgLoop:!0,duckVol:0.3,duckTime:1.0,unduckTime:1.0,duckCurve:'linear',fadeInCurve:'linear',fadeOutCurve:'linear',stopsBg:!1});
+const hFiles = async (i,l,r,s) => { for(let f of Array.from(i.files)){ if(f.name.endsWith('.magic')||f.name.endsWith('.json')) l.push(mkTrk(f,JSON.parse(await f.text()))); else{ let b=new Blob([await f.arrayBuffer()],{type:f.type}), t=mkTrk(f,null); t.blobUrl=URL.createObjectURL(b); t.file=b; l.push(t); } } r(); s(); i.value=''; };
 const handleFiles = i => hFiles(i,tracks,render,save); const handleSideloadFiles = i => hFiles(i,sideTrks,renderSide,saveSide);
 
 const exportShow = async () => { let p=projectsList.find(x=>x.id===editProjId); if(!p)return; db.transaction('store').objectStore('store').get('proj_'+p.id).onsuccess=async r=>{ let ex=[]; $('edit-show-name').value="Exporting..."; for(let t of(r.target.result||[])){ if(t.isExternalShow){ let se=[]; for(let st of t.showData){ if(st.file) se.push({...st,fileData:await new Promise(res=>{let fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(st.file);}),file:undefined}); else se.push({...st}); } ex.push({...t,showData:se}); }else if(t.file) ex.push({...t,fileData:await new Promise(res=>{let fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(t.file);}),file:undefined}); else ex.push({...t}); } let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(ex)],{type:'application/json'})); a.download=p.name+'.magic'; a.click(); $('edit-show-name').value=p.name; }; };
@@ -1074,12 +926,12 @@ const openSet = (id,s=!1) => {
     let h=`<div class="setting-row" style="flex-direction:column;align-items:flex-start; min-height:auto; padding-bottom:20px"><label style="font-size:15px;font-weight:600">Cue Type</label><div class="segmented-control"><button class="${isQ?'active':''}" onclick="haptic(10);updTrk('type','queue')" style="font-size:14px">Main</button><button class="${!isQ?'active':''}" onclick="haptic(10);updTrk('type','pad')" style="font-size:14px">Instant</button></div></div>`; 
     
     if(t.isExternalShow) h+=`<div class="setting-row"><label style="font-size:15px;font-weight:600">Auto-Start</label><input type="checkbox" class="custom-toggle" ${t.autoStartShow?'checked':''} onchange="haptic(10);updTrk('autoStartShow',this.checked)"></div>`; 
-    else h+=`<div class="setting-row" id="cue-volume-slider-row"><label style="font-size:15px;font-weight:600">Volume</label><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="this.style.setProperty('--v', this.value*100+'%'); haptic(5);updTrk('volume',this.value)" style="flex:1; margin-left:15px; --v:${(t.volume??1)*100}%"></div>`; 
+    else h+=`<div class="setting-row"><label style="font-size:15px;font-weight:600">Volume</label><input type="range" min="0" max="1" step="0.05" value="${t.volume??1}" oninput="this.style.setProperty('--v', this.value*100+'%'); haptic(5);updTrk('volume',this.value)" style="flex:1; margin-left:15px; --v:${(t.volume??1)*100}%"></div>`; 
     
-    h+=`<details id="cue-voice-details" onselect="haptic(10)"><summary onclick="haptic(10)">Voice Triggers</summary><div class="details-content" style="padding:0 16px 16px;"><div class="mini-row"><label style="font-size:14px; font-weight:500;">Phrase</label><input type="text" style="width:140px;margin:0;padding:8px 12px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--input-bg); border-radius:10px; border:1px solid var(--glass-border); color:var(--text-main);" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div><div class="mini-row"><label style="font-size:14px; font-weight:500;">Global</label><input type="checkbox" class="custom-toggle" ${t.globalVoice?'checked':''} onchange="haptic(10);updTrk('globalVoice',this.checked)"></div></div></details>`; 
+    h+=`<details onselect="haptic(10)"><summary onclick="haptic(10)">Voice Triggers</summary><div class="details-content" style="padding:0 16px 16px;"><div class="mini-row"><label style="font-size:14px; font-weight:500;">Phrase</label><input type="text" style="width:140px;margin:0;padding:8px 12px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--input-bg); border-radius:10px; border:1px solid var(--glass-border); color:var(--text-main);" value="${t.triggerPhrase||''}" oninput="updTrk('triggerPhrase',this.value)"></div><div class="mini-row"><label style="font-size:14px; font-weight:500;">Global</label><input type="checkbox" class="custom-toggle" ${t.globalVoice?'checked':''} onchange="haptic(10);updTrk('globalVoice',this.checked)"></div></div></details>`; 
     
     if(!t.isExternalShow){ 
-        h+=`<details id="cue-advanced-details">
+        h+=`<details>
                 <summary onclick="haptic(10)">Advanced Settings</summary>
                 <div class="details-content" style="padding:0; display:flex; flex-direction:column; gap:0;">`;
             
@@ -1486,7 +1338,6 @@ const updTrk = (k,v) => {
         if(k==='volume')[activeCues,activePads,actSideCues,actSidePads].forEach(m=>m.has(actId)&&(m.get(actId).volume=t[k])); 
         if(k==='type')closeModal('settings-modal'); 
         isSetSide?(saveSide(),renderSide()):(save(),render()); 
-        if (typeof evalTutorialStep === 'function') evalTutorialStep('updTrk', {k, v});
     } 
 };  
 const deleteTrack = () => { 
@@ -1868,7 +1719,7 @@ const initSpeech = async () => {
     rec.lang=settings.lang; 
     rec.onstart=()=>{prLen=0;$('mic-btn').className='mic-active';$('mic-icon').innerText='mic';spLog=["Listening..."];upSp("");}; 
     rec.onresult=e=>{ let fl=''; for(let i=e.resultIndex;i<e.results.length;++i)fl+=e.results[i][0].transcript; let nw=fl.substring(prLen); $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">&gt;</span> ')+'<br><span style="color:var(--accent);font-weight:800">&gt;</span> '+fl; $('speech-debug').scrollTop=$('speech-debug').scrollHeight; let ss=nw.toLowerCase().replace(/[.,!?]/g,'').trim(); if(!ss)return; let trg=!1, q=tracks.filter(x=>x.type==='queue'); if(curIdx<q.length&&q[curIdx].triggerPhrase&&!q[curIdx].globalVoice&&ss.includes(q[curIdx].triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);playNextCue();trg=!0;} if(!trg)for(let t of tracks)if(t.globalVoice&&t.triggerPhrase&&ss.includes(t.triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);t.type==='queue'?playCue(t.id):playPad(t);trg=!0;break;} if(trg)prLen=fl.length; }; 
-    rec.onerror=()=>{spErr=!1;if(micOn&&!isPly()){isLis=!1;micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';}}; 
+    rec.onerror=()=>{spErr=!0;if(micOn&&!isPly()){isLis=!1;micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';}}; 
     rec.onend=()=>{prLen=0;if(isLis&&micOn&&!spErr)try{rec.start();}catch(e){} spErr=!1;}; 
 };  
 const mngMic = () => { if(!micOn||!rec)return; if(settings.autoPauseMic&&isPly()){isLis=!1;try{rec.stop();}catch(e){}$('mic-btn').className='mic-paused';$('mic-icon').innerText='mic_off';spLog=["Mic paused..."];upSp("");}else if(!isLis){isLis=!0;try{rec.start();}catch(e){}} };  
@@ -1919,12 +1770,5 @@ const initSortables = () => {
 
 if('mediaSession' in navigator){ navigator.mediaSession.setActionHandler('nexttrack',()=>playNextCue(false, true)); navigator.mediaSession.setActionHandler('play',()=>paused?toggleGlobalPause():playNextCue(false, true)); navigator.mediaSession.setActionHandler('pause',()=>!paused&&toggleGlobalPause()); }  
 window.addEventListener('load',()=>sessionStorage.getItem('mc_pocket')==='true'&&setTimeout(()=>toggleLock(!0),500));  
-document.fonts.ready.then(()=>{
-    document.body.style.opacity="1";
-    if (typeof initTutorial === 'function') {
-        initTutorial();
-    }
-}); 
-applySettings(); initDB(); initSpeech();  
+document.fonts.ready.then(()=>document.body.style.opacity="1"); applySettings(); initDB(); initSpeech();  
 </script></body></html>
-             
