@@ -526,6 +526,25 @@ body.tut-active dialog::backdrop {
     <div style="display:flex; gap:10px; padding: 0 20px 20px;"><button class="action-btn" style="border:none; padding:12px" onclick="closeTrimModal()">Cancel</button><button class="action-btn" style="flex:1; background:var(--accent); color:#fff; border:none; padding:12px" onclick="saveTrim()">Save</button></div>
 </dialog>
 
+<!-- Glowing, Interactive Fixed Viewport-Bottom Tutorial Panel -->
+<div id="tutorial-bar">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+        <div>
+            <span class="tut-step-indicator" id="tut-bar-step">Step 1</span>
+            <span class="tut-section-badge" id="tut-bar-badge">Onboarding</span>
+            <h4 id="tut-bar-title" style="margin: 4px 0 0 0; font-size: 16px; font-weight: 700;">Tutorial</h4>
+        </div>
+        <button class="icon-btn" style="width: 32px; height: 32px; border-radius: 10px; background: rgba(128,128,128,0.15); border: none;" onclick="if (typeof skipTutorial === 'function') skipTutorial()">
+            <span class="material-symbols-rounded" style="font-size: 16px;">close</span>
+        </button>
+    </div>
+    <p id="tut-bar-text" style="margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-main); font-weight: 500;"></p>
+    <div style="display: flex; justify-content: flex-end; gap: 8px;" id="tut-bar-actions">
+        <button class="action-btn" id="tut-bar-prev" style="padding: 8px 16px; font-size: 13px; border-radius: 10px; flex: none; width: auto;" onclick="if (typeof prevTutStep === 'function') prevTutStep()">Back</button>
+        <button class="action-btn" id="tut-bar-next" style="padding: 8px 16px; font-size: 13px; background: var(--accent); color: #fff; border-radius: 10px; flex: none; width: auto;" onclick="if (typeof nextTutStep === 'function') nextTutStep()">Next</button>
+    </div>
+</div>
+
 <script>  
 const $ = id => document.getElementById(id);  
 let tracks=[], curIdx=0, locked=!1, actId=null, activeCues=new Map(), activePads=new Map(), paused=!1, wakeLock=null;  
@@ -1849,7 +1868,7 @@ const initSpeech = async () => {
     rec.lang=settings.lang; 
     rec.onstart=()=>{prLen=0;$('mic-btn').className='mic-active';$('mic-icon').innerText='mic';spLog=["Listening..."];upSp("");}; 
     rec.onresult=e=>{ let fl=''; for(let i=e.resultIndex;i<e.results.length;++i)fl+=e.results[i][0].transcript; let nw=fl.substring(prLen); $('speech-text').innerHTML=spLog.join('<br><span style="color:var(--accent);font-weight:800">&gt;</span> ')+'<br><span style="color:var(--accent);font-weight:800">&gt;</span> '+fl; $('speech-debug').scrollTop=$('speech-debug').scrollHeight; let ss=nw.toLowerCase().replace(/[.,!?]/g,'').trim(); if(!ss)return; let trg=!1, q=tracks.filter(x=>x.type==='queue'); if(curIdx<q.length&&q[curIdx].triggerPhrase&&!q[curIdx].globalVoice&&ss.includes(q[curIdx].triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);playNextCue();trg=!0;} if(!trg)for(let t of tracks)if(t.globalVoice&&t.triggerPhrase&&ss.includes(t.triggerPhrase.toLowerCase().replace(/[.,!?]/g,'').trim())){haptic(30);t.type==='queue'?playCue(t.id):playPad(t);trg=!0;break;} if(trg)prLen=fl.length; }; 
-    rec.onerror=()=>{spErr=!0;if(micOn&&!isPly()){isLis=!1;micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';}}; 
+    rec.onerror=()=>{spErr=!1;if(micOn&&!isPly()){isLis=!1;micOn=!1;$('mic-btn').className='';$('mic-icon').innerText='mic_off';}}; 
     rec.onend=()=>{prLen=0;if(isLis&&micOn&&!spErr)try{rec.start();}catch(e){} spErr=!1;}; 
 };  
 const mngMic = () => { if(!micOn||!rec)return; if(settings.autoPauseMic&&isPly()){isLis=!1;try{rec.stop();}catch(e){}$('mic-btn').className='mic-paused';$('mic-icon').innerText='mic_off';spLog=["Mic paused..."];upSp("");}else if(!isLis){isLis=!0;try{rec.start();}catch(e){}} };  
@@ -1908,3 +1927,4 @@ document.fonts.ready.then(()=>{
 }); 
 applySettings(); initDB(); initSpeech();  
 </script></body></html>
+             
