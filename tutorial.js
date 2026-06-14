@@ -210,12 +210,23 @@
         }
     };
 
-    // Resolves a wrapper/parent container elements to prevent breaking layout flow of inner inline rows
+    // Resolves a outer container elements to prevent breaking horizontal layouts
     const getSafeInsertionPoint = (el) => {
         if (!el) return null;
-        const row = el.closest('.setting-row') || el.closest('.setting-item') || el.closest('label') || el.closest('.control-row') || el.closest('.voice-trigger-row');
-        if (row) return row;
-        return el;
+        
+        // Find outer block wrapper first
+        let container = el.closest('.setting-row') || el.closest('.setting-item') || el.closest('.control-row') || el.closest('.voice-trigger-row');
+        
+        // Fallback: If inside a label (like switches), step up to its block parent row
+        if (!container) {
+            const label = el.closest('label');
+            if (label) {
+                container = label.parentElement;
+            } else {
+                container = el.parentElement;
+            }
+        }
+        return container || el;
     };
 
     // Absolute screen positioning system with an expanded 24px breathing gap
@@ -530,6 +541,9 @@
               background: rgba(128,128,128,0.06) !important;
               display: flex !important;
               box-sizing: border-box !important;
+              flex: 1 0 100% !important;
+              grid-column: 1 / -1 !important;
+              clear: both !important;
             }
             body.tut-active dialog         { backdrop-filter: none !important; }
             body.tut-active dialog::backdrop { backdrop-filter: none !important; }
@@ -661,29 +675,34 @@
                 }
             }
 
-            // Rename Click Execution (Step 10 → 11 transition)
+            // Rename Execution Check (Step 10 → 11 transition)
             else if (window.tutStep === 9) {
                 const renameInput = $_tut('rename-cue-input');
-                if (renameInput) {
-                    const renameBtn = renameInput.parentElement.querySelector('button') || renameInput.closest('.setting-row')?.querySelector('button');
-                    if (e.target === renameInput || e.target === renameBtn || (renameBtn && renameBtn.contains(e.target))) {
-                        setTimeout(() => { if (window.tutStep === 9) window.openTutorial(10); }, 150);
-                    }
+                const isInputClick = e.target === renameInput;
+                const isRenameBtnClick = e.target.tagName === 'BUTTON' && e.target.textContent.toLowerCase().includes('rename');
+                const isModalActionClick = e.target.closest('#cue-menu-modal') && e.target.textContent.toLowerCase().includes('rename');
+
+                if (isInputClick || isRenameBtnClick || isModalActionClick) {
+                    setTimeout(() => { if (window.tutStep === 9) window.openTutorial(10); }, 150);
                 }
             }
 
-            // Skip Cue Click Execution (Step 11 → 12 transition)
+            // Skip Cue Execution Check (Step 11 → 12 transition)
             else if (window.tutStep === 10) {
                 const skipBtn = $_tut('ctx-skip-btn');
-                if (skipBtn && (e.target === skipBtn || skipBtn.contains(e.target))) {
+                const clickedSkip = (skipBtn && (e.target === skipBtn || skipBtn.contains(e.target))) || 
+                                    (e.target.closest('button') && e.target.closest('button').textContent.toLowerCase().includes('skip'));
+                if (clickedSkip) {
                     setTimeout(() => { if (window.tutStep === 10) window.openTutorial(11); }, 150);
                 }
             }
 
-            // Duplicate Click Execution (Step 12 → 13 transition)
+            // Duplicate Execution Check (Step 12 → 13 transition)
             else if (window.tutStep === 11) {
                 const dupBtn = $_tut('ctx-dup-btn');
-                if (dupBtn && (e.target === dupBtn || dupBtn.contains(e.target))) {
+                const clickedDup = (dupBtn && (e.target === dupBtn || dupBtn.contains(e.target))) || 
+                                   (e.target.closest('button') && e.target.closest('button').textContent.toLowerCase().includes('duplicate'));
+                if (clickedDup) {
                     setTimeout(() => { if (window.tutStep === 11) window.openTutorial(12); }, 150);
                 }
             }
