@@ -1,8 +1,3 @@
-/**
- * Magic Cues Pro - Fully Self-Contained Onboarding & Play/Pause Controller
- * Dynamically injects styling, guides, and interception hooks without touching index.html.
- */
-
 (function() {
     // Local safe utility selector to avoid namespace collisions with index.html
     const $_tut = id => document.getElementById(id);
@@ -35,7 +30,7 @@
         }
     };
 
-    // Onboarding Steps Array (10 Highly Detailed Interactive Modules)
+    // Onboarding Steps Array (10 Master Steps Covering All Core Functions)
     const tutSteps = [
         {
             title: "Import Your Music",
@@ -48,7 +43,8 @@
             title: "Access Cue Settings", 
             badge: "Step 2 of 10", 
             text: "Great! Your track is loaded. Tap the <strong>Settings Gear (⚙)</strong> on the right of the cue card to open its options.", 
-            target: () => document.querySelector('.tile .edit-trigger'), 
+            target: () => document.querySelector('.tile .edit-trigger'),
+            alignTo: () => document.querySelector('.tile'),
             waitForAction: true 
         },
         { 
@@ -83,14 +79,15 @@
             title: "Cue Context Menu", 
             badge: "Step 7 of 10", 
             text: "<strong>Long-press</strong> (press and hold) anywhere on the middle of the cue card to open the quick actions context menu.", 
-            target: () => document.querySelector('.tile-info'), 
+            target: () => document.querySelector('.tile'),
+            alignTo: () => document.querySelector('.tile'),
             waitForAction: true 
         },
         { 
             title: "Context Menu Options", 
             badge: "Step 8 of 10", 
-            text: "In this panel, you can duplicate cues, compile cue groups, or tap <strong>Skip Cue</strong> to bypass a track during live performances. Tap <strong>Close (X)</strong> when done.", 
-            target: () => $_tut('cue-menu-modal'), 
+            text: "In this panel, you can duplicate cues, compile cue groups, or tap <strong>Skip Cue</strong> to bypass a track during live performances. Tap the <strong>Close (X)</strong> cross icon on the top right when done.", 
+            target: () => document.querySelector('#cue-menu-modal .icon-btn'), 
             waitForAction: true 
         },
         { 
@@ -149,8 +146,8 @@
         }
     };
 
-    // Absolute screen positioning system with a 24px targeted gap [2]
-    const positionPopover = (targetEl) => {
+    // Absolute screen positioning system with an expanded 24px breathing gap [2]
+    const positionPopover = (targetEl, alignEl = null) => {
         const tutBar = $_tut('tutorial-bar');
         if (!tutBar || !targetEl) return;
 
@@ -182,6 +179,7 @@
 
         // Bounding rect math [2]
         const rect = targetEl.getBoundingClientRect();
+        const alignRect = alignEl ? alignEl.getBoundingClientRect() : rect;
         const barWidth = 320;
         const viewWidth = window.innerWidth;
         const viewHeight = window.innerHeight;
@@ -203,9 +201,13 @@
             arrowDirection = 'bottom';
         }
 
-        // Horizontal alignment math centered over targets [2]
-        const targetCenter = rect.left + rect.width / 2;
-        let left = targetCenter - barWidth / 2;
+        // Horizontal alignment: right-aligned if specified, else centered [2]
+        let left = 0;
+        if (alignEl) {
+            left = alignRect.right - barWidth;
+        } else {
+            left = (rect.left + rect.width / 2) - barWidth / 2;
+        }
 
         // Prevent clipping out of screen boundaries [2]
         left = Math.max(12, Math.min(viewWidth - barWidth - 12, left));
@@ -223,18 +225,24 @@
         tutBar.style.background = 'var(--modal-bg)';
         tutBar.style.borderRadius = '24px';
 
+        // Point the arrow directly at the target's center, even if card is right-aligned [2]
+        const targetCenter = rect.left + rect.width / 2;
         updateArrow(arrowDirection, targetCenter - left);
     };
 
     window.adjustTutorialBarParent = () => {
         const step = tutSteps[window.tutStep];
         let targetEl = null;
+        let alignEl = null;
         if (step && typeof step.target === 'function') {
             targetEl = step.target();
         }
+        if (step && typeof step.alignTo === 'function') {
+            alignEl = step.alignTo();
+        }
 
         if (targetEl) {
-            positionPopover(targetEl);
+            positionPopover(targetEl, alignEl);
         } else {
             const tutBar = $_tut('tutorial-bar');
             if (tutBar) {
@@ -266,6 +274,17 @@
 
         window.tutStep = stepIdx;
         document.body.classList.add('tut-active');
+
+        // Save active step index to prevent resets midway [1]
+        localStorage.setItem('mc_tutorial_step', stepIdx);
+
+        if (stepIdx === 2) {
+            const cueMenuModal = $_tut('cue-menu-modal');
+            if (cueMenuModal && cueMenuModal.hasAttribute('open')) {
+                cueMenuModal.close();
+                document.body.classList.remove('modal-open');
+            }
+        }
 
         const step = tutSteps[window.tutStep];
         if (!step) return;
@@ -308,8 +327,9 @@
         window.tutActive = false;
         document.body.classList.remove('tut-active');
         
-        // Save completion status completely decoupled from the settings scope to prevent reloads
+        // Save completion status completely decoupled from settings to prevent reloads [1]
         localStorage.setItem('mc_tutorial_completed', 'true');
+        localStorage.removeItem('mc_tutorial_step');
 
         $_tut('tutorial-bar').style.display = 'none';
         window.adjustTutorialBarParent();
@@ -502,9 +522,11 @@
                 `;
                 guideRow.addEventListener('click', () => {
                     triggerTutHaptic(10);
-                    // Dismiss app-settings modal cleanly before launching guide on home screen
-                    if (typeof window.closeModal === 'function') {
-                        window.closeModal('app-settings');
+                    // Native HTML dialog dismissal to bypass window namespace scoping blocks [1]
+                    const appSettingsDialogNode = $_tut('app-settings');
+                    if (appSettingsDialogNode && appSettingsDialogNode.hasAttribute('open')) {
+                        appSettingsDialogNode.close();
+                        document.body.classList.remove('modal-open');
                     }
                     setTimeout(() => {
                         window.openTutorial(0);
@@ -606,7 +628,9 @@
         // 7. Decoupled tutorial completion check via local storage
         const isCompleted = localStorage.getItem('mc_tutorial_completed') === 'true';
         if (!isCompleted) {
-            setTimeout(() => window.openTutorial(0), 1200);
+            // Restore active step from storage to prevent midway resets
+            const savedStep = parseInt(localStorage.getItem('mc_tutorial_step')) || 0;
+            setTimeout(() => window.openTutorial(savedStep), 1200);
         }
     };
 
