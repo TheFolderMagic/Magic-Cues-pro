@@ -1,3 +1,8 @@
+/**
+ * Magic Cues Pro - Fully Self-Contained Onboarding & Play/Pause Controller
+ * Dynamically injects styling, guides, and interception hooks without touching index.html.
+ */
+
 (function() {
     // Local safe utility selector to avoid namespace collisions with index.html
     const $_tut = id => document.getElementById(id);
@@ -30,7 +35,7 @@
         }
     };
 
-    // Onboarding Steps Array (10 Master Steps Covering All Core Functions)
+    // Onboarding Steps Array (10 Highly Detailed Interactive Modules)
     const tutSteps = [
         {
             title: "Import Your Music",
@@ -49,22 +54,22 @@
         { 
             title: "Individual Volume Level", 
             badge: "Step 3 of 10", 
-            text: "Drag the <strong>Volume Slider</strong> to adjust this track's playback volume. Tapping the slider will proceed.", 
-            target: () => document.querySelector('#cue-volume-slider-row input[type="range"]'), 
+            text: "Drag the <strong>Volume Slider</strong> to set a custom playback volume level. Tapping or sliding the range input will proceed.", 
+            target: () => $_tut('cue-volume-slider-row'), 
             waitForAction: true 
         },
         { 
             title: "Voice Command Setup", 
             badge: "Step 4 of 10", 
-            text: "Tap on <strong>Voice Triggers</strong> to expand spoken triggers. Assign a custom phrase here to fire this cue hands-free.", 
-            target: () => document.querySelector('#cue-voice-details summary'), 
+            text: "Tapping <strong>Voice Triggers</strong> expands spoken trigger configurations. Assign a phrase here to fire this cue hands-free.", 
+            target: () => $_tut('cue-voice-details'), 
             waitForAction: true 
         },
         { 
             title: "Timelines & Ducking", 
             badge: "Step 5 of 10", 
-            text: "Tap on <strong>Advanced Settings</strong> to configure loop parameters, pre-delays, custom fades, and automatic audio ducking.", 
-            target: () => document.querySelector('#cue-advanced-details summary'), 
+            text: "Tapping <strong>Advanced Settings</strong> expands timelines. Here you can configure custom fade-in/out curves, infinite track looping, or activate **automatic background audio ducking**.", 
+            target: () => $_tut('cue-advanced-details'), 
             waitForAction: true 
         },
         { 
@@ -84,21 +89,21 @@
         { 
             title: "Context Menu Options", 
             badge: "Step 8 of 10", 
-            text: "In this panel, you can copy, group, or tap <strong>Skip Cue</strong> to bypass a track during performances. Tap <strong>Close (X)</strong> to exit.", 
-            target: () => document.querySelector('#cue-menu-modal .icon-btn'), 
+            text: "In this panel, you can duplicate cues, compile cue groups, or tap <strong>Skip Cue</strong> to bypass a track during live performances. Tap <strong>Close (X)</strong> when done.", 
+            target: () => $_tut('cue-menu-modal'), 
             waitForAction: true 
         },
         { 
             title: "Manage Shows", 
             badge: "Step 9 of 10", 
-            text: "Tap the <strong>Show Title Header</strong> at the top left to manage projects, restore show backups, or export show configurations.", 
+            text: "Tap the <strong>Show Title Header</strong> at the top left to manage projects, restore show backups (with `.magic` extensions), or export configurations.", 
             target: () => $_tut('show-title-header'), 
             waitForAction: true 
         },
         { 
-            title: "Guide Concluded", 
+            title: "Onboarding Concluded", 
             badge: "Step 10 of 10", 
-            text: "Guide complete! Open App Settings anytime to replay this tutorial. Tap <strong>Finish</strong> to close and start performing.", 
+            text: "Guide complete! Replay this interactive guide at any time from App Settings. Tap <strong>Finish</strong> to close and start performing.", 
             target: null, 
             waitForAction: false 
         }
@@ -144,7 +149,7 @@
         }
     };
 
-    // Absolute screen positioning system [2]
+    // Absolute screen positioning system with a 24px targeted gap [2]
     const positionPopover = (targetEl) => {
         const tutBar = $_tut('tutorial-bar');
         if (!tutBar || !targetEl) return;
@@ -187,14 +192,14 @@
         const spaceBelow = viewHeight - rect.bottom;
         const spaceAbove = rect.top;
 
-        // Determine vertical placement based on maximum viewport space [2]
+        // Determine vertical placement based on maximum viewport space with an expanded 24px gap [2]
         if (spaceBelow > spaceAbove) {
-            top = rect.bottom + window.scrollY + 12;
+            top = rect.bottom + window.scrollY + 24;
             arrowDirection = 'top';
         } else {
             // Get mock bar height offset safely
-            const mockBarHeight = tutBar.clientHeight || 120;
-            top = rect.top + window.scrollY - mockBarHeight - 12;
+            const mockBarHeight = tutBar.clientHeight || 140;
+            top = rect.top + window.scrollY - mockBarHeight - 24;
             arrowDirection = 'bottom';
         }
 
@@ -374,6 +379,14 @@
                 flex-direction: column;
                 gap: 10px;
                 box-sizing: border-box;
+            }
+            #tutorial-bar.pos-top {
+                top: 24px;
+                bottom: auto;
+            }
+            #tutorial-bar.pos-bottom {
+                top: auto;
+                bottom: 24px;
             }
             #tutorial-bar p { 
                 margin: 0; 
@@ -610,17 +623,37 @@
                         <span class="tut-section-badge" id="tut-bar-badge">Onboarding</span>
                         <h4 id="tut-bar-title" style="margin: 4px 0 0 0; font-size: 16px; font-weight: 700;">Tutorial</h4>
                     </div>
-                    <button class="icon-btn" style="width: 32px; height: 32px; border-radius: 10px; background: rgba(128,128,128,0.15); border: none;" onclick="if (typeof skipTutorial === 'function') skipTutorial()">
+                    <button class="icon-btn" id="tutorial-close-btn" style="width: 32px; height: 32px; border-radius: 10px; background: rgba(128,128,128,0.15); border: none;">
                         <span class="material-symbols-rounded" style="font-size: 16px;">close</span>
                     </button>
                 </div>
                 <p id="tut-bar-text" style="margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-main); font-weight: 500;"></p>
                 <div style="display: flex; justify-content: flex-end; gap: 8px;" id="tut-bar-actions">
-                    <button class="action-btn" id="tut-bar-prev" style="padding: 8px 16px; font-size: 13px; border-radius: 10px; flex: none; width: auto;" onclick="if (typeof prevTutStep === 'function') prevTutStep()">Back</button>
-                    <button class="action-btn" id="tut-bar-next" style="padding: 8px 16px; font-size: 13px; background: var(--accent); color: #fff; border-radius: 10px; flex: none; width: auto;" onclick="if (typeof nextTutStep === 'function') nextTutStep()">Next</button>
+                    <button class="action-btn" id="tut-bar-prev" style="padding: 8px 16px; font-size: 13px; border-radius: 10px; flex: none; width: auto;">Back</button>
+                    <button class="action-btn" id="tut-bar-next" style="padding: 8px 16px; font-size: 13px; background: var(--accent); color: #fff; border-radius: 10px; flex: none; width: auto;">Next</button>
                 </div>
             `;
             document.body.appendChild(tutorialBar);
+
+            // Programmatic Event bindings to bypass IIFE scope boundaries
+            const closeBtn = tutorialBar.querySelector('#tutorial-close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    window.skipTutorial();
+                });
+            }
+            const prevBtn = tutorialBar.querySelector('#tut-bar-prev');
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    window.prevTutStep();
+                });
+            }
+            const nextBtn = tutorialBar.querySelector('#tut-bar-next');
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    window.nextTutStep();
+                });
+            }
         }
 
         // Apply fallback base styles inline to prevent container rendering bugs on layout styles loading latency
@@ -639,6 +672,11 @@
 
         runOnboardingSetup();
     };
+
+    // Expose control functions to the window level to guarantee absolute availability
+    window.skipTutorial = skipTutorial;
+    window.prevTutStep = prevTutStep;
+    window.nextTutStep = nextTutStep;
 
     // Execution monitor
     if (document.readyState === 'loading') {
@@ -659,7 +697,7 @@
             const clickAdvanceMap = {
                 1: 2,   // Settings gear -> Volume sliders (Step 3)
                 2: 3,   // Volume slider -> Voice triggers menu (Step 4)
-                3: 4,   // Voice summary click -> Advanced Cues expander (Step 5)
+                3: 4,   // Voice triggers summary -> Advanced Cues expander (Step 5)
                 4: 5,   // Advanced Cues summary -> Close modal button (Step 6)
                 5: 6,   // Close modal -> Show Manager Title (Step 7)
                 7: 8,   // Close context menu -> Show Manager Header (Step 9)
