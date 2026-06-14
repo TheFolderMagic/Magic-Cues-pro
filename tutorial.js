@@ -1,27 +1,10 @@
 /**
  * Magic Cues Pro - Fully Self-Contained Onboarding & Play/Pause Controller
  * Dynamically injects styling, guides, and interception hooks without touching index.html.
- *
- * FIX LOG:
- * [FIX-ANIMATION]      applyTutHighlight() now tracks currentHighlightEl and only removes/
- *                       re-adds the CSS class when the target element actually changes,
- *                       so squirclePulse runs continuously without resetting every 250 ms.
- * [FIX-DOUBLE-FIRE]    Added tutTransitioning guard (350 ms cooldown) inside openTutorial()
- *                       to block simultaneous duplicate calls from poll + click racing.
- * [FIX-STEP-ENTRY]     stepEntryTime is stamped on every openTutorial() call.
- * [FIX-PREMATURE-JUMP] All modal-close escape checks (!settingsOpen, !menuOpen, !projectsOpen)
- *                       now require an 800 ms grace period after step entry before firing,
- *                       preventing false-positive jumps during intra-step transitions.
- * [FIX-CLICK-DUPE]     Removed the clickAdvanceMap interceptor entirely. All step transitions
- *                       are driven exclusively by the poll + the volume input listener,
- *                       eliminating the double-fire on every tappable element.
- * [FIX-DOUBLE-INIT]    Removed the deferred openTutorial() call from runOnboardingSetup().
- *                       Startup is now gated exclusively through a single initTutorial() call
- *                       at the end of initSetup().
  */
 
 (function() {
-    // Prevent double initialization during reloads or multiple script loads
+    // Prevent double initialization during reloads or multiple script loads [1]
     if (window.tutInitialized) return;
     window.tutInitialized = true;
 
@@ -33,11 +16,11 @@
     window.tutStep   = 0;
     let initTutorialCalled = false;
 
-    // [FIX-DOUBLE-FIRE]  Blocks simultaneous duplicate openTutorial() calls
+    // Blocks simultaneous duplicate openTutorial() calls [1]
     let tutTransitioning = false;
-    // [FIX-STEP-ENTRY]   Records when the current step was entered
+    // Records when the current step was entered [1]
     let stepEntryTime = 0;
-    // [FIX-ANIMATION]    Tracks the currently highlighted element reference
+    // Tracks the currently highlighted element reference [1]
     let currentHighlightEl = null;
 
     // Helper to safely trigger parent haptic feedback if available
@@ -46,7 +29,7 @@
         else if (navigator.vibrate) navigator.vibrate(pattern);
     };
 
-    // [FIX-ANIMATION] Only re-apply class when the target element actually changes
+    // Only re-apply class when the target element actually changes [1]
     const clearTutHighlights = () => {
         document.querySelectorAll('.tut-highlight').forEach(el => el.classList.remove('tut-highlight'));
         currentHighlightEl = null;
@@ -54,25 +37,24 @@
 
     const applyTutHighlight = (targetGetter) => {
         const el = (typeof targetGetter === 'function') ? targetGetter() : null;
-        // Same element already highlighted — do nothing, keep animation running
         if (el && el === currentHighlightEl) return;
         clearTutHighlights();
         currentHighlightEl = el;
         if (el) el.classList.add('tut-highlight');
     };
 
-    // Onboarding Steps Array (10 Master Steps Covering All Core Functions)
+    // Onboarding Steps Array (17 Master Steps Covering All Core Functions)
     const tutSteps = [
         {
             title: "Import Your Music",
-            badge: "Step 1 of 10",
+            badge: "Step 1 of 17",
             text: "Let's build your cue list. Tap <strong>Add Cue</strong> to load an audio file from your device.",
             target: () => $_tut('add-cue-btn'),
             waitForAction: true
         },
         {
             title: "Access Cue Settings",
-            badge: "Step 2 of 10",
+            badge: "Step 2 of 17",
             text: "Great! Your track is loaded. Tap the <strong>Settings Gear (⚙)</strong> on the right of the cue card to open its options.",
             target: () => document.querySelector('.tile .edit-trigger'),
             alignTo: () => document.querySelector('.tile'),
@@ -80,57 +62,106 @@
         },
         {
             title: "Individual Volume Level",
-            badge: "Step 3 of 10",
+            badge: "Step 3 of 17",
             text: "Drag the <strong>Volume Slider</strong> to set a custom playback volume level. Tapping or sliding the range input will proceed.",
             target: () => $_tut('cue-volume-slider-row'),
             waitForAction: true
         },
         {
             title: "Voice Command Setup",
-            badge: "Step 4 of 10",
-            text: "Tapping <strong>Voice Triggers</strong> expands spoken trigger configurations. Assign a phrase here to fire this cue hands-free.",
+            badge: "Step 4 of 17",
+            text: "Tap on <strong>Voice Triggers</strong> to expand spoken trigger configurations.",
             target: () => $_tut('cue-voice-details'),
             waitForAction: true
         },
         {
-            title: "Timelines & Ducking",
-            badge: "Step 5 of 10",
-            text: "Tapping <strong>Advanced Settings</strong> expands timelines. Here you can configure custom fade-in/out curves, infinite track looping, or activate automatic background audio ducking.",
+            title: "Voice triggers & Global Mode",
+            badge: "Step 5 of 17",
+            text: "Assign a voice trigger phrase. Tap the <strong>Global</strong> switch to listen even when this cue is not next in queue.",
+            target: () => document.querySelector('#cue-voice-details input[type="checkbox"]'),
+            waitForAction: true
+        },
+        {
+            title: "Open Advanced Settings",
+            badge: "Step 6 of 17",
+            text: "Tap <strong>Advanced Settings</strong> to expand timelines, ducking, and looping parameters.",
             target: () => $_tut('cue-advanced-details'),
             waitForAction: true
         },
         {
+            title: "Timelines & Ducking",
+            badge: "Step 7 of 17",
+            text: "Configure custom fade-in/out curves, infinite track looping, or background ducking. Click <strong>Next</strong> to proceed.",
+            target: () => $_tut('cue-advanced-details'),
+            waitForAction: false
+        },
+        {
             title: "Close Options Panel",
-            badge: "Step 6 of 10",
+            badge: "Step 8 of 17",
             text: "Now, let's return to the main dashboard. Tap the top-right <strong>Close (X)</strong> button to exit the panel.",
             target: () => document.querySelector('#settings-modal .icon-btn'),
             waitForAction: true
         },
         {
             title: "Cue Context Menu",
-            badge: "Step 7 of 10",
+            badge: "Step 9 of 17",
             text: "<strong>Long-press</strong> (press and hold) anywhere on the middle of the cue card to open the quick actions context menu.",
             target: () => document.querySelector('.tile'),
             alignTo: () => document.querySelector('.tile'),
             waitForAction: true
         },
         {
-            title: "Context Menu Options",
-            badge: "Step 8 of 10",
-            text: "In this panel, you can duplicate cues, compile cue groups, or tap <strong>Skip Cue</strong> to bypass a track during live performances. Tap the close cross on the top right when done.",
+            title: "Context Menu Rename",
+            badge: "Step 10 of 17",
+            text: "Type in a new name and tap <strong>Rename</strong> to easily change this cue's title.",
+            target: () => $_tut('rename-cue-input'),
+            waitForAction: false
+        },
+        {
+            title: "Skip Cue Sequence",
+            badge: "Step 11 of 17",
+            text: "Tap <strong>Skip Cue</strong> to bypass a track during live performances without deleting it.",
+            target: () => $_tut('ctx-skip-btn'),
+            waitForAction: false
+        },
+        {
+            title: "Duplicate & Groups Cues",
+            badge: "Step 12 of 17",
+            text: "Tap <strong>Duplicate</strong> to quickly copy cues, or <strong>Create Group</strong> to combine tracks. Tapping Next will proceed.",
+            target: () => $_tut('ctx-dup-btn'),
+            waitForAction: false
+        },
+        {
+            title: "Close Context Menu",
+            badge: "Step 13 of 17",
+            text: "Let's return to the workspace. Tap the close cross on the top right.",
             target: () => document.querySelector('#cue-menu-modal .icon-btn'),
             waitForAction: true
         },
         {
             title: "Manage Shows",
-            badge: "Step 9 of 10",
-            text: "Tap the <strong>Show Title Header</strong> at the top left to manage projects, restore show backups (with <code>.magic</code> extensions), or export configurations.",
+            badge: "Step 14 of 17",
+            text: "Tap the <strong>Show Title Header</strong> at the top left to manage projects.",
             target: () => $_tut('show-title-header'),
             waitForAction: true
         },
         {
+            title: "Save, Rename & Import Backup",
+            badge: "Step 15 of 17",
+            text: "Tap **Import** to restore backups, or **Long-press** a show in the list to export or duplicate it.",
+            target: () => $_tut('projects-modal'),
+            waitForAction: false
+        },
+        {
+            title: "Close Show Manager",
+            badge: "Step 16 of 17",
+            text: "Exit the show manager by tapping the <strong>Close (X)</strong> button.",
+            target: () => document.querySelector('#projects-modal .icon-btn'),
+            waitForAction: true
+        },
+        {
             title: "Onboarding Concluded",
-            badge: "Step 10 of 10",
+            badge: "Step 17 of 17",
             text: "Guide complete! Replay this interactive guide at any time from App Settings. Tap <strong>Finish</strong> to close and start performing.",
             target: null,
             waitForAction: false
@@ -160,6 +191,7 @@
         arrow.style.zIndex       = '13001';
 
         const tutBar = $_tut('tutorial-bar');
+        // Subtract 10px (half of 20px base) to align arrow tip exactly over cogs [2]
         const clampedOffset = Math.max(16, Math.min(tutBar.clientWidth - 32, arrowOffset - 10));
         arrow.style.left = `${clampedOffset}px`;
 
@@ -183,7 +215,16 @@
 
         const activeDialog = document.querySelector('dialog[open]');
         if (activeDialog) {
-            if (tutBar.parentElement !== activeDialog) activeDialog.appendChild(tutBar);
+            // Dynamic insertion: Places card directly underneath the settings row being explained [2]
+            if (tutBar.parentElement !== activeDialog) {
+                if (activeDialog.contains(targetEl)) {
+                    if (targetEl.nextSibling !== tutBar) {
+                        targetEl.parentNode.insertBefore(tutBar, targetEl.nextSibling);
+                    }
+                } else {
+                    activeDialog.appendChild(tutBar);
+                }
+            }
             tutBar.style.position     = 'relative';
             tutBar.style.top          = 'auto';
             tutBar.style.left         = 'auto';
@@ -205,7 +246,7 @@
 
         const rect      = targetEl.getBoundingClientRect();
         const alignRect = alignEl ? alignEl.getBoundingClientRect() : rect;
-        const barWidth  = tutBar.offsetWidth || 290;
+        const barWidth  = tutBar.offsetWidth || 280; // Compact width
         const viewWidth = window.innerWidth;
         const viewHeight = window.innerHeight;
 
@@ -216,14 +257,15 @@
         const spaceAbove = rect.top;
 
         if (spaceBelow > spaceAbove) {
-            top            = rect.bottom + window.scrollY + 24;
+            top            = rect.bottom + window.scrollY + 24; // 24px breathing room gap [2]
             arrowDirection = 'top';
         } else {
             const mockBarHeight = tutBar.clientHeight || 140;
-            top            = rect.top + window.scrollY - mockBarHeight - 24;
+            top            = rect.top + window.scrollY - mockBarHeight - 24; // 24px breathing room gap [2]
             arrowDirection = 'bottom';
         }
 
+        // Incorporates scrollX offsets to align borders perfectly with the cue cards [2]
         let left = alignEl
             ? (alignRect.right + window.scrollX) - barWidth
             : (rect.left + rect.width / 2 + window.scrollX) - barWidth / 2;
@@ -264,7 +306,7 @@
                 tutBar.style.left      = '50%';
                 tutBar.style.transform = 'translateX(-50%)';
                 tutBar.style.width     = 'calc(100% - 48px)';
-                tutBar.style.maxWidth  = '290px';
+                tutBar.style.maxWidth  = '280px'; // Compact width
                 tutBar.style.margin    = '0 auto';
                 tutBar.style.zIndex    = '13000';
                 removeArrow();
@@ -398,7 +440,7 @@
             #tutorial-bar {
                 position: absolute;
                 width: calc(100% - 48px);
-                max-width: 290px;
+                max-width: 280px;
                 background: var(--modal-bg);
                 border: 2px solid var(--accent);
                 border-radius: 24px;
@@ -484,7 +526,7 @@
         else { styleEl.appendChild(document.createTextNode(cssCode)); }
         document.head.appendChild(styleEl);
 
-        // 2. Setup dynamic play/pause checks safely
+        // 2. Setup play/pause dynamic lock safely
         const pauseBtn = $_tut('pause-btn');
         if (pauseBtn) {
             const originalOnclick = pauseBtn.onclick;
@@ -515,6 +557,7 @@
                 `;
                 guideRow.addEventListener('click', () => {
                     triggerTutHaptic(10);
+                    // Dismiss app-settings modal cleanly by programmatically clicking its native close button [1]
                     const appSettingsCloseBtn = document.querySelector('#app-settings .modal-header .icon-btn');
                     if (appSettingsCloseBtn) appSettingsCloseBtn.click();
                     setTimeout(() => window.openTutorial(0), 350);
@@ -524,7 +567,7 @@
         };
 
         // 4. Polling loop: monitors system states, maps dynamic IDs, repositions popover.
-        //    Step transitions are the SOLE authority for advancing steps — no click map.
+        //    Step transitions are the SOLE authority for advancing steps [1].
         window.tutActive = false;
         if (window.tutPollInterval) clearInterval(window.tutPollInterval);
         window.tutPollInterval = setInterval(() => {
@@ -540,7 +583,7 @@
             const advOpen       = $_tut('cue-advanced-details') && $_tut('cue-advanced-details').open;
 
             // [FIX-PREMATURE-JUMP] Require 800 ms in the current step before any
-            // modal-close escape can fire, preventing false-positive jumps during transitions.
+            // modal-close escape can fire, preventing false-positive jumps during transitions [1].
             const modalGracePassed = (Date.now() - stepEntryTime) > 800;
 
             if (window.tutStep === 0) {
@@ -548,27 +591,43 @@
             } else if (window.tutStep === 1) {
                 if (settingsOpen) window.openTutorial(2);
             } else if (window.tutStep === 2) {
-                if (!settingsOpen && modalGracePassed) window.openTutorial(6);
+                if (!settingsOpen && modalGracePassed) window.openTutorial(8); // Settings closed prematurely -> long press cue card
             } else if (window.tutStep === 3) {
                 if (voiceOpen) window.openTutorial(4);
-                else if (!settingsOpen && modalGracePassed) window.openTutorial(6);
+                else if (!settingsOpen && modalGracePassed) window.openTutorial(8);
             } else if (window.tutStep === 4) {
-                if (advOpen) window.openTutorial(5);
-                else if (!settingsOpen && modalGracePassed) window.openTutorial(6);
+                // Handled strictly by global checkbox click listener
+                if (!settingsOpen && modalGracePassed) window.openTutorial(8);
             } else if (window.tutStep === 5) {
-                if (!settingsOpen && modalGracePassed) window.openTutorial(6);
+                if (advOpen) window.openTutorial(6);
+                else if (!settingsOpen && modalGracePassed) window.openTutorial(8);
             } else if (window.tutStep === 6) {
-                if (menuOpen) window.openTutorial(7);
+                if (!settingsOpen && modalGracePassed) window.openTutorial(8);
             } else if (window.tutStep === 7) {
-                if (!menuOpen && modalGracePassed) window.openTutorial(8);
+                if (!settingsOpen && modalGracePassed) window.openTutorial(8);
             } else if (window.tutStep === 8) {
-                if (projectsOpen) window.openTutorial(9);
+                if (menuOpen) window.openTutorial(9);
             } else if (window.tutStep === 9) {
-                if (!projectsOpen && modalGracePassed) window.finishTutorial();
+                // Handled by Next btn
+                if (!menuOpen && modalGracePassed) window.openTutorial(13);
+            } else if (window.tutStep === 10) {
+                // Handled by Next btn
+                if (!menuOpen && modalGracePassed) window.openTutorial(13);
+            } else if (window.tutStep === 11) {
+                // Handled by Next btn
+                if (!menuOpen && modalGracePassed) window.openTutorial(13);
+            } else if (window.tutStep === 12) {
+                if (!menuOpen && modalGracePassed) window.openTutorial(13); // Closed Context menu modal
+            } else if (window.tutStep === 13) {
+                if (projectsOpen) window.openTutorial(14);
+            } else if (window.tutStep === 14) {
+                // Handled by Next btn
+                if (!projectsOpen && modalGracePassed) window.openTutorial(16);
+            } else if (window.tutStep === 15) {
+                if (!projectsOpen && modalGracePassed) window.openTutorial(16); // Closed Projects Modal
             }
 
-            // [FIX-ANIMATION] Runs after step checks; applyTutHighlight skips re-application
-            // when the element hasn't changed, so the CSS animation is never interrupted.
+            // [FIX-ANIMATION] Runs after step checks; applyTutHighlight keeps pulsing running [1]
             const activeStep = tutSteps[window.tutStep];
             if (activeStep && typeof activeStep.target === 'function') {
                 applyTutHighlight(activeStep.target);
@@ -577,14 +636,27 @@
 
         }, 250);
 
-        // 5. Volume Slider input — sole driver for step 2 → 3 (no click map duplicate)
+        // 5. Volume Slider input — sole driver for Step 3 → 4
         document.addEventListener('input', (e) => {
             if (window.tutActive && window.tutStep === 2 && e.target.closest('#cue-volume-slider-row')) {
                 setTimeout(() => window.openTutorial(3), 100);
             }
         }, true);
 
-        // 6. Mutation Observer to inject the app-settings guide link on open
+        // 6. Global Checkbox click — sole driver for Step 5 → 6 (Voice Global setting)
+        document.addEventListener('click', (e) => {
+            if (window.tutActive && window.tutStep === 4) {
+                const voiceDetails = $_tut('cue-voice-details');
+                if (voiceDetails) {
+                    const globalCheckbox = voiceDetails.querySelector('input[type="checkbox"]');
+                    if (globalCheckbox && (e.target === globalCheckbox || globalCheckbox.contains(e.target))) {
+                        setTimeout(() => window.openTutorial(5), 100);
+                    }
+                }
+            }
+        }, true);
+
+        // 7. Mutation Observer to inject the app-settings guide link on open
         const settingsObserver = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'open') {
@@ -598,11 +670,16 @@
         const appSettingsDialog = $_tut('app-settings');
         if (appSettingsDialog) settingsObserver.observe(appSettingsDialog, { attributes: true });
 
-        // [FIX-DOUBLE-INIT] No deferred openTutorial() here.
-        // The single authoritative startup call is made by initTutorial() at the end of initSetup().
+        // 8. Decoupled tutorial completion check via local storage
+        const isCompleted = localStorage.getItem('mc_tutorial_completed') === 'true';
+        if (!isCompleted) {
+            // Restore active step from storage to prevent midway resets
+            const savedStep = parseInt(localStorage.getItem('mc_tutorial_step')) || 0;
+            setTimeout(() => window.openTutorial(savedStep), 1200);
+        }
     };
 
-    // Safe execution initializer
+    // Safe execution initializer [1]
     const initSetup = () => {
         if (!$_tut('tutorial-bar')) {
             const tutorialBar = document.createElement('div');
@@ -626,6 +703,7 @@
             `;
             document.body.appendChild(tutorialBar);
 
+            // Programmatic Event bindings to bypass IIFE scope boundaries
             tutorialBar.querySelector('#tutorial-close-btn').addEventListener('click', () => window.skipTutorial());
             tutorialBar.querySelector('#tut-bar-prev').addEventListener('click', () => window.prevTutStep());
             tutorialBar.querySelector('#tut-bar-next').addEventListener('click', () => window.nextTutStep());
@@ -645,7 +723,6 @@
         }
 
         runOnboardingSetup();
-        window.initTutorial(); // [FIX-DOUBLE-INIT] Single authoritative startup trigger
     };
 
     // Expose control functions to window level
@@ -653,7 +730,7 @@
     window.prevTutStep  = prevTutStep;
     window.nextTutStep  = nextTutStep;
 
-    // Single execution entry guard — safe to call from external code too
+    // Single execution entry guard — safe to call from external code too [1]
     window.initTutorial = () => {
         if (initTutorialCalled) return;
         initTutorialCalled = true;
@@ -669,10 +746,6 @@
     } else {
         initSetup();
     }
-
-    // [FIX-CLICK-DUPE] clickAdvanceMap interceptor removed entirely.
-    // Step transitions are driven exclusively by the poll loop and the input listener above.
-    // This eliminates the double-fire that caused steps to skip on every tappable element.
 
     window.addEventListener('resize', () => {
         if (window.tutActive) window.adjustTutorialBarParent();
