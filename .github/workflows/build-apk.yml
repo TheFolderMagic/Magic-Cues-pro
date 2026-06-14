@@ -25,6 +25,7 @@ jobs:
         run: |
           mkdir -p www
           cp index.html www/ || true
+          cp tutorial.js www/ || true
           cp manifest.json www/ || true
           cp -r assets www/ || true
 
