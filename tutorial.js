@@ -104,8 +104,7 @@
         }
     ];
 
-    // Horizontal & vertical layout engine. Automatically positions the bar 
-    // above or below target components based on remaining viewport space.
+    // Handles positioning dynamically based on dialog state and targeted component coordinates
     window.adjustTutorialBarParent = () => {
         const activeDialog = document.querySelector('dialog[open]');
         const tutBar = $_tut('tutorial-bar');
@@ -115,59 +114,33 @@
             if (tutBar.parentElement !== activeDialog) {
                 activeDialog.appendChild(tutBar);
             }
-            tutBar.style.position = 'relative';
-            tutBar.style.bottom = 'auto';
-            tutBar.style.top = 'auto';
-            tutBar.style.left = 'auto';
-            tutBar.style.right = 'auto';
-            tutBar.style.transform = 'none';
-            tutBar.style.width = '100%';
-            tutBar.style.maxWidth = 'none';
-            tutBar.style.margin = '16px 0 0 0';
-            tutBar.style.boxShadow = 'none';
-            tutBar.style.border = '1px solid var(--accent)';
-            tutBar.style.background = 'rgba(128,128,128,0.06)';
-            tutBar.style.borderRadius = '18px';
+            tutBar.classList.remove('pos-top', 'pos-bottom');
         } else {
             if (tutBar.parentElement !== document.body) {
                 document.body.appendChild(tutBar);
             }
-
+            
+            // Auto-positioning detector based on vertical layout quadrants [2]
             const step = tutSteps[window.tutStep];
-            let targetEl = null;
+            let positionAtTop = false;
             if (step && typeof step.target === 'function') {
-                targetEl = step.target();
-            }
-
-            tutBar.style.position = 'fixed';
-            tutBar.style.left = '50%';
-            tutBar.style.transform = 'translateX(-50%)';
-            tutBar.style.width = 'calc(100% - 48px)';
-            tutBar.style.maxWidth = '360px';
-            tutBar.style.margin = '0';
-            tutBar.style.zIndex = '13000';
-            tutBar.style.boxShadow = '0 20px 50px rgba(0,0,0,0.6)';
-            tutBar.style.border = '2px solid var(--accent)';
-            tutBar.style.background = 'var(--modal-bg)';
-            tutBar.style.borderRadius = '24px';
-
-            if (targetEl) {
-                const rect = targetEl.getBoundingClientRect();
-                const viewHeight = window.innerHeight;
-                const spaceAbove = rect.top;
-                const spaceBelow = viewHeight - rect.bottom;
-
-                // Position automatically above or below the target elements based on layout space
-                if (spaceBelow > spaceAbove) {
-                    tutBar.style.top = `${Math.min(viewHeight - 150, rect.bottom + 12)}px`;
-                    tutBar.style.bottom = 'auto';
-                } else {
-                    tutBar.style.bottom = `${Math.min(viewHeight - 150, viewHeight - rect.top + 12)}px`;
-                    tutBar.style.top = 'auto';
+                const targetEl = step.target();
+                if (targetEl) {
+                    const rect = targetEl.getBoundingClientRect();
+                    const viewportHeight = window.innerHeight;
+                    // If focused element is in the lower half of the screen, place dialog card on top [2]
+                    if (rect.top > viewportHeight / 2) {
+                        positionAtTop = true;
+                    }
                 }
+            }
+            
+            if (positionAtTop) {
+                tutBar.classList.add('pos-top');
+                tutBar.classList.remove('pos-bottom');
             } else {
-                tutBar.style.bottom = '24px';
-                tutBar.style.top = 'auto';
+                tutBar.classList.add('pos-bottom');
+                tutBar.classList.remove('pos-top');
             }
         }
     };
@@ -179,13 +152,17 @@
         // Safe evaluation of global "tracks" variable scope
         const currentTracks = (typeof tracks !== 'undefined') ? tracks : [];
 
-        // Auto-skip Step 0 if tracks already exist
+        // Auto-skip Step 0 (Onboarding add request) if user already has elements in workspace list
         if (stepIdx === 0 && currentTracks.length > 0) {
             stepIdx = 1;
         }
 
         window.tutStep = stepIdx;
         document.body.classList.add('tut-active');
+
+        if (stepIdx === 2) {
+            if (typeof window.closeModal === 'function') window.closeModal('cue-menu-modal');
+        }
 
         const step = tutSteps[window.tutStep];
         if (!step) return;
@@ -287,7 +264,38 @@
         // 1. Inject Styles
         const styleEl = document.createElement('style');
         styleEl.innerHTML = `
-            #tutorial-bar p { margin: 0; }
+            #tutorial-bar {
+                position: fixed;
+                left: 50%;
+                transform: translateX(-50%);
+                width: calc(100% - 48px);
+                max-width: 360px;
+                background: var(--modal-bg);
+                border: 2px solid var(--accent);
+                border-radius: 24px;
+                padding: 16px;
+                z-index: 13000;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+                display: none;
+                flex-direction: column;
+                gap: 10px;
+                box-sizing: border-box;
+            }
+            #tutorial-bar.pos-top {
+                top: 24px;
+                bottom: auto;
+            }
+            #tutorial-bar.pos-bottom {
+                top: auto;
+                bottom: 24px;
+            }
+            #tutorial-bar p { 
+                margin: 0; 
+                font-size: 14px !important;
+                line-height: 1.5 !important;
+                color: var(--text-main);
+                font-weight: 500;
+            }
             #tutorial-bar .tut-step-indicator {
                 font-size: 9px;
                 font-weight: 800;
@@ -333,6 +341,7 @@
             dialog[open] #tutorial-bar {
               position: relative !important;
               bottom: auto !important;
+              top: auto !important;
               left: auto !important;
               transform: none !important;
               width: 100% !important;
@@ -342,6 +351,7 @@
               border: 1px solid var(--accent) !important;
               border-radius: 18px !important;
               background: rgba(128,128,128,0.06) !important;
+              display: flex !important;
             }
             body.tut-active dialog {
               backdrop-filter: none !important;
@@ -352,7 +362,47 @@
         `;
         document.head.appendChild(styleEl);
 
-        // 2. Setup dynamic play/pause checks safely
+        // 2. Map structural UI IDs onto elements programmatically
+        const actionBtns = document.querySelectorAll('.action-row .action-btn');
+        actionBtns.forEach(btn => {
+            if (btn.textContent.includes('Add Cue')) btn.id = 'add-cue-btn';
+            else if (btn.textContent.includes('Reset')) btn.id = 'reset-show-btn';
+        });
+
+        const titleHeader = document.querySelector('header h1');
+        if (titleHeader) titleHeader.id = 'show-title-header';
+
+        const headerBtns = document.querySelectorAll('header .icon-btn');
+        headerBtns.forEach(btn => {
+            const icon = btn.querySelector('.material-symbols-rounded');
+            if (icon) {
+                if (icon.textContent === 'settings') btn.id = 'header-settings-btn';
+                else if (icon.id === 'lock-icon') btn.id = 'header-lock-btn';
+            }
+        });
+
+        const projectsModalBtns = document.querySelectorAll('#projects-modal .action-btn');
+        projectsModalBtns.forEach(btn => {
+            if (btn.textContent.includes('Import')) btn.id = 'show-import-btn';
+            else if (btn.textContent.includes('New')) btn.id = 'show-new-btn';
+        });
+
+        const editModalBtns = document.querySelectorAll('#edit-show-modal .action-btn, #edit-show-modal .btn-delete');
+        editModalBtns.forEach(btn => {
+            if (btn.textContent.includes('Export')) btn.id = 'show-export-btn';
+            else if (btn.textContent.includes('Duplicate')) btn.id = 'show-dup-btn';
+            else if (btn.textContent.includes('Save')) btn.id = 'show-save-btn';
+            else if (btn.classList.contains('btn-delete')) btn.id = 'show-delete-btn';
+        });
+
+        const cueMenuBtns = document.querySelectorAll('#cue-menu-modal .action-btn');
+        cueMenuBtns.forEach(btn => {
+            if (btn.textContent.includes('Skip')) btn.id = 'ctx-skip-btn';
+            else if (btn.textContent.includes('Duplicate')) btn.id = 'ctx-dup-btn';
+            else if (btn.textContent.includes('Group')) btn.id = 'ctx-group-btn';
+        });
+
+        // 3. Setup dynamic play/pause checks safely
         const pauseBtn = $_tut('pause-btn');
         if (pauseBtn) {
             const originalOnclick = pauseBtn.onclick;
@@ -362,8 +412,8 @@
                 const activePads = (typeof window.activePads !== 'undefined') ? window.activePads : null;
                 const actSideCues = (typeof window.actSideCues !== 'undefined') ? window.actSideCues : null;
                 const actSidePads = (typeof window.actSidePads !== 'undefined') ? window.actSidePads : null;
-                const isActive = (activeCues?.size || 0) || (activePads?.size || 0) || (actSideCues?.size || 0) || (actSidePads?.size || 0);
-                if (!isActive) {
+                const isPly = (activeCues?.size || 0) || (activePads?.size || 0) || (actSideCues?.size || 0) || (actSidePads?.size || 0);
+                if (!isPly) {
                     e.stopImmediatePropagation();
                     return;
                 }
@@ -373,7 +423,7 @@
             }, true);
         }
 
-        // 3. Inject Dynamic "Interactive Guide" panel under Advanced settings dropdown
+        // 4. Inject Dynamic "Interactive Guide" panel under Advanced settings dropdown
         const addGuideSettingsLink = () => {
             const advDetails = document.querySelector('#app-settings details .details-content');
             if (advDetails && !$_tut('interactive-guide-trigger-row')) {
@@ -400,7 +450,7 @@
             }
         };
 
-        // 4. Polling loop: Monitors system states, maps dynamic IDs, and repositions popover
+        // 5. Polling loop: Monitors system states, maps dynamic IDs, and repositions popover
         window.tutActive = false;
         if (tutPollInterval) clearInterval(tutPollInterval);
         tutPollInterval = setInterval(() => {
@@ -449,16 +499,16 @@
 
         }, 250);
 
-        // 5. Track dynamic volume slider releases on change
-        document.addEventListener('change', (e) => {
-            if (window.tutStep === 2 && e.target.closest('#cue-volume-slider-row')) {
+        // 6. Monitor Volume Slider changes to progress steps
+        document.addEventListener('input', (e) => {
+            if (window.tutActive && window.tutStep === 2 && e.target.closest('#cue-volume-slider-row')) {
                 setTimeout(() => {
                     window.openTutorial(3);
                 }, 100);
             }
         }, true);
 
-        // 6. Dynamic Mutation Observer to map the app settings row guide triggers
+        // 7. Dynamic Mutation Observer to map the app settings row guide triggers
         const settingsObserver = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'open') {
@@ -475,7 +525,7 @@
             settingsObserver.observe(appSettingsDialog, { attributes: true });
         }
 
-        // 7. Init dynamic config parameters safely in current scope
+        // 8. Init dynamic config parameters safely in current scope
         const currentSettings = (typeof settings !== 'undefined') ? settings : null;
         if (currentSettings && currentSettings.tutorialCompleted === undefined) {
             currentSettings.tutorialCompleted = false;
