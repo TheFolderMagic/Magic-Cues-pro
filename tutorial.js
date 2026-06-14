@@ -29,6 +29,12 @@
         else if (navigator.vibrate) navigator.vibrate(pattern);
     };
 
+    // Helper to dynamically match contextual menu elements by their text label
+    const findMenuBtnByText = (text) => {
+        return Array.from(document.querySelectorAll('#cue-menu-modal button, #cue-menu-modal .action-btn, #cue-menu-modal div, #cue-menu-modal span'))
+            .find(btn => btn.textContent.trim().toLowerCase() === text.toLowerCase() || btn.textContent.trim().toLowerCase().includes(text.toLowerCase()));
+    };
+
     // Only re-apply class when the target element actually changes
     const clearTutHighlights = () => {
         document.querySelectorAll('.tut-highlight').forEach(el => el.classList.remove('tut-highlight'));
@@ -36,6 +42,11 @@
     };
 
     const applyTutHighlight = (targetGetter) => {
+        const step = tutSteps[window.tutStep];
+        if (step && step.highlight === false) {
+            clearTutHighlights();
+            return;
+        }
         const el = (typeof targetGetter === 'function') ? targetGetter() : null;
         if (el && el === currentHighlightEl) return;
         clearTutHighlights();
@@ -78,7 +89,11 @@
             title: "Voice triggers & Global Mode",
             badge: "Step 5 of 17",
             text: "Assign a voice trigger phrase. Tap the <strong>Global</strong> switch to listen even when this cue is not next in queue.",
-            target: () => document.querySelector('#cue-voice-details input[type="checkbox"]'),
+            target: () => {
+                const cb = document.querySelector('#cue-voice-details input[type="checkbox"]');
+                if (!cb) return null;
+                return cb.closest('.switch') || cb.closest('.switch-container') || cb.closest('label') || cb.parentElement;
+            },
             waitForAction: true
         },
         {
@@ -114,22 +129,22 @@
         {
             title: "Context Menu Rename",
             badge: "Step 10 of 17",
-            text: "Type in a new name and tap the **Rename** button or input to easily change this cue's title.",
-            target: () => $_tut('rename-cue-input'),
+            text: "Type in a new name and tap the <strong>Rename</strong> button or input to easily change this cue's title.",
+            target: () => $_tut('rename-cue-input') || document.querySelector('#cue-menu-modal input'),
             waitForAction: true
         },
         {
             title: "Skip Cue Sequence",
             badge: "Step 11 of 17",
             text: "Tap <strong>Skip Cue</strong> to bypass a track during live performances without deleting it.",
-            target: () => $_tut('ctx-skip-btn'),
+            target: () => findMenuBtnByText('skip') || $_tut('ctx-skip-btn'),
             waitForAction: true
         },
         {
             title: "Duplicate & Groups Cues",
             badge: "Step 12 of 17",
             text: "Tap <strong>Duplicate</strong> to quickly copy cues, or <strong>Create Group</strong> to combine tracks.",
-            target: () => $_tut('ctx-dup-btn'),
+            target: () => findMenuBtnByText('duplicate') || $_tut('ctx-dup-btn'),
             waitForAction: true
         },
         {
@@ -137,7 +152,7 @@
             badge: "Step 13 of 17",
             text: "Let's return to the workspace. Tap the close cross on the top right.",
             target: () => document.querySelector('#cue-menu-modal .icon-btn'),
-            positionTarget: () => $_tut('ctx-dup-btn'),
+            positionTarget: () => findMenuBtnByText('duplicate') || $_tut('ctx-dup-btn'),
             waitForAction: true
         },
         {
@@ -150,8 +165,9 @@
         {
             title: "Save, Rename & Import Backup",
             badge: "Step 15 of 17",
-            text: "Tap **Import** to restore backups, or **Long-press** a show in the list to export or duplicate it. Click **Next** to proceed.",
-            target: () => $_tut('show-import-btn') || $_tut('projects-modal'),
+            text: "Tap <strong>Import</strong> to restore backups, or long-press a show in the list to export or duplicate it. Click <strong>Next</strong> to proceed.",
+            target: () => $_tut('projects-modal'),
+            highlight: false,
             waitForAction: false
         },
         {
@@ -213,11 +229,7 @@
     // Resolves a outer container elements to prevent breaking horizontal layouts
     const getSafeInsertionPoint = (el) => {
         if (!el) return null;
-        
-        // Find outer block wrapper first
         let container = el.closest('.setting-row') || el.closest('.setting-item') || el.closest('.control-row') || el.closest('.voice-trigger-row');
-        
-        // Fallback: If inside a label (like switches), step up to its block parent row
         if (!container) {
             const label = el.closest('label');
             if (label) {
@@ -252,9 +264,9 @@
             tutBar.style.right        = 'auto';
             tutBar.style.bottom       = 'auto';
             tutBar.style.transform    = 'none';
-            tutBar.style.width        = '100%';
-            tutBar.style.maxWidth     = 'none';
-            tutBar.style.margin       = '16px 0 0 0';
+            tutBar.style.width        = 'calc(100% - 32px)';
+            tutBar.style.maxWidth     = '280px';
+            tutBar.style.margin       = '16px auto';
             tutBar.style.boxShadow    = 'none';
             tutBar.style.border       = '1px solid var(--accent)';
             tutBar.style.background   = 'rgba(128,128,128,0.06)';
@@ -319,21 +331,48 @@
             if (typeof step.alignTo === 'function') alignEl  = step.alignTo();
         }
 
+        const activeDialog = document.querySelector('dialog[open]');
+        const tutBar = $_tut('tutorial-bar');
+
         if (targetEl) {
             positionPopover(targetEl, alignEl);
         } else {
-            const tutBar = $_tut('tutorial-bar');
             if (tutBar) {
-                tutBar.style.position  = 'fixed';
-                tutBar.style.bottom    = '24px';
-                tutBar.style.top       = 'auto';
-                tutBar.style.left      = '50%';
-                tutBar.style.transform = 'translateX(-50%)';
-                tutBar.style.width     = 'calc(100% - 48px)';
-                tutBar.style.maxWidth  = '280px'; 
-                tutBar.style.margin    = '0 auto';
-                tutBar.style.zIndex    = '13000';
-                removeArrow();
+                if (activeDialog) {
+                    if (tutBar.parentElement !== activeDialog) {
+                        activeDialog.appendChild(tutBar);
+                    }
+                    tutBar.style.position     = 'relative';
+                    tutBar.style.top          = 'auto';
+                    tutBar.style.left         = 'auto';
+                    tutBar.style.right        = 'auto';
+                    tutBar.style.bottom       = 'auto';
+                    tutBar.style.transform    = 'none';
+                    tutBar.style.width        = 'calc(100% - 32px)';
+                    tutBar.style.maxWidth     = '280px';
+                    tutBar.style.margin       = '16px auto';
+                    tutBar.style.boxShadow    = 'none';
+                    tutBar.style.border       = '1px solid var(--accent)';
+                    tutBar.style.background   = 'rgba(128,128,128,0.06)';
+                    tutBar.style.borderRadius = '18px';
+                    removeArrow();
+                } else {
+                    if (tutBar.parentElement !== document.body) document.body.appendChild(tutBar);
+                    tutBar.style.position  = 'fixed';
+                    tutBar.style.bottom    = '24px';
+                    tutBar.style.top       = 'auto';
+                    tutBar.style.left      = '50%';
+                    tutBar.style.transform = 'translateX(-50%)';
+                    tutBar.style.width     = 'calc(100% - 48px)';
+                    tutBar.style.maxWidth  = '280px'; 
+                    tutBar.style.margin    = '0 auto';
+                    tutBar.style.zIndex    = '13000';
+                    tutBar.style.boxShadow = '0 20px 50px rgba(0,0,0,0.6)';
+                    tutBar.style.border    = '2px solid var(--accent)';
+                    tutBar.style.background = 'var(--modal-bg)';
+                    tutBar.style.borderRadius = '24px';
+                    removeArrow();
+                }
             }
         }
     };
@@ -387,12 +426,6 @@
         } else {
             window.finishTutorial();
         }
-    };
-
-    window.prevTutStep = () => {
-        triggerTutHaptic(10);
-        tutTransitioning = false; 
-        if (window.tutStep > 0) window.openTutorial(window.tutStep - 1);
     };
 
     window.skipTutorial = () => {
@@ -532,18 +565,15 @@
               top: auto !important;
               left: auto !important;
               transform: none !important;
-              width: 100% !important;
-              max-width: none !important;
-              margin: 16px 0 0 0 !important;
+              width: calc(100% - 32px) !important;
+              max-width: 280px !important;
+              margin: 16px auto !important;
               box-shadow: none !important;
               border: 1px solid var(--accent) !important;
               border-radius: 18px !important;
               background: rgba(128,128,128,0.06) !important;
               display: flex !important;
               box-sizing: border-box !important;
-              flex: 1 0 100% !important;
-              grid-column: 1 / -1 !important;
-              clear: both !important;
             }
             body.tut-active dialog         { backdrop-filter: none !important; }
             body.tut-active dialog::backdrop { backdrop-filter: none !important; }
@@ -677,7 +707,7 @@
 
             // Rename Execution Check (Step 10 → 11 transition)
             else if (window.tutStep === 9) {
-                const renameInput = $_tut('rename-cue-input');
+                const renameInput = $_tut('rename-cue-input') || document.querySelector('#cue-menu-modal input');
                 const isInputClick = e.target === renameInput;
                 const isRenameBtnClick = e.target.tagName === 'BUTTON' && e.target.textContent.toLowerCase().includes('rename');
                 const isModalActionClick = e.target.closest('#cue-menu-modal') && e.target.textContent.toLowerCase().includes('rename');
@@ -689,7 +719,7 @@
 
             // Skip Cue Execution Check (Step 11 → 12 transition)
             else if (window.tutStep === 10) {
-                const skipBtn = $_tut('ctx-skip-btn');
+                const skipBtn = findMenuBtnByText('skip') || $_tut('ctx-skip-btn');
                 const clickedSkip = (skipBtn && (e.target === skipBtn || skipBtn.contains(e.target))) || 
                                     (e.target.closest('button') && e.target.closest('button').textContent.toLowerCase().includes('skip'));
                 if (clickedSkip) {
@@ -699,7 +729,7 @@
 
             // Duplicate Execution Check (Step 12 → 13 transition)
             else if (window.tutStep === 11) {
-                const dupBtn = $_tut('ctx-dup-btn');
+                const dupBtn = findMenuBtnByText('duplicate') || $_tut('ctx-dup-btn');
                 const clickedDup = (dupBtn && (e.target === dupBtn || dupBtn.contains(e.target))) || 
                                    (e.target.closest('button') && e.target.closest('button').textContent.toLowerCase().includes('duplicate'));
                 if (clickedDup) {
@@ -748,7 +778,6 @@
                 </div>
                 <p id="tut-bar-text" style="margin:0;font-size:14px;line-height:1.5;color:var(--text-main);font-weight:500;"></p>
                 <div style="display:flex;justify-content:flex-end;gap:8px;" id="tut-bar-actions">
-                    <button class="action-btn" id="tut-bar-prev" style="padding:8px 16px;font-size:13px;border-radius:10px;flex:none;width:auto;">Back</button>
                     <button class="action-btn" id="tut-bar-next" style="padding:8px 16px;font-size:13px;background:var(--accent);color:#fff;border-radius:10px;flex:none;width:auto;">Next</button>
                 </div>
             `;
@@ -756,7 +785,6 @@
 
             // Programmatic Event bindings to bypass IIFE scope boundaries
             tutorialBar.querySelector('#tutorial-close-btn').addEventListener('click', () => window.skipTutorial());
-            tutorialBar.querySelector('#tut-bar-prev').addEventListener('click', () => window.prevTutStep());
             tutorialBar.querySelector('#tut-bar-next').addEventListener('click', () => window.nextTutStep());
         }
 
@@ -778,7 +806,6 @@
 
     // Expose control functions to window level
     window.skipTutorial = skipTutorial;
-    window.prevTutStep  = prevTutStep;
     window.nextTutStep  = nextTutStep;
 
     // Single execution entry guard — safe to call from external code too
