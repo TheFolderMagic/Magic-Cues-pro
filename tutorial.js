@@ -30,75 +30,47 @@
         }
     };
 
-    // Onboarding Steps Array (10 Bite-Sized Interactive Modules)
+    // Onboarding Steps Array (6 Essential Master Steps)
     const tutSteps = [
         {
             title: "Import Your Music",
-            badge: "Step 1 of 10",
+            badge: "Step 1 of 6",
             text: "Let's build your cue list. Tap <strong>Add Cue</strong> to load an audio file from your device.",
             target: () => $_tut('add-cue-btn'), 
             waitForAction: true 
         },
         { 
             title: "Access Cue Settings", 
-            badge: "Step 2 of 10", 
+            badge: "Step 2 of 6", 
             text: "Great! Your track is loaded. Tap the <strong>Settings Gear (⚙)</strong> on the right of the cue card to open its settings.", 
             target: () => document.querySelector('.tile .edit-trigger'), 
             waitForAction: true 
         },
         { 
             title: "Individual Volume Level", 
-            badge: "Step 3 of 10", 
-            text: "Drag the <strong>Volume Slider</strong> to adjust this track's playback volume. Slide it now to proceed.", 
+            badge: "Step 3 of 6", 
+            text: "Drag the <strong>Volume Slider</strong> to adjust this track's playback volume. Tapping the slider will proceed.", 
             target: () => document.querySelector('#cue-volume-slider-row input[type="range"]'), 
             waitForAction: true 
         },
         { 
-            title: "Voice Command Setup", 
-            badge: "Step 4 of 10", 
-            text: "Tap on <strong>Voice Triggers</strong> to expand the voice activation options.", 
-            target: () => document.querySelector('#cue-voice-details summary'), 
-            waitForAction: true 
-        },
-        { 
             title: "Timelines & Ducking", 
-            badge: "Step 5 of 10", 
-            text: "Tap on <strong>Advanced Settings</strong> to locate audio trimming, custom fades, looping modes, and ducking timelines.", 
-            target: () => document.querySelector('#cue-advanced-details summary'), 
-            waitForAction: true 
-        },
-        { 
-            title: "Close Options Panel", 
-            badge: "Step 6 of 10", 
-            text: "Tap the top-right <strong>Close (X)</strong> button to exit the cue options panel.", 
+            badge: "Step 4 of 6", 
+            text: "Explore Loop playback, pre-delays, and automatic background audio ducking. Close the settings window when you are done.", 
             target: () => document.querySelector('#settings-modal .icon-btn'), 
-            waitForAction: true 
+            waitForAction: false 
         },
         { 
             title: "Manage Shows", 
-            badge: "Step 7 of 10", 
-            text: "Tap the <strong>Show Title Header</strong> at the top of the screen to open your Show Manager.", 
+            badge: "Step 5 of 6", 
+            text: "Tap the <strong>Show Title Header</strong> at the top of the screen to open your Show Manager, where you can build and restore backup show files.", 
             target: () => $_tut('show-title-header'), 
             waitForAction: true 
         },
         { 
-            title: "Close Show Manager", 
-            badge: "Step 8 of 10", 
-            text: "Exit the show manager by tapping the <strong>Close (X)</strong> button.", 
-            target: () => document.querySelector('#projects-modal .icon-btn'), 
-            waitForAction: true 
-        },
-        { 
-            title: "Lock Your Workspace", 
-            badge: "Step 9 of 10", 
-            text: "Before going live, tap the <strong>Lock Icon</strong> to prevent accidental touches and enable screen-secure Pocket Mode.", 
-            target: () => $_tut('header-lock-btn'), 
-            waitForAction: true 
-        },
-        { 
-            title: "Guide Concluded", 
-            badge: "Step 10 of 10", 
-            text: "You are ready to perform! Replay this interactive guide at any time from App Settings. Tap <strong>Finish</strong> to start.", 
+            title: "Onboarding Concluded", 
+            badge: "Step 6 of 6", 
+            text: "You are ready to create! To replay this tutorial anytime, find the Interactive Guide option in App Settings. Tap <strong>Finish</strong> to close.", 
             target: null, 
             waitForAction: false 
         }
@@ -115,6 +87,15 @@
                 activeDialog.appendChild(tutBar);
             }
             tutBar.classList.remove('pos-top', 'pos-bottom');
+            tutBar.style.position = 'relative';
+            tutBar.style.bottom = 'auto';
+            tutBar.style.top = 'auto';
+            tutBar.style.left = 'auto';
+            tutBar.style.right = 'auto';
+            tutBar.style.transform = 'none';
+            tutBar.style.width = '100%';
+            tutBar.style.maxWidth = 'none';
+            tutBar.style.margin = '16px 0 0 0';
         } else {
             if (tutBar.parentElement !== document.body) {
                 document.body.appendChild(tutBar);
@@ -134,6 +115,14 @@
                     }
                 }
             }
+            
+            tutBar.style.position = 'fixed';
+            tutBar.style.left = '50%';
+            tutBar.style.transform = 'translateX(-50%)';
+            tutBar.style.width = 'calc(100% - 48px)';
+            tutBar.style.maxWidth = '360px';
+            tutBar.style.margin = '0 auto';
+            tutBar.style.zIndex = '13000';
             
             if (positionAtTop) {
                 tutBar.classList.add('pos-top');
@@ -205,11 +194,8 @@
         window.tutActive = false;
         document.body.classList.remove('tut-active');
         
-        const activeSettings = (typeof settings !== 'undefined') ? settings : null;
-        if (activeSettings) {
-            activeSettings.tutorialCompleted = true;
-            localStorage.setItem('mc_settings', JSON.stringify(activeSettings));
-        }
+        // Save completion status completely decoupled from the settings scope to prevent reloads
+        localStorage.setItem('mc_tutorial_completed', 'true');
 
         $_tut('tutorial-bar').style.display = 'none';
         window.adjustTutorialBarParent();
@@ -362,47 +348,7 @@
         `;
         document.head.appendChild(styleEl);
 
-        // 2. Map structural UI IDs onto elements programmatically
-        const actionBtns = document.querySelectorAll('.action-row .action-btn');
-        actionBtns.forEach(btn => {
-            if (btn.textContent.includes('Add Cue')) btn.id = 'add-cue-btn';
-            else if (btn.textContent.includes('Reset')) btn.id = 'reset-show-btn';
-        });
-
-        const titleHeader = document.querySelector('header h1');
-        if (titleHeader) titleHeader.id = 'show-title-header';
-
-        const headerBtns = document.querySelectorAll('header .icon-btn');
-        headerBtns.forEach(btn => {
-            const icon = btn.querySelector('.material-symbols-rounded');
-            if (icon) {
-                if (icon.textContent === 'settings') btn.id = 'header-settings-btn';
-                else if (icon.id === 'lock-icon') btn.id = 'header-lock-btn';
-            }
-        });
-
-        const projectsModalBtns = document.querySelectorAll('#projects-modal .action-btn');
-        projectsModalBtns.forEach(btn => {
-            if (btn.textContent.includes('Import')) btn.id = 'show-import-btn';
-            else if (btn.textContent.includes('New')) btn.id = 'show-new-btn';
-        });
-
-        const editModalBtns = document.querySelectorAll('#edit-show-modal .action-btn, #edit-show-modal .btn-delete');
-        editModalBtns.forEach(btn => {
-            if (btn.textContent.includes('Export')) btn.id = 'show-export-btn';
-            else if (btn.textContent.includes('Duplicate')) btn.id = 'show-dup-btn';
-            else if (btn.textContent.includes('Save')) btn.id = 'show-save-btn';
-            else if (btn.classList.contains('btn-delete')) btn.id = 'show-delete-btn';
-        });
-
-        const cueMenuBtns = document.querySelectorAll('#cue-menu-modal .action-btn');
-        cueMenuBtns.forEach(btn => {
-            if (btn.textContent.includes('Skip')) btn.id = 'ctx-skip-btn';
-            else if (btn.textContent.includes('Duplicate')) btn.id = 'ctx-dup-btn';
-            else if (btn.textContent.includes('Group')) btn.id = 'ctx-group-btn';
-        });
-
-        // 3. Setup dynamic play/pause checks safely
+        // 2. Setup dynamic play/pause checks safely
         const pauseBtn = $_tut('pause-btn');
         if (pauseBtn) {
             const originalOnclick = pauseBtn.onclick;
@@ -423,7 +369,7 @@
             }, true);
         }
 
-        // 4. Inject Dynamic "Interactive Guide" panel under Advanced settings dropdown
+        // 3. Inject Dynamic "Interactive Guide" panel under Advanced settings dropdown
         const addGuideSettingsLink = () => {
             const advDetails = document.querySelector('#app-settings details .details-content');
             if (advDetails && !$_tut('interactive-guide-trigger-row')) {
@@ -450,7 +396,7 @@
             }
         };
 
-        // 5. Polling loop: Monitors system states, maps dynamic IDs, and repositions popover
+        // 4. Polling loop: Monitors system states, maps dynamic IDs, and repositions popover
         window.tutActive = false;
         if (tutPollInterval) clearInterval(tutPollInterval);
         tutPollInterval = setInterval(() => {
@@ -472,25 +418,25 @@
                 if (document.querySelector('dialog#settings-modal[open]')) {
                     window.openTutorial(2);
                 }
-            } else if (window.tutStep === 5) {
-                // Wait for Settings modal to be closed
+            } else if (window.tutStep === 2) {
+                // If modal is closed, skip to Step 4 (Main screen)
                 if (!document.querySelector('dialog#settings-modal[open]')) {
-                    window.openTutorial(6);
+                    window.openTutorial(4);
                 }
-            } else if (window.tutStep === 6) {
+            } else if (window.tutStep === 3) {
+                // If modal is closed, skip to Step 4 (Main screen)
+                if (!document.querySelector('dialog#settings-modal[open]')) {
+                    window.openTutorial(4);
+                }
+            } else if (window.tutStep === 4) {
                 // Wait for Projects modal to open
                 if (document.querySelector('dialog#projects-modal[open]')) {
-                    window.openTutorial(7);
+                    window.openTutorial(5);
                 }
-            } else if (window.tutStep === 7) {
-                // Wait for Projects modal to be closed
+            } else if (window.tutStep === 5) {
+                // Once projects modal closes, onboarding completes
                 if (!document.querySelector('dialog#projects-modal[open]')) {
-                    window.openTutorial(8);
-                }
-            } else if (window.tutStep === 8) {
-                // Wait for Locked mode to activate
-                if (document.body.classList.contains('locked')) {
-                    window.openTutorial(9);
+                    window.finishTutorial();
                 }
             }
 
@@ -499,7 +445,7 @@
 
         }, 250);
 
-        // 6. Monitor Volume Slider changes to progress steps
+        // 5. Monitor Volume Slider changes to progress steps
         document.addEventListener('input', (e) => {
             if (window.tutActive && window.tutStep === 2 && e.target.closest('#cue-volume-slider-row')) {
                 setTimeout(() => {
@@ -508,7 +454,7 @@
             }
         }, true);
 
-        // 7. Dynamic Mutation Observer to map the app settings row guide triggers
+        // 6. Dynamic Mutation Observer to map the app settings row guide triggers
         const settingsObserver = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'open') {
@@ -525,13 +471,9 @@
             settingsObserver.observe(appSettingsDialog, { attributes: true });
         }
 
-        // 8. Init dynamic config parameters safely in current scope
-        const currentSettings = (typeof settings !== 'undefined') ? settings : null;
-        if (currentSettings && currentSettings.tutorialCompleted === undefined) {
-            currentSettings.tutorialCompleted = false;
-        }
-
-        if (currentSettings && !currentSettings.tutorialCompleted) {
+        // 7. Decoupled tutorial completion check via local storage
+        const isCompleted = localStorage.getItem('mc_tutorial_completed') === 'true';
+        if (!isCompleted) {
             setTimeout(() => window.openTutorial(0), 1200);
         }
     };
@@ -562,6 +504,20 @@
             document.body.appendChild(tutorialBar);
         }
 
+        // Apply fallback base styles inline to prevent container rendering bugs on layout styles loading latency
+        const tutBarNode = $_tut('tutorial-bar');
+        if (tutBarNode) {
+            tutBarNode.style.display = 'none';
+            tutBarNode.style.flexDirection = 'column';
+            tutBarNode.style.gap = '10px';
+            tutBarNode.style.padding = '16px';
+            tutBarNode.style.boxSizing = 'border-box';
+            tutBarNode.style.background = 'var(--modal-bg)';
+            tutBarNode.style.border = '2px solid var(--accent)';
+            tutBarNode.style.borderRadius = '24px';
+            tutBarNode.style.boxShadow = '0 20px 50px rgba(0,0,0,0.6)';
+        }
+
         runOnboardingSetup();
     };
 
@@ -582,14 +538,11 @@
 
         if (targetEl.contains(e.target) || e.target === targetEl) {
             const clickAdvanceMap = {
-                1: 2,   // Settings gear -> Volume sliders
-                2: 3,   // Volume slider -> Voice triggers menu
-                3: 4,   // Voice triggers click -> Timelines panel
-                4: 5,   // Timelines panel click -> Close modal button
-                5: 6,   // Close modal -> Show Manager Title
-                6: 7,   // Show Manager click -> Close Show Manager modal
-                7: 8,   // Close Show Manager -> Lock button
-                8: 9    // Lock button -> Concluding step
+                1: 2,   // Settings gear -> Volume sliders (Step 3)
+                2: 3,   // Volume slider -> Voice triggers menu (Step 4)
+                3: 5,   // Voice triggers summary -> Close Settings (Step 6)
+                4: 5,   // Timelines panel click -> Close modal button (Step 6)
+                5: 6    // Close modal -> Show Manager Title (Step 7)
             };
             if (clickAdvanceMap[window.tutStep] !== undefined) {
                 setTimeout(() => {
