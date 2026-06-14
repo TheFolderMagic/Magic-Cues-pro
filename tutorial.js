@@ -6,6 +6,7 @@
     window.tutActive = false;
     window.tutType = 'basic';
     window.tutStep = 0;
+    let tutPollInterval = null;
 
     // Helper to safely trigger parent haptic feedback if available
     const triggerTutHaptic = (pattern) => {
@@ -29,151 +30,82 @@
         }
     };
 
-    // Onboarding Steps Array
+    // Onboarding Steps Array (10 Bite-Sized Interactive Modules)
     const tutSteps = [
         {
             title: "Import Your Music",
-            badge: "Step 1: Add a Track",
+            badge: "Step 1 of 10",
             text: "Let's build your cue list. Tap <strong>Add Cue</strong> to load an audio file from your device.",
             target: () => $_tut('add-cue-btn'), 
             waitForAction: true 
         },
         { 
             title: "Access Cue Settings", 
-            badge: "Step 2: Cue Configuration", 
+            badge: "Step 2 of 10", 
             text: "Great! Your track is loaded. Tap the <strong>Settings Gear (⚙)</strong> on the right of the cue card to open its settings.", 
             target: () => document.querySelector('.tile .edit-trigger'), 
             waitForAction: true 
         },
         { 
-            title: "Cue Playback Modes", 
-            badge: "Step 3: Cue Types", 
-            text: "Choose how this cue behaves:<br>• <strong>Main</strong>: Sequential tracks in your main playlist.<br>• <strong>Instant</strong>: Quick-trigger pads in the grid below.", 
-            target: () => $_tut('cue-type-selector-row'), 
-            waitForAction: false 
-        },
-        { 
             title: "Individual Volume Level", 
-            badge: "Step 4: Custom Volume", 
-            text: "Drag the <strong>Volume Slider</strong> to adjust this track's playback volume. Slide it now to automatically proceed.", 
+            badge: "Step 3 of 10", 
+            text: "Drag the <strong>Volume Slider</strong> to adjust this track's playback volume. Slide it now to proceed.", 
             target: () => document.querySelector('#cue-volume-slider-row input[type="range"]'), 
             waitForAction: true 
         },
         { 
             title: "Voice Command Setup", 
-            badge: "Step 5: Voice Setup", 
+            badge: "Step 4 of 10", 
             text: "Tap on <strong>Voice Triggers</strong> to expand the voice activation options.", 
             target: () => document.querySelector('#cue-voice-details summary'), 
             waitForAction: true 
         },
         { 
-            title: "Spoken Commands", 
-            badge: "Step 6: Setup Commands", 
-            text: "Set a phrase here to trigger this cue hands-free. Toggle <strong>Global</strong> to listen for this command even when the track is not next in queue.", 
-            target: () => $_tut('cue-voice-details'), 
-            waitForAction: false 
-        },
-        { 
-            title: "Timelines & Atmospheric Ducking", 
-            badge: "Step 7: Advanced Settings", 
-            text: "Open <strong>Advanced Settings</strong> to find audio trimming, custom fades, looping background modes, and automatic volume ducking.", 
-            target: () => $_tut('cue-advanced-details'), 
+            title: "Timelines & Ducking", 
+            badge: "Step 5 of 10", 
+            text: "Tap on <strong>Advanced Settings</strong> to locate audio trimming, custom fades, looping modes, and ducking timelines.", 
+            target: () => document.querySelector('#cue-advanced-details summary'), 
             waitForAction: true 
         },
         { 
             title: "Close Options Panel", 
-            badge: "Step 8: Return to Main", 
-            text: "Tap the top-right <strong>Close (X)</strong> button to exit the settings panel.", 
+            badge: "Step 6 of 10", 
+            text: "Tap the top-right <strong>Close (X)</strong> button to exit the cue options panel.", 
             target: () => document.querySelector('#settings-modal .icon-btn'), 
             waitForAction: true 
         },
         { 
-            title: "Context Options Menu", 
-            badge: "Step 9: Long-Press Menu", 
-            text: "<strong>Long-press</strong> (press and hold) the middle of your cue card to open the quick actions menu.", 
-            target: () => document.querySelector('.tile-info'), 
-            waitForAction: true 
-        },
-        { 
-            title: "Sequence Bypassing", 
-            badge: "Step 10: Skipping Tracks", 
-            text: "Tap <strong>Skip Cue</strong> to bypass this track during your show without deleting it.", 
-            target: () => $_tut('ctx-skip-btn'), 
-            waitForAction: true 
-        },
-        { 
-            title: "Cloning", 
-            badge: "Step 11: Duplicate Cue", 
-            text: "Tap <strong>Duplicate</strong> to quickly copy this cue and all of its settings.", 
-            target: () => $_tut('ctx-dup-btn'), 
-            waitForAction: true 
-        },
-        { 
-            title: "Create Group Container", 
-            badge: "Step 12: Cue Groups", 
-            text: "Tap <strong>Create Group</strong> to combine tracks. This opens a nested sideload player.", 
-            target: () => $_tut('ctx-group-btn'), 
-            waitForAction: true 
-        },
-        { 
-            title: "Close Cue Options Menu", 
-            badge: "Step 13: Close Menu", 
-            text: "Let's head back. Dismiss this menu by tapping the <strong>Close (X)</strong> button.", 
-            target: () => document.querySelector('#cue-menu-modal .icon-btn'), 
-            waitForAction: true 
-        },
-        { 
-            title: "Manual Sorting", 
-            badge: "Step 14: Manual Sorting", 
-            text: "Drag cards by their <strong>handles (☰)</strong> on the left to reorder them. Drag one cue directly over another to group them.", 
-            target: () => document.querySelector('.tile .drag-handle'), 
-            waitForAction: false 
-        },
-        { 
             title: "Manage Shows", 
-            badge: "Step 15: Project Files", 
+            badge: "Step 7 of 10", 
             text: "Tap the <strong>Show Title Header</strong> at the top of the screen to open your Show Manager.", 
             target: () => $_tut('show-title-header'), 
             waitForAction: true 
         },
         { 
-            title: "Clean Show Sheets", 
-            badge: "Step 16: New Show Files", 
-            text: "Tap <strong>New</strong> to start a completely fresh show sheet.", 
-            target: () => $_tut('show-new-btn'), 
-            waitForAction: false 
-        },
-        { 
-            title: "File Imports", 
-            badge: "Step 17: Imports", 
-            text: "Tap <strong>Import</strong> to restore backup show files (with the <code>.magic</code> extension).", 
-            target: () => $_tut('show-import-btn'), 
-            waitForAction: false 
-        },
-        { 
-            title: "Context Projects Customization", 
-            badge: "Step 18: Edit Shows List", 
-            text: "<strong>Long-press</strong> any show in the list to rename, duplicate, export, or delete it. Tap the <strong>Close (X)</strong> button to exit the show manager.", 
+            title: "Close Show Manager", 
+            badge: "Step 8 of 10", 
+            text: "Exit the show manager by tapping the <strong>Close (X)</strong> button.", 
             target: () => document.querySelector('#projects-modal .icon-btn'), 
             waitForAction: true 
         },
         { 
-            title: "Adjust Haptics & Fade Speed", 
-            badge: "Step 19: App Settings", 
-            text: "Tap the <strong>Settings Cog (⚙)</strong> in the header to change themes, languages, UI size, haptics, and global sequence fades.", 
-            target: () => $_tut('header-settings-btn'), 
+            title: "Lock Your Workspace", 
+            badge: "Step 9 of 10", 
+            text: "Before going live, tap the <strong>Lock Icon</strong> to prevent accidental touches and enable screen-secure Pocket Mode.", 
+            target: () => $_tut('header-lock-btn'), 
             waitForAction: true 
         },
         { 
-            title: "Onboarding Sequence Concluded", 
-            badge: "Step 20: Ready to Go", 
-            text: "You are ready to create! To replay this tutorial anytime, find the <strong>Interactive Guide</strong> in <strong>Advanced Settings</strong>. Tap <strong>Finish</strong> to close.", 
+            title: "Guide Concluded", 
+            badge: "Step 10 of 10", 
+            text: "You are ready to perform! Replay this interactive guide at any time from App Settings. Tap <strong>Finish</strong> to start.", 
             target: null, 
             waitForAction: false 
         }
     ];
 
-    // Handles positioning dynamically based on dialog state and targeted component coordinates
+    // Horizontal & vertical layout engine. Automatically positions the bar 
+    // above or below target components based on remaining viewport space.
     window.adjustTutorialBarParent = () => {
         const activeDialog = document.querySelector('dialog[open]');
         const tutBar = $_tut('tutorial-bar');
@@ -192,24 +124,19 @@
             tutBar.style.width = '100%';
             tutBar.style.maxWidth = 'none';
             tutBar.style.margin = '16px 0 0 0';
+            tutBar.style.boxShadow = 'none';
+            tutBar.style.border = '1px solid var(--accent)';
+            tutBar.style.background = 'rgba(128,128,128,0.06)';
+            tutBar.style.borderRadius = '18px';
         } else {
             if (tutBar.parentElement !== document.body) {
                 document.body.appendChild(tutBar);
             }
-            
-            // Auto-positioning detector based on vertical layout quadrants
+
             const step = tutSteps[window.tutStep];
-            let positionAtTop = false;
+            let targetEl = null;
             if (step && typeof step.target === 'function') {
-                const targetEl = step.target();
-                if (targetEl) {
-                    const rect = targetEl.getBoundingClientRect();
-                    const viewportHeight = window.innerHeight;
-                    // If focused element is in the lower half of the screen, place dialog card on top
-                    if (rect.top > viewportHeight / 2) {
-                        positionAtTop = true;
-                    }
-                }
+                targetEl = step.target();
             }
 
             tutBar.style.position = 'fixed';
@@ -217,15 +144,30 @@
             tutBar.style.transform = 'translateX(-50%)';
             tutBar.style.width = 'calc(100% - 48px)';
             tutBar.style.maxWidth = '360px';
-            tutBar.style.margin = '0 auto';
+            tutBar.style.margin = '0';
             tutBar.style.zIndex = '13000';
-            
-            if (positionAtTop) {
-                tutBar.style.top = '24px';
-                tutBar.style.bottom = 'auto';
+            tutBar.style.boxShadow = '0 20px 50px rgba(0,0,0,0.6)';
+            tutBar.style.border = '2px solid var(--accent)';
+            tutBar.style.background = 'var(--modal-bg)';
+            tutBar.style.borderRadius = '24px';
+
+            if (targetEl) {
+                const rect = targetEl.getBoundingClientRect();
+                const viewHeight = window.innerHeight;
+                const spaceAbove = rect.top;
+                const spaceBelow = viewHeight - rect.bottom;
+
+                // Position automatically above or below the target elements based on layout space
+                if (spaceBelow > spaceAbove) {
+                    tutBar.style.top = `${Math.min(viewHeight - 150, rect.bottom + 12)}px`;
+                    tutBar.style.bottom = 'auto';
+                } else {
+                    tutBar.style.bottom = `${Math.min(viewHeight - 150, viewHeight - rect.top + 12)}px`;
+                    tutBar.style.top = 'auto';
+                }
             } else {
-                tutBar.style.top = 'auto';
                 tutBar.style.bottom = '24px';
+                tutBar.style.top = 'auto';
             }
         }
     };
@@ -237,17 +179,13 @@
         // Safe evaluation of global "tracks" variable scope
         const currentTracks = (typeof tracks !== 'undefined') ? tracks : [];
 
-        // Auto-skip Step 0 (Onboarding add request) if user already has elements in workspace list
+        // Auto-skip Step 0 if tracks already exist
         if (stepIdx === 0 && currentTracks.length > 0) {
             stepIdx = 1;
         }
 
         window.tutStep = stepIdx;
         document.body.classList.add('tut-active');
-
-        if (stepIdx === 2) {
-            if (typeof window.closeModal === 'function') window.closeModal('cue-menu-modal');
-        }
 
         const step = tutSteps[window.tutStep];
         if (!step) return;
@@ -300,48 +238,38 @@
         window.adjustTutorialBarParent();
     };
 
-    // Evaluation Hook that inspects structural workspace details in proper global scopes
-    window.evalTutorialStep = (action, details) => {
-        if (!window.tutActive) return;
-
-        const voiceOpen = $_tut('cue-voice-details') && $_tut('cue-voice-details').open;
-        const advOpen = $_tut('cue-advanced-details') && $_tut('cue-advanced-details').open;
-        const currentTracks = (typeof tracks !== 'undefined') ? tracks : [];
-
-        if (window.tutStep === 0 && (action === 'hFiles' || currentTracks.length > 0)) {
-            window.openTutorial(1);
-        } else if (window.tutStep === 1 && (action === 'openModal' && details === 'settings-modal')) {
-            window.openTutorial(2);
-        } else if (window.tutStep === 4 && (voiceOpen || (action === 'openModal' && details === 'cue-voice-details'))) {
-            window.openTutorial(5);
-        } else if (window.tutStep === 6 && (advOpen || (action === 'openModal' && details === 'cue-advanced-details'))) {
-            window.openTutorial(7);
-        } else if (window.tutStep === 7 && (action === 'closeModal' && details === 'settings-modal')) {
-            window.openTutorial(8);
-        } else if (window.tutStep === 8 && (action === 'openModal' && details === 'cue-menu-modal')) {
-            window.openTutorial(9);
-        } else if (window.tutStep === 12 && (action === 'closeModal' && details === 'cue-menu-modal')) {
-            window.openTutorial(13);
-        } else if (window.tutStep === 14 && (action === 'openModal' && details === 'projects-modal')) {
-            window.openTutorial(15);
-        } else if (window.tutStep === 17 && (action === 'closeModal' && details === 'projects-modal')) {
-            window.openTutorial(18);
-        } else if (window.tutStep === 18 && (action === 'openModal' && details === 'app-settings')) {
-            window.openTutorial(19);
-        }
-    };
-
-    // Helper to programmatically map missing container IDs inside settings modals on the fly
+    // Helper to programmatically map structural IDs onto dynamic elements
     const runDynamicIdSetup = () => {
+        const actionBtns = document.querySelectorAll('.action-row .action-btn');
+        actionBtns.forEach(btn => {
+            if (btn.textContent.includes('Add Cue')) btn.id = 'add-cue-btn';
+            else if (btn.textContent.includes('Reset')) btn.id = 'reset-show-btn';
+        });
+
+        const titleHeader = document.querySelector('header h1');
+        if (titleHeader) titleHeader.id = 'show-title-header';
+
+        const headerBtns = document.querySelectorAll('header .icon-btn');
+        headerBtns.forEach(btn => {
+            const icon = btn.querySelector('.material-symbols-rounded');
+            if (icon) {
+                if (icon.textContent === 'settings') btn.id = 'header-settings-btn';
+                else if (icon.id === 'lock-icon') btn.id = 'header-lock-btn';
+            }
+        });
+
+        const projectsModalBtns = document.querySelectorAll('#projects-modal .action-btn');
+        projectsModalBtns.forEach(btn => {
+            if (btn.textContent.includes('Import')) btn.id = 'show-import-btn';
+            else if (btn.textContent.includes('New')) btn.id = 'show-new-btn';
+        });
+
         const detailsList = document.querySelectorAll('#modal-content details');
         detailsList.forEach(det => {
             const sum = det.querySelector('summary');
             if (sum) {
-                if (sum.textContent.includes('Voice Triggers')) {
-                    det.id = 'cue-voice-details';
-                } else if (sum.textContent.includes('Advanced Settings')) {
-                    det.id = 'cue-advanced-details';
-                }
+                if (sum.textContent.includes('Voice Triggers')) det.id = 'cue-voice-details';
+                else if (sum.textContent.includes('Advanced Settings')) det.id = 'cue-advanced-details';
             }
         });
 
@@ -354,35 +282,12 @@
         }
     };
 
-    // Inject styles and configuration dynamically
+    // Configures listeners and state observation loops
     const runOnboardingSetup = () => {
         // 1. Inject Styles
         const styleEl = document.createElement('style');
         styleEl.innerHTML = `
-            #tutorial-bar {
-                position: fixed;
-                bottom: 24px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: calc(100% - 48px);
-                max-width: 360px;
-                background: var(--modal-bg);
-                border: 2px solid var(--accent);
-                border-radius: 24px;
-                padding: 16px;
-                z-index: 13000;
-                box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-                display: none;
-                flex-direction: column;
-                gap: 10px;
-                box-sizing: border-box;
-            }
-            #tutorial-bar p {
-                font-size: 13px !important;
-                line-height: 1.4 !important;
-                margin: 0 0 6px 0 !important;
-                color: var(--text-main);
-            }
+            #tutorial-bar p { margin: 0; }
             #tutorial-bar .tut-step-indicator {
                 font-size: 9px;
                 font-weight: 800;
@@ -447,47 +352,7 @@
         `;
         document.head.appendChild(styleEl);
 
-        // 2. Map structural UI IDs onto elements programmatically
-        const actionBtns = document.querySelectorAll('.action-row .action-btn');
-        actionBtns.forEach(btn => {
-            if (btn.textContent.includes('Add Cue')) btn.id = 'add-cue-btn';
-            else if (btn.textContent.includes('Reset')) btn.id = 'reset-show-btn';
-        });
-
-        const titleHeader = document.querySelector('header h1');
-        if (titleHeader) titleHeader.id = 'show-title-header';
-
-        const headerBtns = document.querySelectorAll('header .icon-btn');
-        headerBtns.forEach(btn => {
-            const icon = btn.querySelector('.material-symbols-rounded');
-            if (icon) {
-                if (icon.textContent === 'settings') btn.id = 'header-settings-btn';
-                else if (icon.id === 'lock-icon') btn.id = 'header-lock-btn';
-            }
-        });
-
-        const projectsModalBtns = document.querySelectorAll('#projects-modal .action-btn');
-        projectsModalBtns.forEach(btn => {
-            if (btn.textContent.includes('Import')) btn.id = 'show-import-btn';
-            else if (btn.textContent.includes('New')) btn.id = 'show-new-btn';
-        });
-
-        const editModalBtns = document.querySelectorAll('#edit-show-modal .action-btn, #edit-show-modal .btn-delete');
-        editModalBtns.forEach(btn => {
-            if (btn.textContent.includes('Export')) btn.id = 'show-export-btn';
-            else if (btn.textContent.includes('Duplicate')) btn.id = 'show-dup-btn';
-            else if (btn.textContent.includes('Save')) btn.id = 'show-save-btn';
-            else if (btn.classList.contains('btn-delete')) btn.id = 'show-delete-btn';
-        });
-
-        const cueMenuBtns = document.querySelectorAll('#cue-menu-modal .action-btn');
-        cueMenuBtns.forEach(btn => {
-            if (btn.textContent.includes('Skip')) btn.id = 'ctx-skip-btn';
-            else if (btn.textContent.includes('Duplicate')) btn.id = 'ctx-dup-btn';
-            else if (btn.textContent.includes('Group')) btn.id = 'ctx-group-btn';
-        });
-
-        // 3. Setup dynamic play/pause checks safely
+        // 2. Setup dynamic play/pause checks safely
         const pauseBtn = $_tut('pause-btn');
         if (pauseBtn) {
             const originalOnclick = pauseBtn.onclick;
@@ -497,8 +362,8 @@
                 const activePads = (typeof window.activePads !== 'undefined') ? window.activePads : null;
                 const actSideCues = (typeof window.actSideCues !== 'undefined') ? window.actSideCues : null;
                 const actSidePads = (typeof window.actSidePads !== 'undefined') ? window.actSidePads : null;
-                const isPly = (activeCues?.size || 0) || (activePads?.size || 0) || (actSideCues?.size || 0) || (actSidePads?.size || 0);
-                if (!isPly) {
+                const isActive = (activeCues?.size || 0) || (activePads?.size || 0) || (actSideCues?.size || 0) || (actSidePads?.size || 0);
+                if (!isActive) {
                     e.stopImmediatePropagation();
                     return;
                 }
@@ -508,7 +373,7 @@
             }, true);
         }
 
-        // 4. Inject Dynamic "Interactive Guide" panel under Advanced settings dropdown
+        // 3. Inject Dynamic "Interactive Guide" panel under Advanced settings dropdown
         const addGuideSettingsLink = () => {
             const advDetails = document.querySelector('#app-settings details .details-content');
             if (advDetails && !$_tut('interactive-guide-trigger-row')) {
@@ -523,68 +388,94 @@
                 `;
                 guideRow.addEventListener('click', () => {
                     triggerTutHaptic(10);
-                    // Standard modal dismissal to redirect back to home dashboard
+                    // Dismiss app-settings modal cleanly before launching guide on home screen
                     if (typeof window.closeModal === 'function') {
                         window.closeModal('app-settings');
                     }
                     setTimeout(() => {
                         window.openTutorial(0);
-                    }, 300);
+                    }, 350);
                 });
                 advDetails.appendChild(guideRow);
             }
         };
 
-        // 5. Dynamic Mutation Observer to track system dialog open/close states
-        const dialogObserver = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'open') {
-                    const dialog = mutation.target;
-                    const isOpen = dialog.hasAttribute('open');
-                    if (isOpen) {
-                        runDynamicIdSetup();
-                        if (dialog.id === 'app-settings') {
-                            addGuideSettingsLink();
-                        }
-                    }
-                    window.evalTutorialStep(isOpen ? 'openModal' : 'closeModal', dialog.id);
-                    window.adjustTutorialBarParent(); 
-                }
-            });
-        });
-        document.querySelectorAll('dialog').forEach(dialog => {
-            dialogObserver.observe(dialog, { attributes: true });
-        });
+        // 4. Polling loop: Monitors system states, maps dynamic IDs, and repositions popover
+        window.tutActive = false;
+        if (tutPollInterval) clearInterval(tutPollInterval);
+        tutPollInterval = setInterval(() => {
+            if (!window.tutActive) return;
 
-        // 6. Dynamic Mutation Observer to track music file loading
-        const trackObserver = new MutationObserver(() => {
             const currentTracks = (typeof tracks !== 'undefined') ? tracks : [];
-            if (currentTracks.length > 0) {
-                window.evalTutorialStep('hFiles');
-            }
-        });
-        const trackListContainer = $_tut('track-list');
-        if (trackListContainer) {
-            trackObserver.observe(trackListContainer, { childList: true });
-        }
 
-        // 7. Track dynamic volume slider releases on change
+            // Execute dynamic element mapping
+            runDynamicIdSetup();
+
+            // Run status-driven progression checks
+            if (window.tutStep === 0) {
+                // If tracks have been successfully loaded, progress to Step 2
+                if (currentTracks.length > 0) {
+                    window.openTutorial(1);
+                }
+            } else if (window.tutStep === 1) {
+                // Wait for Settings modal to open
+                if (document.querySelector('dialog#settings-modal[open]')) {
+                    window.openTutorial(2);
+                }
+            } else if (window.tutStep === 5) {
+                // Wait for Settings modal to be closed
+                if (!document.querySelector('dialog#settings-modal[open]')) {
+                    window.openTutorial(6);
+                }
+            } else if (window.tutStep === 6) {
+                // Wait for Projects modal to open
+                if (document.querySelector('dialog#projects-modal[open]')) {
+                    window.openTutorial(7);
+                }
+            } else if (window.tutStep === 7) {
+                // Wait for Projects modal to be closed
+                if (!document.querySelector('dialog#projects-modal[open]')) {
+                    window.openTutorial(8);
+                }
+            } else if (window.tutStep === 8) {
+                // Wait for Locked mode to activate
+                if (document.body.classList.contains('locked')) {
+                    window.openTutorial(9);
+                }
+            }
+
+            // Real-time responsive positioning calculations
+            window.adjustTutorialBarParent();
+
+        }, 250);
+
+        // 5. Track dynamic volume slider releases on change
         document.addEventListener('change', (e) => {
-            if (window.tutStep === 3 && e.target.closest('#cue-volume-slider-row')) {
+            if (window.tutStep === 2 && e.target.closest('#cue-volume-slider-row')) {
                 setTimeout(() => {
-                    window.openTutorial(4);
+                    window.openTutorial(3);
                 }, 100);
             }
         }, true);
 
-        // 8. Track toggling Voice/Advanced cues expansions
-        document.addEventListener('toggle', (e) => {
-            if (e.target.id === 'cue-voice-details' || e.target.id === 'cue-advanced-details') {
-                window.evalTutorialStep('openModal', e.target.id);
-            }
-        }, true);
+        // 6. Dynamic Mutation Observer to map the app settings row guide triggers
+        const settingsObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'open') {
+                    const dialog = mutation.target;
+                    const isOpen = dialog.hasAttribute('open');
+                    if (dialog.id === 'app-settings' && isOpen) {
+                        addGuideSettingsLink();
+                    }
+                }
+            });
+        });
+        const appSettingsDialog = $_tut('app-settings');
+        if (appSettingsDialog) {
+            settingsObserver.observe(appSettingsDialog, { attributes: true });
+        }
 
-        // 9. Init dynamic config parameters safely in current scope
+        // 7. Init dynamic config parameters safely in current scope
         const currentSettings = (typeof settings !== 'undefined') ? settings : null;
         if (currentSettings && currentSettings.tutorialCompleted === undefined) {
             currentSettings.tutorialCompleted = false;
@@ -641,20 +532,14 @@
 
         if (targetEl.contains(e.target) || e.target === targetEl) {
             const clickAdvanceMap = {
-                1: 2,   // Settings gear -> Playback modes
-                2: 3,   // Type click -> Volume Level
-                4: 5,   // Voice trig summary -> commands summary
-                6: 7,   // Advanced summary summary -> close options
-                7: 8,   // Close options panel -> long press trigger
-                9: 10,  // Skip cue button -> Clone
-                10: 11, // Clone -> create group
-                11: 12, // Create group -> Dismiss options
-                12: 13, // Close actions menu -> Sorting
-                14: 15, // Title header -> New Show sheet
-                15: 16, // New Show button -> File Import button
-                16: 17, // File Import button -> Dismiss Project Manager
-                17: 18, // Close show manager -> app settings
-                18: 19  // settings cog click -> Concluding
+                1: 2,   // Settings gear -> Volume sliders
+                2: 3,   // Volume slider -> Voice triggers menu
+                3: 4,   // Voice triggers click -> Timelines panel
+                4: 5,   // Timelines panel click -> Close modal button
+                5: 6,   // Close modal -> Show Manager Title
+                6: 7,   // Show Manager click -> Close Show Manager modal
+                7: 8,   // Close Show Manager -> Lock button
+                8: 9    // Lock button -> Concluding step
             };
             if (clickAdvanceMap[window.tutStep] !== undefined) {
                 setTimeout(() => {
