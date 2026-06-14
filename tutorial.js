@@ -1,8 +1,3 @@
-/**
- * Magic Cues Pro - Fully Self-Contained Onboarding & Play/Pause Controller
- * Dynamically injects styling, guides, and interception hooks without touching index.html.
- */
-
 (function() {
     // Local safe utility selector to avoid namespace collisions with index.html
     const $_tut = id => document.getElementById(id);
@@ -12,10 +7,14 @@
     window.tutType = 'basic';
     window.tutStep = 0;
 
+    // Dragging offset states
+    let offsetX = 0;
+    let offsetY = 0;
+
     // Helper to safely trigger parent haptic feedback
     const triggerTutHaptic = (pattern) => {
-        if (typeof window.haptic === 'function') {
-            window.haptic(pattern);
+        if (typeof haptic === 'function') {
+            haptic(pattern);
         } else if (navigator.vibrate) {
             navigator.vibrate(pattern);
         }
@@ -178,7 +177,8 @@
         }
     ];
 
-    // Handles positioning dynamically while bypassing any left/right offsets
+    // Handles positioning dynamically. When a dialog opens, the tutorial box joins the open dialog.
+    // When closed, it is cleanly returned to the document body with inline styles cleared.
     window.adjustTutorialBarParent = () => {
         const activeDialog = document.querySelector('dialog[open]');
         const tutBar = $_tut('tutorial-bar');
@@ -194,20 +194,80 @@
             }
         }
         
-        // Reset manual inline styles to prevent conflicts with mobile responsive classes
+        // Reset manual inline coordinates to allow native stylesheet declarations to handle the layouts.
         tutBar.style.position = '';
         tutBar.style.bottom = '';
         tutBar.style.left = '';
         tutBar.style.right = '';
-        tutBar.style.transform = '';
         tutBar.style.width = '';
         tutBar.style.maxWidth = '';
         tutBar.style.margin = '';
+        
+        // Reset dragging translations
+        if (activeDialog) {
+            tutBar.style.transform = 'none';
+        } else {
+            tutBar.style.transform = `translate(calc(-50% + ${offsetX}px), ${offsetY}px)`;
+        }
+    };
+
+    // Touch and mouse drag handlers for the tutorial bar when floating globally
+    const configureDraggableTutorial = (el) => {
+        let initialX = 0, initialY = 0;
+        
+        const dragStart = (e) => {
+            // Ignore dragging if interacting with control elements (buttons/inputs)
+            if (e.target.closest('button, input, textarea, select')) return;
+            if (document.querySelector('dialog[open]')) return; // Disable dragging when inline inside dialogs
+            
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            initialX = clientX - offsetX;
+            initialY = clientY - offsetY;
+            
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('touchmove', drag, { passive: false });
+            document.addEventListener('mouseup', dragEnd);
+            document.addEventListener('touchend', dragEnd);
+        };
+        
+        const drag = (e) => {
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            offsetX = clientX - initialX;
+            offsetY = clientY - initialY;
+            
+            el.style.transform = `translate(calc(-50% + ${offsetX}px), ${offsetY}px)`;
+            
+            if (e.cancelable) e.preventDefault();
+        };
+        
+        const dragEnd = () => {
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('touchmove', drag);
+            document.removeEventListener('mouseup', dragEnd);
+            document.removeEventListener('touchend', dragEnd);
+        };
+        
+        el.style.cursor = 'grab';
+        el.addEventListener('mousedown', dragStart);
+        el.addEventListener('touchstart', dragStart, { passive: true });
     };
 
     window.openTutorial = (stepIdx = 0) => {
         window.tutActive = true;
         window.tutType = 'basic';
+
+        // Safe evaluation of global "tracks" variable scope
+        const currentTracks = (typeof tracks !== 'undefined') ? tracks : [];
+
+        // Dynamic bypass helper: If tracks already exist, skip step 0 (asking the user to import audio)
+        if (stepIdx === 0 && currentTracks.length > 0) {
+            stepIdx = 1;
+        }
+
         window.tutStep = stepIdx;
         document.body.classList.add('tut-active');
 
@@ -256,23 +316,25 @@
         window.tutActive = false;
         document.body.classList.remove('tut-active');
         
-        if (window.settings) {
-            window.settings.tutorialCompleted = true;
-            localStorage.setItem('mc_settings', JSON.stringify(window.settings));
+        const activeSettings = (typeof settings !== 'undefined') ? settings : null;
+        if (activeSettings) {
+            activeSettings.tutorialCompleted = true;
+            localStorage.setItem('mc_settings', JSON.stringify(activeSettings));
         }
 
         $_tut('tutorial-bar').style.display = 'none';
         window.adjustTutorialBarParent();
     };
 
-    // Evaluates task actions
+    // Evaluation Hook that inspects structural workspace details in proper global scopes
     window.evalTutorialStep = (action, details) => {
         if (!window.tutActive) return;
 
         const voiceOpen = $_tut('cue-voice-details') && $_tut('cue-voice-details').open;
         const advOpen = $_tut('cue-advanced-details') && $_tut('cue-advanced-details').open;
+        const currentTracks = (typeof tracks !== 'undefined') ? tracks : [];
 
-        if (window.tutStep === 0 && (action === 'hFiles' || (window.tracks && window.tracks.length > 0))) {
+        if (window.tutStep === 0 && (action === 'hFiles' || currentTracks.length > 0)) {
             window.openTutorial(1);
         } else if (window.tutStep === 1 && (action === 'openModal' && details === 'settings-modal')) {
             window.openTutorial(2);
@@ -317,6 +379,7 @@
                 flex-direction: column;
                 gap: 10px;
                 box-sizing: border-box;
+                touch-action: none;
             }
             #tutorial-bar p {
                 font-size: 13px !important;
@@ -434,10 +497,10 @@
             const originalOnclick = pauseBtn.onclick;
             pauseBtn.onclick = null;
             pauseBtn.addEventListener('click', (e) => {
-                const activeCues = window.activeCues;
-                const activePads = window.activePads;
-                const actSideCues = window.actSideCues;
-                const actSidePads = window.actSidePads;
+                const activeCues = (typeof window.activeCues !== 'undefined') ? window.activeCues : null;
+                const activePads = (typeof window.activePads !== 'undefined') ? window.activePads : null;
+                const actSideCues = (typeof window.actSideCues !== 'undefined') ? window.actSideCues : null;
+                const actSidePads = (typeof window.actSidePads !== 'undefined') ? window.actSidePads : null;
                 const isPly = (activeCues?.size || 0) || (activePads?.size || 0) || (actSideCues?.size || 0) || (actSidePads?.size || 0);
                 if (!isPly) {
                     e.stopImmediatePropagation();
@@ -483,6 +546,7 @@
                         addGuideSettingsLink();
                     }
                     window.evalTutorialStep(isOpen ? 'openModal' : 'closeModal', dialog.id);
+                    window.adjustTutorialBarParent(); 
                 }
             });
         });
@@ -492,7 +556,8 @@
 
         // 6. Dynamic Mutation Observer to track music file loading
         const trackObserver = new MutationObserver(() => {
-            if (window.tracks && window.tracks.length > 0) {
+            const currentTracks = (typeof tracks !== 'undefined') ? tracks : [];
+            if (currentTracks.length > 0) {
                 window.evalTutorialStep('hFiles');
             }
         });
@@ -518,12 +583,13 @@
             }
         }, true);
 
-        // 9. Init dynamic config parameters
-        if (window.settings && window.settings.tutorialCompleted === undefined) {
-            window.settings.tutorialCompleted = false;
+        // 9. Init dynamic config parameters safely in current scope
+        const currentSettings = (typeof settings !== 'undefined') ? settings : null;
+        if (currentSettings && currentSettings.tutorialCompleted === undefined) {
+            currentSettings.tutorialCompleted = false;
         }
 
-        if (window.settings && !window.settings.tutorialCompleted) {
+        if (currentSettings && !currentSettings.tutorialCompleted) {
             setTimeout(() => window.openTutorial(0), 1200);
         }
     };
@@ -552,6 +618,7 @@
                 </div>
             `;
             document.body.appendChild(tutorialBar);
+            configureDraggableTutorial(tutorialBar);
         }
 
         runOnboardingSetup();
@@ -563,43 +630,5 @@
     } else {
         initSetup();
     }
-
-    // Global click-to-advance intercepter mapping to proceed steps automatically
-    document.addEventListener('click', (e) => {
-        if (!window.tutActive) return;
-        const step = tutSteps[window.tutStep];
-        if (!step || !step.target) return;
-        const targetEl = step.target();
-        if (!targetEl) return;
-
-        if (targetEl.contains(e.target) || e.target === targetEl) {
-            const clickAdvanceMap = {
-                1: 2,   // Settings gear -> Playback modes
-                2: 3,   // Type click -> Volume Level
-                4: 5,   // Voice trig summary -> commands summary
-                6: 7,   // Advanced summary summary -> close options
-                7: 8,   // Close options panel -> long press trigger
-                9: 10,  // Skip cue button -> Clone
-                10: 11, // Clone -> create group
-                11: 12, // Create group -> Dismiss options
-                12: 13, // Close actions menu -> Sorting
-                14: 15, // Title header -> New Show sheet
-                17: 18, // Close show manager -> app settings
-                18: 19  // settings cog click -> Concluding
-            };
-            if (clickAdvanceMap[window.tutStep] !== undefined) {
-                setTimeout(() => {
-                    window.openTutorial(clickAdvanceMap[window.tutStep]);
-                }, 100);
-            }
-        }
-    }, true);
-
-    // Keep popup positions aligned on window resizing and screen rotates
-    window.addEventListener('resize', () => {
-        if (window.tutActive) {
-            window.adjustTutorialBarParent();
-        }
-    });
 
 })();
