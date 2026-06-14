@@ -4,7 +4,7 @@
  */
 
 (function() {
-    // Prevent double initialization during reloads or multiple script loads
+    // Prevent double initialization during reloads or multiple script loads [1]
     if (window.tutInitialized) return;
     window.tutInitialized = true;
 
@@ -15,7 +15,6 @@
     window.tutActive = false;
     window.tutType = 'basic';
     window.tutStep = 0;
-    let tutPollInterval = null;
     let initTutorialCalled = false;
 
     // Helper to safely trigger parent haptic feedback if available
@@ -140,7 +139,7 @@
 
         // Clamp coordinates within layout boundaries
         const tutBar = $_tut('tutorial-bar');
-        const clampedOffset = Math.max(16, Math.min(tutBar.clientWidth - 32, arrowOffset));
+        const clampedOffset = Math.max(16, Math.min(tutBar.clientWidth - 32, arrowOffset - 10)); // Subtract 10px to center the arrow tip [2]
         arrow.style.left = `${clampedOffset}px`;
 
         if (direction === 'top') {
@@ -190,7 +189,7 @@
         // Bounding rect math [2]
         const rect = targetEl.getBoundingClientRect();
         const alignRect = alignEl ? alignEl.getBoundingClientRect() : rect;
-        const barWidth = tutBar.offsetWidth || 320; // Query layout width dynamically to avoid narrow screen clipping
+        const barWidth = tutBar.offsetWidth || 290; // Query dynamic mobile layout width [2]
         const viewWidth = window.innerWidth;
         const viewHeight = window.innerHeight;
 
@@ -262,7 +261,7 @@
                 tutBar.style.left = '50%';
                 tutBar.style.transform = 'translateX(-50%)';
                 tutBar.style.width = 'calc(100% - 48px)';
-                tutBar.style.maxWidth = '320px';
+                tutBar.style.maxWidth = '290px'; // Compact width
                 tutBar.style.margin = '0 auto';
                 tutBar.style.zIndex = '13000';
                 removeArrow();
@@ -398,7 +397,7 @@
             #tutorial-bar {
                 position: absolute;
                 width: calc(100% - 48px);
-                max-width: 320px;
+                max-width: 290px;
                 background: var(--modal-bg);
                 border: 2px solid var(--accent);
                 border-radius: 24px;
@@ -450,8 +449,11 @@
                 font-size: 12px !important;
             }
             #show-title-header.tut-highlight {
-                padding: 8px 16px !important;
-                margin: -8px -16px !important;
+                padding: 6px 16px !important;
+                margin-top: -6px !important;
+                margin-bottom: -6px !important;
+                margin-left: -16px !important;
+                margin-right: -16px !important;
                 border-radius: 12px !important;
             }
             @keyframes squirclePulse {
@@ -549,10 +551,12 @@
             }
         };
 
-        // 4. Polling loop: Monitors system states, maps dynamic IDs, and repositions popover
+        // 4. Polling loop: Monitors system states, maps dynamic IDs, and repositions popover [1]
         window.tutActive = false;
-        if (tutPollInterval) clearInterval(tutPollInterval);
-        tutPollInterval = setInterval(() => {
+        if (window.tutPollInterval) {
+            clearInterval(window.tutPollInterval); // Always clear globally registered timer to prevent overlap resets [1]
+        }
+        window.tutPollInterval = setInterval(() => {
             if (!window.tutActive) return;
 
             const currentTracks = (typeof tracks !== 'undefined') ? tracks : [];
@@ -651,7 +655,7 @@
         }
     };
 
-    // Safe execution initializer
+    // Safe execution initializer [1]
     const initSetup = () => {
         // Inject tutorial layout panel dynamically
         if (!$_tut('tutorial-bar')) {
@@ -714,22 +718,23 @@
         runOnboardingSetup();
     };
 
-    // Global initializer function to prevent recursive calls from ready states [1]
+    // Expose control functions to the window level to guarantee absolute availability [1]
+    window.skipTutorial = skipTutorial;
+    window.prevTutStep = prevTutStep;
+    window.nextTutStep = nextTutStep;
+
+    // Single execution entry guard to block font-ready loop triggers [1]
     window.initTutorial = () => {
         if (initTutorialCalled) return;
         initTutorialCalled = true;
 
         const isCompleted = localStorage.getItem('mc_tutorial_completed') === 'true';
         if (!isCompleted) {
+            // Restore active step from storage to prevent midway resets
             const savedStep = parseInt(localStorage.getItem('mc_tutorial_step')) || 0;
             setTimeout(() => window.openTutorial(savedStep), 1200);
         }
     };
-
-    // Expose control functions to the window level to guarantee absolute availability
-    window.skipTutorial = skipTutorial;
-    window.prevTutStep = prevTutStep;
-    window.nextTutStep = nextTutStep;
 
     // Execution monitor
     if (document.readyState === 'loading') {
