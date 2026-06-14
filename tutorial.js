@@ -30,106 +30,219 @@
         }
     };
 
-    // Onboarding Steps Array (6 Essential Master Steps)
+    // Onboarding Steps Array (10 Master Steps Covering All Core Functions)
     const tutSteps = [
         {
             title: "Import Your Music",
-            badge: "Step 1 of 6",
+            badge: "Step 1 of 10",
             text: "Let's build your cue list. Tap <strong>Add Cue</strong> to load an audio file from your device.",
             target: () => $_tut('add-cue-btn'), 
             waitForAction: true 
         },
         { 
             title: "Access Cue Settings", 
-            badge: "Step 2 of 6", 
-            text: "Great! Your track is loaded. Tap the <strong>Settings Gear (⚙)</strong> on the right of the cue card to open its settings.", 
+            badge: "Step 2 of 10", 
+            text: "Great! Your track is loaded. Tap the <strong>Settings Gear (⚙)</strong> on the right of the cue card to open its options.", 
             target: () => document.querySelector('.tile .edit-trigger'), 
             waitForAction: true 
         },
         { 
             title: "Individual Volume Level", 
-            badge: "Step 3 of 6", 
+            badge: "Step 3 of 10", 
             text: "Drag the <strong>Volume Slider</strong> to adjust this track's playback volume. Tapping the slider will proceed.", 
             target: () => document.querySelector('#cue-volume-slider-row input[type="range"]'), 
             waitForAction: true 
         },
         { 
+            title: "Voice Command Setup", 
+            badge: "Step 4 of 10", 
+            text: "Tap on <strong>Voice Triggers</strong> to expand spoken triggers. Assign a custom phrase here to fire this cue hands-free.", 
+            target: () => document.querySelector('#cue-voice-details summary'), 
+            waitForAction: true 
+        },
+        { 
             title: "Timelines & Ducking", 
-            badge: "Step 4 of 6", 
-            text: "Explore Loop playback, pre-delays, and automatic background audio ducking. Close the settings window when you are done.", 
+            badge: "Step 5 of 10", 
+            text: "Tap on <strong>Advanced Settings</strong> to configure loop parameters, pre-delays, custom fades, and automatic audio ducking.", 
+            target: () => document.querySelector('#cue-advanced-details summary'), 
+            waitForAction: true 
+        },
+        { 
+            title: "Close Options Panel", 
+            badge: "Step 6 of 10", 
+            text: "Now, let's return to the main dashboard. Tap the top-right <strong>Close (X)</strong> button to exit the panel.", 
             target: () => document.querySelector('#settings-modal .icon-btn'), 
-            waitForAction: false 
+            waitForAction: true 
+        },
+        { 
+            title: "Cue Context Menu", 
+            badge: "Step 7 of 10", 
+            text: "<strong>Long-press</strong> (press and hold) anywhere on the middle of the cue card to open the quick actions context menu.", 
+            target: () => document.querySelector('.tile-info'), 
+            waitForAction: true 
+        },
+        { 
+            title: "Context Menu Options", 
+            badge: "Step 8 of 10", 
+            text: "In this panel, you can copy, group, or tap <strong>Skip Cue</strong> to bypass a track during performances. Tap <strong>Close (X)</strong> to exit.", 
+            target: () => document.querySelector('#cue-menu-modal .icon-btn'), 
+            waitForAction: true 
         },
         { 
             title: "Manage Shows", 
-            badge: "Step 5 of 6", 
-            text: "Tap the <strong>Show Title Header</strong> at the top of the screen to open your Show Manager, where you can build and restore backup show files.", 
+            badge: "Step 9 of 10", 
+            text: "Tap the <strong>Show Title Header</strong> at the top left to manage projects, restore show backups, or export show configurations.", 
             target: () => $_tut('show-title-header'), 
             waitForAction: true 
         },
         { 
-            title: "Onboarding Concluded", 
-            badge: "Step 6 of 6", 
-            text: "You are ready to create! To replay this tutorial anytime, find the Interactive Guide option in App Settings. Tap <strong>Finish</strong> to close.", 
+            title: "Guide Concluded", 
+            badge: "Step 10 of 10", 
+            text: "Guide complete! Open App Settings anytime to replay this tutorial. Tap <strong>Finish</strong> to close and start performing.", 
             target: null, 
             waitForAction: false 
         }
     ];
 
-    // Handles positioning dynamically based on dialog state and targeted component coordinates
-    window.adjustTutorialBarParent = () => {
-        const activeDialog = document.querySelector('dialog[open]');
+    // Removes the vector arrow when card runs relative inside dynamic dialog boxes
+    const removeArrow = () => {
+        const arrow = $_tut('tutorial-arrow');
+        if (arrow) arrow.style.display = 'none';
+    };
+
+    // Renders the pointing triangle targeting center coordinates of target elements [2]
+    const updateArrow = (direction, arrowOffset) => {
+        let arrow = $_tut('tutorial-arrow');
+        if (!arrow) {
+            arrow = document.createElement('div');
+            arrow.id = 'tutorial-arrow';
+            $_tut('tutorial-bar').appendChild(arrow);
+        }
+
+        arrow.style.display = 'block';
+        arrow.style.position = 'absolute';
+        arrow.style.width = '0';
+        arrow.style.height = '0';
+        arrow.style.borderStyle = 'solid';
+        arrow.style.zIndex = '13001';
+
+        // Clamp coordinates within layout boundaries
         const tutBar = $_tut('tutorial-bar');
-        if (!tutBar) return;
-        
+        const clampedOffset = Math.max(16, Math.min(tutBar.clientWidth - 32, arrowOffset));
+        arrow.style.left = `${clampedOffset}px`;
+
+        if (direction === 'top') {
+            arrow.style.top = '-10px';
+            arrow.style.bottom = 'auto';
+            arrow.style.borderWidth = '0 10px 10px 10px';
+            arrow.style.borderColor = 'transparent transparent var(--accent) transparent';
+        } else {
+            arrow.style.bottom = '-10px';
+            arrow.style.top = 'auto';
+            arrow.style.borderWidth = '10px 10px 0 10px';
+            arrow.style.borderColor = 'var(--accent) transparent transparent transparent';
+        }
+    };
+
+    // Absolute screen positioning system [2]
+    const positionPopover = (targetEl) => {
+        const tutBar = $_tut('tutorial-bar');
+        if (!tutBar || !targetEl) return;
+
+        const activeDialog = document.querySelector('dialog[open]');
         if (activeDialog) {
             if (tutBar.parentElement !== activeDialog) {
                 activeDialog.appendChild(tutBar);
             }
-            tutBar.classList.remove('pos-top', 'pos-bottom');
             tutBar.style.position = 'relative';
-            tutBar.style.bottom = 'auto';
             tutBar.style.top = 'auto';
             tutBar.style.left = 'auto';
             tutBar.style.right = 'auto';
+            tutBar.style.bottom = 'auto';
             tutBar.style.transform = 'none';
             tutBar.style.width = '100%';
             tutBar.style.maxWidth = 'none';
             tutBar.style.margin = '16px 0 0 0';
+            tutBar.style.boxShadow = 'none';
+            tutBar.style.border = '1px solid var(--accent)';
+            tutBar.style.background = 'rgba(128,128,128,0.06)';
+            tutBar.style.borderRadius = '18px';
+            removeArrow();
+            return;
+        }
+
+        if (tutBar.parentElement !== document.body) {
+            document.body.appendChild(tutBar);
+        }
+
+        // Bounding rect math [2]
+        const rect = targetEl.getBoundingClientRect();
+        const barWidth = 320;
+        const viewWidth = window.innerWidth;
+        const viewHeight = window.innerHeight;
+
+        let top = 0;
+        let arrowDirection = 'bottom';
+
+        const spaceBelow = viewHeight - rect.bottom;
+        const spaceAbove = rect.top;
+
+        // Determine vertical placement based on maximum viewport space [2]
+        if (spaceBelow > spaceAbove) {
+            top = rect.bottom + window.scrollY + 12;
+            arrowDirection = 'top';
         } else {
-            if (tutBar.parentElement !== document.body) {
-                document.body.appendChild(tutBar);
-            }
-            
-            // Auto-positioning detector based on vertical layout quadrants [2]
-            const step = tutSteps[window.tutStep];
-            let positionAtTop = false;
-            if (step && typeof step.target === 'function') {
-                const targetEl = step.target();
-                if (targetEl) {
-                    const rect = targetEl.getBoundingClientRect();
-                    const viewportHeight = window.innerHeight;
-                    // If focused element is in the lower half of the screen, place dialog card on top [2]
-                    if (rect.top > viewportHeight / 2) {
-                        positionAtTop = true;
-                    }
-                }
-            }
-            
-            tutBar.style.position = 'fixed';
-            tutBar.style.left = '50%';
-            tutBar.style.transform = 'translateX(-50%)';
-            tutBar.style.width = 'calc(100% - 48px)';
-            tutBar.style.maxWidth = '360px';
-            tutBar.style.margin = '0 auto';
-            tutBar.style.zIndex = '13000';
-            
-            if (positionAtTop) {
-                tutBar.classList.add('pos-top');
-                tutBar.classList.remove('pos-bottom');
-            } else {
-                tutBar.classList.add('pos-bottom');
-                tutBar.classList.remove('pos-top');
+            // Get mock bar height offset safely
+            const mockBarHeight = tutBar.clientHeight || 120;
+            top = rect.top + window.scrollY - mockBarHeight - 12;
+            arrowDirection = 'bottom';
+        }
+
+        // Horizontal alignment math centered over targets [2]
+        const targetCenter = rect.left + rect.width / 2;
+        let left = targetCenter - barWidth / 2;
+
+        // Prevent clipping out of screen boundaries [2]
+        left = Math.max(12, Math.min(viewWidth - barWidth - 12, left));
+
+        tutBar.style.position = 'absolute';
+        tutBar.style.top = `${top}px`;
+        tutBar.style.left = `${left}px`;
+        tutBar.style.transform = 'none';
+        tutBar.style.width = 'calc(100% - 24px)';
+        tutBar.style.maxWidth = `${barWidth}px`;
+        tutBar.style.margin = '0';
+        tutBar.style.zIndex = '13000';
+        tutBar.style.boxShadow = '0 20px 50px rgba(0,0,0,0.6)';
+        tutBar.style.border = '2px solid var(--accent)';
+        tutBar.style.background = 'var(--modal-bg)';
+        tutBar.style.borderRadius = '24px';
+
+        updateArrow(arrowDirection, targetCenter - left);
+    };
+
+    window.adjustTutorialBarParent = () => {
+        const step = tutSteps[window.tutStep];
+        let targetEl = null;
+        if (step && typeof step.target === 'function') {
+            targetEl = step.target();
+        }
+
+        if (targetEl) {
+            positionPopover(targetEl);
+        } else {
+            const tutBar = $_tut('tutorial-bar');
+            if (tutBar) {
+                tutBar.style.position = 'fixed';
+                tutBar.style.bottom = '24px';
+                tutBar.style.top = 'auto';
+                tutBar.style.left = '50%';
+                tutBar.style.transform = 'translateX(-50%)';
+                tutBar.style.width = 'calc(100% - 48px)';
+                tutBar.style.maxWidth = '320px';
+                tutBar.style.margin = '0 auto';
+                tutBar.style.zIndex = '13000';
+                removeArrow();
             }
         }
     };
@@ -141,17 +254,13 @@
         // Safe evaluation of global "tracks" variable scope
         const currentTracks = (typeof tracks !== 'undefined') ? tracks : [];
 
-        // Auto-skip Step 0 (Onboarding add request) if user already has elements in workspace list
+        // Auto-skip Step 0 if tracks already exist
         if (stepIdx === 0 && currentTracks.length > 0) {
             stepIdx = 1;
         }
 
         window.tutStep = stepIdx;
         document.body.classList.add('tut-active');
-
-        if (stepIdx === 2) {
-            if (typeof window.closeModal === 'function') window.closeModal('cue-menu-modal');
-        }
 
         const step = tutSteps[window.tutStep];
         if (!step) return;
@@ -249,13 +358,12 @@
     const runOnboardingSetup = () => {
         // 1. Inject Styles
         const styleEl = document.createElement('style');
-        styleEl.innerHTML = `
+        styleEl.type = 'text/css';
+        const cssCode = `
             #tutorial-bar {
-                position: fixed;
-                left: 50%;
-                transform: translateX(-50%);
+                position: absolute;
                 width: calc(100% - 48px);
-                max-width: 360px;
+                max-width: 320px;
                 background: var(--modal-bg);
                 border: 2px solid var(--accent);
                 border-radius: 24px;
@@ -266,14 +374,6 @@
                 flex-direction: column;
                 gap: 10px;
                 box-sizing: border-box;
-            }
-            #tutorial-bar.pos-top {
-                top: 24px;
-                bottom: auto;
-            }
-            #tutorial-bar.pos-bottom {
-                top: auto;
-                bottom: 24px;
             }
             #tutorial-bar p { 
                 margin: 0; 
@@ -346,6 +446,11 @@
               backdrop-filter: none !important;
             }
         `;
+        if (styleEl.styleSheet) {
+            styleEl.styleSheet.cssText = cssCode;
+        } else {
+            styleEl.appendChild(document.createTextNode(cssCode));
+        }
         document.head.appendChild(styleEl);
 
         // 2. Setup dynamic play/pause checks safely
@@ -407,6 +512,12 @@
             // Execute dynamic element mapping
             runDynamicIdSetup();
 
+            const settingsOpen = document.querySelector('dialog#settings-modal[open]');
+            const menuOpen = document.querySelector('dialog#cue-menu-modal[open]');
+            const projectsOpen = document.querySelector('dialog#projects-modal[open]');
+            const voiceOpen = $_tut('cue-voice-details') && $_tut('cue-voice-details').open;
+            const advOpen = $_tut('cue-advanced-details') && $_tut('cue-advanced-details').open;
+
             // Run status-driven progression checks
             if (window.tutStep === 0) {
                 // If tracks have been successfully loaded, progress to Step 2
@@ -415,27 +526,35 @@
                 }
             } else if (window.tutStep === 1) {
                 // Wait for Settings modal to open
-                if (document.querySelector('dialog#settings-modal[open]')) {
+                if (settingsOpen) {
                     window.openTutorial(2);
                 }
             } else if (window.tutStep === 2) {
-                // If modal is closed, skip to Step 4 (Main screen)
-                if (!document.querySelector('dialog#settings-modal[open]')) {
-                    window.openTutorial(4);
-                }
+                // If modal is closed prematurely, return to dashboard sequence
+                if (!settingsOpen) window.openTutorial(6);
             } else if (window.tutStep === 3) {
-                // If modal is closed, skip to Step 4 (Main screen)
-                if (!document.querySelector('dialog#settings-modal[open]')) {
-                    window.openTutorial(4);
-                }
+                if (voiceOpen) window.openTutorial(4);
+                if (!settingsOpen) window.openTutorial(6);
             } else if (window.tutStep === 4) {
-                // Wait for Projects modal to open
-                if (document.querySelector('dialog#projects-modal[open]')) {
-                    window.openTutorial(5);
-                }
+                if (advOpen) window.openTutorial(5);
+                if (!settingsOpen) window.openTutorial(6);
             } else if (window.tutStep === 5) {
+                // Settings Modal closed
+                if (!settingsOpen) window.openTutorial(6);
+            } else if (window.tutStep === 6) {
+                // Wait for long-press contextual Menu modal to open
+                if (menuOpen) window.openTutorial(7);
+            } else if (window.tutStep === 7) {
+                // Wait for cue-menu-modal to close
+                if (!menuOpen) window.openTutorial(8);
+            } else if (window.tutStep === 8) {
+                // Wait for Projects modal to open
+                if (projectsOpen) {
+                    window.openTutorial(9);
+                }
+            } else if (window.tutStep === 9) {
                 // Once projects modal closes, onboarding completes
-                if (!document.querySelector('dialog#projects-modal[open]')) {
+                if (!projectsOpen) {
                     window.finishTutorial();
                 }
             }
@@ -540,9 +659,11 @@
             const clickAdvanceMap = {
                 1: 2,   // Settings gear -> Volume sliders (Step 3)
                 2: 3,   // Volume slider -> Voice triggers menu (Step 4)
-                3: 5,   // Voice triggers summary -> Close Settings (Step 6)
-                4: 5,   // Timelines panel click -> Close modal button (Step 6)
-                5: 6    // Close modal -> Show Manager Title (Step 7)
+                3: 4,   // Voice summary click -> Advanced Cues expander (Step 5)
+                4: 5,   // Advanced Cues summary -> Close modal button (Step 6)
+                5: 6,   // Close modal -> Show Manager Title (Step 7)
+                7: 8,   // Close context menu -> Show Manager Header (Step 9)
+                8: 9    // Show Manager header -> Finish (Step 10)
             };
             if (clickAdvanceMap[window.tutStep] !== undefined) {
                 setTimeout(() => {
