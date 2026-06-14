@@ -1,4 +1,13 @@
+/**
+ * Magic Cues Pro - Fully Self-Contained Onboarding & Play/Pause Controller
+ * Dynamically injects styling, guides, and interception hooks without touching index.html.
+ */
+
 (function() {
+    // Prevent double initialization during reloads or multiple script loads
+    if (window.tutInitialized) return;
+    window.tutInitialized = true;
+
     // Local safe utility selector to avoid namespace collisions with index.html
     const $_tut = id => document.getElementById(id);
 
@@ -86,7 +95,7 @@
         { 
             title: "Context Menu Options", 
             badge: "Step 8 of 10", 
-            text: "In this panel, you can duplicate cues, compile cue groups, or tap <strong>Skip Cue</strong> to bypass a track during live performances. Tap the <strong>Close (X)</strong> cross icon on the top right when done.", 
+            text: "In this panel, you can duplicate cues, compile cue groups, or tap <strong>Skip Cue</strong> to bypass a track during live performances. Tap the close cross on the top right when done.", 
             target: () => document.querySelector('#cue-menu-modal .icon-btn'), 
             waitForAction: true 
         },
@@ -204,9 +213,9 @@
         // Horizontal alignment: right-aligned if specified, else centered [2]
         let left = 0;
         if (alignEl) {
-            left = alignRect.right - barWidth;
+            left = (alignRect.right + window.scrollX) - barWidth;
         } else {
-            left = (rect.left + rect.width / 2) - barWidth / 2;
+            left = (rect.left + rect.width / 2 + window.scrollX) - barWidth / 2;
         }
 
         // Prevent clipping out of screen boundaries [2]
@@ -226,7 +235,7 @@
         tutBar.style.borderRadius = '24px';
 
         // Point the arrow directly at the target's center, even if card is right-aligned [2]
-        const targetCenter = rect.left + rect.width / 2;
+        const targetCenter = rect.left + rect.width / 2 + window.scrollX;
         updateArrow(arrowDirection, targetCenter - left);
     };
 
@@ -522,7 +531,7 @@
                 `;
                 guideRow.addEventListener('click', () => {
                     triggerTutHaptic(10);
-                    // Native HTML dialog dismissal to bypass window namespace scoping blocks [1]
+                    // Standard modal dismissal to redirect back to home dashboard
                     const appSettingsDialogNode = $_tut('app-settings');
                     if (appSettingsDialogNode && appSettingsDialogNode.hasAttribute('open')) {
                         appSettingsDialogNode.close();
@@ -594,7 +603,11 @@
                 }
             }
 
-            // Real-time responsive positioning calculations
+            // Real-time responsive positioning and focused highlights application
+            const activeStep = tutSteps[window.tutStep];
+            if (activeStep && typeof activeStep.target === 'function') {
+                applyTutHighlight(activeStep.target);
+            }
             window.adjustTutorialBarParent();
 
         }, 250);
