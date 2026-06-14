@@ -16,6 +16,7 @@
     window.tutType = 'basic';
     window.tutStep = 0;
     let tutPollInterval = null;
+    let initTutorialCalled = false;
 
     // Helper to safely trigger parent haptic feedback if available
     const triggerTutHaptic = (pattern) => {
@@ -189,7 +190,7 @@
         // Bounding rect math [2]
         const rect = targetEl.getBoundingClientRect();
         const alignRect = alignEl ? alignEl.getBoundingClientRect() : rect;
-        const barWidth = 320;
+        const barWidth = tutBar.offsetWidth || 320; // Query layout width dynamically to avoid narrow screen clipping
         const viewWidth = window.innerWidth;
         const viewHeight = window.innerHeight;
 
@@ -448,6 +449,11 @@
                 padding: 6px 12px !important;
                 font-size: 12px !important;
             }
+            #show-title-header.tut-highlight {
+                padding: 8px 16px !important;
+                margin: -8px -16px !important;
+                border-radius: 12px !important;
+            }
             @keyframes squirclePulse {
               0% {
                 box-shadow: 0 0 0 1px var(--accent), 0 0 0 2px rgba(0, 122, 255, 0.4), 0 4px 16px rgba(0, 122, 255, 0.15);
@@ -460,9 +466,8 @@
               }
             }
             .tut-highlight {
+              border: 2px solid var(--accent) !important;
               animation: squirclePulse 2s infinite cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-              border-color: var(--accent) !important;
-              border-radius: 20px !important;
               transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
               z-index: 13000 !important;
             }
@@ -531,11 +536,10 @@
                 `;
                 guideRow.addEventListener('click', () => {
                     triggerTutHaptic(10);
-                    // Standard modal dismissal to redirect back to home dashboard
-                    const appSettingsDialogNode = $_tut('app-settings');
-                    if (appSettingsDialogNode && appSettingsDialogNode.hasAttribute('open')) {
-                        appSettingsDialogNode.close();
-                        document.body.classList.remove('modal-open');
+                    // Dismiss app-settings modal programmatically using native clicks to bypass scoping blocks [1]
+                    const appSettingsCloseBtn = document.querySelector('#app-settings .modal-header .icon-btn');
+                    if (appSettingsCloseBtn) {
+                        appSettingsCloseBtn.click();
                     }
                     setTimeout(() => {
                         window.openTutorial(0);
@@ -708,6 +712,18 @@
         }
 
         runOnboardingSetup();
+    };
+
+    // Global initializer function to prevent recursive calls from ready states [1]
+    window.initTutorial = () => {
+        if (initTutorialCalled) return;
+        initTutorialCalled = true;
+
+        const isCompleted = localStorage.getItem('mc_tutorial_completed') === 'true';
+        if (!isCompleted) {
+            const savedStep = parseInt(localStorage.getItem('mc_tutorial_step')) || 0;
+            setTimeout(() => window.openTutorial(savedStep), 1200);
+        }
     };
 
     // Expose control functions to the window level to guarantee absolute availability
