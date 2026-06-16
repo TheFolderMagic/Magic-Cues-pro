@@ -22,6 +22,8 @@
     let stepEntryTime = 0;
     // Tracks the currently highlighted element reference
     let currentHighlightEl = null;
+    // Tracks sustained closed state of the context menu
+    let menuClosedTimestamp = null;
 
     // Helper to safely trigger parent haptic feedback if available
     const triggerTutHaptic = (pattern) => {
@@ -144,7 +146,7 @@
             badge: "Step 10 of 17",
             text: "Type in a new name and tap the <strong>Rename</strong> button or input to easily change this cue's title.",
             target: () => $_tut('rename-cue-input') || document.querySelector('#cue-menu-modal input'),
-            waitForAction: true,
+            waitForAction: false, // Changed from true to false to let user continue with 'Next' button
             preferPosition: "top" // Ensures the card stays above the input and doesn't block context buttons
         },
         {
@@ -182,7 +184,8 @@
             text: "Tap <strong>Import</strong> to restore backups, or long-press a show in the list to export or duplicate it. Click <strong>Next</strong> to proceed.",
             target: () => $_tut('show-import-btn'),
             alignTo: () => $_tut('projects-modal'),
-            waitForAction: false
+            waitForAction: false,
+            highlight: false // Removed highlighting as this is not an interactive step
         },
         {
             title: "Close Show Manager",
@@ -208,43 +211,15 @@
         }
     ];
 
-    // Removes the vector arrow when needed
+    // Removes the pointing arrow when needed
     const removeArrow = () => {
         const arrow = $_tut('tutorial-arrow');
-        if (arrow) arrow.style.display = 'none';
+        if (arrow) arrow.remove();
     };
 
-    // Renders the pointing triangle targeting center coordinates of target elements
+    // Modified to keep layout clean and arrow-free
     const updateArrow = (direction, arrowOffset) => {
-        let arrow = $_tut('tutorial-arrow');
-        if (!arrow) {
-            arrow = document.createElement('div');
-            arrow.id = 'tutorial-arrow';
-            $_tut('tutorial-bar').appendChild(arrow);
-        }
-
-        arrow.style.display      = 'block';
-        arrow.style.position     = 'absolute';
-        arrow.style.width        = '0';
-        arrow.style.height       = '0';
-        arrow.style.borderStyle  = 'solid';
-        arrow.style.zIndex       = '2147483647';
-
-        const tutBar = $_tut('tutorial-bar');
-        const clampedOffset = Math.max(20, Math.min(tutBar.offsetWidth - 40, arrowOffset - 12));
-        arrow.style.left = `${clampedOffset}px`;
-
-        if (direction === 'top') {
-            arrow.style.top         = '-12px';
-            arrow.style.bottom      = 'auto';
-            arrow.style.borderWidth = '0 12px 12px 12px';
-            arrow.style.borderColor = 'transparent transparent var(--accent) transparent';
-        } else {
-            arrow.style.bottom      = '-12px';
-            arrow.style.top         = 'auto';
-            arrow.style.borderWidth = '12px 12px 0 12px';
-            arrow.style.borderColor = 'var(--accent) transparent transparent transparent';
-        }
+        removeArrow();
     };
 
     // Floating viewport positioning system
@@ -675,6 +650,14 @@
             const voiceOpen     = $_tut('cue-voice-details')    && $_tut('cue-voice-details').open;
             const advOpen       = $_tut('cue-advanced-details') && $_tut('cue-advanced-details').open;
 
+            // Tracks sustained menu closure to filter out brief track skip or re-rendering states
+            if (!menuOpen) {
+                if (!menuClosedTimestamp) menuClosedTimestamp = Date.now();
+            } else {
+                menuClosedTimestamp = null;
+            }
+            const menuClosedSustained = menuClosedTimestamp && (Date.now() - menuClosedTimestamp) > 1500;
+
             const modalGracePassed = (Date.now() - stepEntryTime) > 800;
 
             if (window.tutStep === 0) {
@@ -697,14 +680,14 @@
                 if (!settingsOpen && modalGracePassed) window.openTutorial(8);
             } else if (window.tutStep === 8) {
                 if (menuOpen) window.openTutorial(9);
-            } else if (window.tutStep === 9) {
-                if (!menuOpen && modalGracePassed) window.openTutorial(13);
-            } else if (window.tutStep === 10) {
-                if (!menuOpen && modalGracePassed) window.openTutorial(13);
-            } else if (window.tutStep === 11) {
-                if (!menuOpen && modalGracePassed) window.openTutorial(13);
-            } else if (window.tutStep === 12) {
-                if (!menuOpen && modalGracePassed) window.openTutorial(13); 
+            } else if (window.tutStep === 9) { // Step 10
+                if (menuClosedSustained && modalGracePassed) window.openTutorial(13);
+            } else if (window.tutStep === 10) { // Step 11
+                if (menuClosedSustained && modalGracePassed) window.openTutorial(13);
+            } else if (window.tutStep === 11) { // Step 12
+                if (menuClosedSustained && modalGracePassed) window.openTutorial(13);
+            } else if (window.tutStep === 12) { // Step 13
+                if (menuClosedSustained && modalGracePassed) window.openTutorial(13); 
             } else if (window.tutStep === 13) {
                 if (projectsOpen) window.openTutorial(14);
             } else if (window.tutStep === 14) {
@@ -744,18 +727,6 @@
                 }
             }
 
-            // Rename Execution Check (Step 10 → 11 transition)
-            else if (window.tutStep === 9) {
-                const renameInput = $_tut('rename-cue-input') || document.querySelector('#cue-menu-modal input');
-                const isInputClick = e.target === renameInput;
-                const isRenameBtnClick = e.target.tagName === 'BUTTON' && e.target.textContent.toLowerCase().includes('rename');
-                const isModalActionClick = e.target.closest('#cue-menu-modal') && e.target.textContent.toLowerCase().includes('rename');
-
-                if (isInputClick || isRenameBtnClick || isModalActionClick) {
-                    setTimeout(() => { if (window.tutStep === 9) window.openTutorial(10); }, 150);
-                }
-            }
-
             // Skip Cue Execution Check (Step 11 → 12 transition)
             else if (window.tutStep === 10) {
                 const skipBtn = findMenuBtnByText('skip') || $_tut('ctx-skip-btn');
@@ -773,6 +744,14 @@
                                    (e.target.closest('button') && e.target.closest('button').textContent.toLowerCase().includes('duplicate'));
                 if (clickedDup) {
                     setTimeout(() => { if (window.tutStep === 11) window.openTutorial(12); }, 150);
+                }
+            }
+
+            // Close Context Menu Execution Check (Step 13 → 14 transition)
+            else if (window.tutStep === 12) {
+                const closeBtn = document.querySelector('#cue-menu-modal .icon-btn');
+                if (closeBtn && (e.target === closeBtn || closeBtn.contains(e.target))) {
+                    setTimeout(() => { if (window.tutStep === 12) window.openTutorial(13); }, 150);
                 }
             }
         }, true);
