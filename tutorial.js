@@ -182,12 +182,13 @@
             title: "Onboarding Concluded",
             badge: "Step 17 of 17",
             text: "Guide complete! Replay this interactive guide at any time from App Settings. Tap <strong>Finish</strong> to close and start performing.",
-            target: null,
+            target: () => $_tut('header-settings-btn') || document.querySelector('header .icon-btn'),
+            alignTo: () => document.querySelector('header'),
             waitForAction: false
         }
     ];
 
-    // Removes the vector arrow when card runs relative inside dynamic dialog boxes
+    // Removes the vector arrow when needed
     const removeArrow = () => {
         const arrow = $_tut('tutorial-arrow');
         if (arrow) arrow.style.display = 'none';
@@ -207,75 +208,38 @@
         arrow.style.width        = '0';
         arrow.style.height       = '0';
         arrow.style.borderStyle  = 'solid';
-        arrow.style.zIndex       = '13001';
+        arrow.style.zIndex       = '200001';
 
         const tutBar = $_tut('tutorial-bar');
-        const clampedOffset = Math.max(16, Math.min(tutBar.clientWidth - 32, arrowOffset - 10));
+        const clampedOffset = Math.max(20, Math.min(tutBar.offsetWidth - 40, arrowOffset - 12));
         arrow.style.left = `${clampedOffset}px`;
 
         if (direction === 'top') {
-            arrow.style.top         = '-10px';
+            arrow.style.top         = '-12px';
             arrow.style.bottom      = 'auto';
-            arrow.style.borderWidth = '0 10px 10px 10px';
+            arrow.style.borderWidth = '0 12px 12px 12px';
             arrow.style.borderColor = 'transparent transparent var(--accent) transparent';
         } else {
-            arrow.style.bottom      = '-10px';
+            arrow.style.bottom      = '-12px';
             arrow.style.top         = 'auto';
-            arrow.style.borderWidth = '10px 10px 0 10px';
+            arrow.style.borderWidth = '12px 12px 0 12px';
             arrow.style.borderColor = 'var(--accent) transparent transparent transparent';
         }
     };
 
-    // Resolves a outer container elements to prevent breaking horizontal layouts
-    const getSafeInsertionPoint = (el) => {
-        if (!el) return null;
-        let container = el.closest('.setting-row') || el.closest('.setting-item') || el.closest('.control-row') || el.closest('.voice-trigger-row');
-        if (!container) {
-            const label = el.closest('label');
-            if (label) {
-                container = label.parentElement;
-            } else {
-                container = el.parentElement;
-            }
-        }
-        return container || el;
-    };
-
-    // Absolute screen positioning system with an expanded 24px breathing gap
+    // Floating viewport positioning system
     const positionPopover = (targetEl, alignEl = null) => {
         const tutBar = $_tut('tutorial-bar');
         if (!tutBar || !targetEl) return;
 
         const activeDialog = document.querySelector('dialog[open]');
+        
+        // Append to dialog to inherit top-layer z-index priority without breaking flow
         if (activeDialog) {
-            const insertionEl = getSafeInsertionPoint(targetEl);
-            if (insertionEl && activeDialog.contains(insertionEl)) {
-                if (insertionEl.nextSibling !== tutBar) {
-                    insertionEl.parentNode.insertBefore(tutBar, insertionEl.nextSibling);
-                }
-            } else {
-                if (tutBar.parentElement !== activeDialog) {
-                    activeDialog.appendChild(tutBar);
-                }
-            }
-            tutBar.style.position     = 'relative';
-            tutBar.style.top          = 'auto';
-            tutBar.style.left         = 'auto';
-            tutBar.style.right        = 'auto';
-            tutBar.style.bottom       = 'auto';
-            tutBar.style.transform    = 'none';
-            tutBar.style.width        = 'calc(100% - 32px)';
-            tutBar.style.maxWidth     = '280px';
-            tutBar.style.margin       = '16px auto';
-            tutBar.style.boxShadow    = 'none';
-            tutBar.style.border       = '1px solid var(--accent)';
-            tutBar.style.background   = 'rgba(128,128,128,0.06)';
-            tutBar.style.borderRadius = '18px';
-            removeArrow();
-            return;
+            if (tutBar.parentElement !== activeDialog) activeDialog.appendChild(tutBar);
+        } else {
+            if (tutBar.parentElement !== document.body) document.body.appendChild(tutBar);
         }
-
-        if (tutBar.parentElement !== document.body) document.body.appendChild(tutBar);
 
         const rect      = targetEl.getBoundingClientRect();
         const alignRect = alignEl ? alignEl.getBoundingClientRect() : rect;
@@ -290,34 +254,43 @@
         const spaceAbove = rect.top;
 
         if (spaceBelow > spaceAbove) {
-            top            = rect.bottom + window.scrollY + 24; 
+            top            = rect.bottom + 20; 
             arrowDirection = 'top';
         } else {
-            const mockBarHeight = tutBar.clientHeight || 140;
-            top            = rect.top + window.scrollY - mockBarHeight - 24; 
+            const mockBarHeight = tutBar.offsetHeight || 160;
+            top            = rect.top - mockBarHeight - 20; 
             arrowDirection = 'bottom';
         }
 
         let left = alignEl
-            ? (alignRect.right + window.scrollX) - barWidth
-            : (rect.left + rect.width / 2 + window.scrollX) - barWidth / 2;
+            ? (alignRect.right) - barWidth
+            : (rect.left + rect.width / 2) - barWidth / 2;
 
         left = Math.max(12, Math.min(viewWidth - barWidth - 12, left));
 
-        tutBar.style.position     = 'absolute';
-        tutBar.style.top          = `${top}px`;
-        tutBar.style.left         = `${left}px`;
+        // In case native dialogs use transforms, compensate fixed offsets
+        let offsetX = 0;
+        let offsetY = 0;
+        if (activeDialog && window.getComputedStyle(activeDialog).transform !== 'none') {
+            const dialogRect = activeDialog.getBoundingClientRect();
+            offsetX = dialogRect.left;
+            offsetY = dialogRect.top;
+        }
+
+        tutBar.style.position     = 'fixed';
+        tutBar.style.top          = `${top - offsetY}px`;
+        tutBar.style.left         = `${left - offsetX}px`;
         tutBar.style.transform    = 'none';
         tutBar.style.width        = 'calc(100% - 24px)';
-        tutBar.style.maxWidth     = `${barWidth}px`;
+        tutBar.style.maxWidth     = '280px';
         tutBar.style.margin       = '0';
-        tutBar.style.zIndex       = '13000';
+        tutBar.style.zIndex       = '200000';
         tutBar.style.boxShadow    = '0 20px 50px rgba(0,0,0,0.6)';
         tutBar.style.border       = '2px solid var(--accent)';
         tutBar.style.background   = 'var(--modal-bg)';
         tutBar.style.borderRadius = '24px';
 
-        const targetCenter = rect.left + rect.width / 2 + window.scrollX;
+        const targetCenter = rect.left + rect.width / 2;
         updateArrow(arrowDirection, targetCenter - left);
     };
 
@@ -334,45 +307,30 @@
         const activeDialog = document.querySelector('dialog[open]');
         const tutBar = $_tut('tutorial-bar');
 
-        if (targetEl) {
-            positionPopover(targetEl, alignEl);
-        } else {
-            if (tutBar) {
-                if (activeDialog) {
-                    if (tutBar.parentElement !== activeDialog) {
-                        activeDialog.appendChild(tutBar);
-                    }
-                    tutBar.style.position     = 'relative';
-                    tutBar.style.top          = 'auto';
-                    tutBar.style.left         = 'auto';
-                    tutBar.style.right        = 'auto';
-                    tutBar.style.bottom       = 'auto';
-                    tutBar.style.transform    = 'none';
-                    tutBar.style.width        = 'calc(100% - 32px)';
-                    tutBar.style.maxWidth     = '280px';
-                    tutBar.style.margin       = '16px auto';
-                    tutBar.style.boxShadow    = 'none';
-                    tutBar.style.border       = '1px solid var(--accent)';
-                    tutBar.style.background   = 'rgba(128,128,128,0.06)';
-                    tutBar.style.borderRadius = '18px';
-                    removeArrow();
-                } else {
-                    if (tutBar.parentElement !== document.body) document.body.appendChild(tutBar);
-                    tutBar.style.position  = 'fixed';
-                    tutBar.style.bottom    = '24px';
-                    tutBar.style.top       = 'auto';
-                    tutBar.style.left      = '50%';
-                    tutBar.style.transform = 'translateX(-50%)';
-                    tutBar.style.width     = 'calc(100% - 48px)';
-                    tutBar.style.maxWidth  = '280px'; 
-                    tutBar.style.margin    = '0 auto';
-                    tutBar.style.zIndex    = '13000';
-                    tutBar.style.boxShadow = '0 20px 50px rgba(0,0,0,0.6)';
-                    tutBar.style.border    = '2px solid var(--accent)';
-                    tutBar.style.background = 'var(--modal-bg)';
-                    tutBar.style.borderRadius = '24px';
-                    removeArrow();
-                }
+        if (tutBar) {
+            if (activeDialog) {
+                if (tutBar.parentElement !== activeDialog) activeDialog.appendChild(tutBar);
+            } else {
+                if (tutBar.parentElement !== document.body) document.body.appendChild(tutBar);
+            }
+
+            if (targetEl) {
+                positionPopover(targetEl, alignEl);
+            } else {
+                tutBar.style.position  = 'fixed';
+                tutBar.style.bottom    = '24px';
+                tutBar.style.top       = 'auto';
+                tutBar.style.left      = '50%';
+                tutBar.style.transform = 'translateX(-50%)';
+                tutBar.style.width     = 'calc(100% - 48px)';
+                tutBar.style.maxWidth  = '280px'; 
+                tutBar.style.margin    = '0 auto';
+                tutBar.style.zIndex    = '200000';
+                tutBar.style.boxShadow = '0 20px 50px rgba(0,0,0,0.6)';
+                tutBar.style.border    = '2px solid var(--accent)';
+                tutBar.style.background = 'var(--modal-bg)';
+                tutBar.style.borderRadius = '24px';
+                removeArrow();
             }
         }
     };
@@ -493,22 +451,11 @@
         styleEl.type    = 'text/css';
         const cssCode = `
             #tutorial-bar {
-                position: absolute;
-                width: calc(100% - 48px);
-                max-width: 280px;
-                background: var(--modal-bg);
-                border: 2px solid var(--accent);
-                border-radius: 24px;
-                padding: 16px;
-                z-index: 13000;
-                box-shadow: 0 20px 50px rgba(0,0,0,0.6);
                 display: none;
                 flex-direction: column;
                 gap: 10px;
                 box-sizing: border-box;
             }
-            #tutorial-bar.pos-top  { top: 24px;  bottom: auto; }
-            #tutorial-bar.pos-bottom { top: auto; bottom: 24px; }
             #tutorial-bar p {
                 margin: 0;
                 font-size: 14px !important;
@@ -555,25 +502,10 @@
             }
             .tut-highlight {
               border: 2px solid var(--accent) !important;
+              border-radius: 12px !important;
               animation: squirclePulse 2s infinite cubic-bezier(0.25, 0.8, 0.25, 1) !important;
               transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-              z-index: 13000 !important;
-            }
-            dialog[open] #tutorial-bar {
-              position: relative !important;
-              bottom: auto !important;
-              top: auto !important;
-              left: auto !important;
-              transform: none !important;
-              width: calc(100% - 32px) !important;
-              max-width: 280px !important;
-              margin: 16px auto !important;
-              box-shadow: none !important;
-              border: 1px solid var(--accent) !important;
-              border-radius: 18px !important;
-              background: rgba(128,128,128,0.06) !important;
-              display: flex !important;
-              box-sizing: border-box !important;
+              z-index: 200000 !important;
             }
             body.tut-active dialog         { backdrop-filter: none !important; }
             body.tut-active dialog::backdrop { backdrop-filter: none !important; }
@@ -786,19 +718,6 @@
             // Programmatic Event bindings to bypass IIFE scope boundaries
             tutorialBar.querySelector('#tutorial-close-btn').addEventListener('click', () => window.skipTutorial());
             tutorialBar.querySelector('#tut-bar-next').addEventListener('click', () => window.nextTutStep());
-        }
-
-        const tutBarNode = $_tut('tutorial-bar');
-        if (tutBarNode) {
-            tutBarNode.style.display      = 'none';
-            tutBarNode.style.flexDirection = 'column';
-            tutBarNode.style.gap          = '10px';
-            tutBarNode.style.padding      = '16px';
-            tutBarNode.style.boxSizing    = 'border-box';
-            tutBarNode.style.background   = 'var(--modal-bg)';
-            tutBarNode.style.border       = '2px solid var(--accent)';
-            tutBarNode.style.borderRadius = '24px';
-            tutBarNode.style.boxShadow    = '0 20px 50px rgba(0,0,0,0.6)';
         }
 
         runOnboardingSetup();
