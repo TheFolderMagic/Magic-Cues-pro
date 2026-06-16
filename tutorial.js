@@ -33,12 +33,18 @@
 
     // Helper to dynamically match contextual menu elements by their text label without matching container wrappers
     const findMenuBtnByText = (text) => {
-        return Array.from(document.querySelectorAll('#cue-menu-modal button, #cue-menu-modal .action-btn, #cue-menu-modal span'))
-            .find(btn => {
-                const lowerText = btn.textContent.trim().toLowerCase();
-                const isMatch = lowerText === text.toLowerCase() || lowerText.includes(text.toLowerCase());
-                return isMatch && btn.children.length <= 1;
+        const match = Array.from(document.querySelectorAll('#cue-menu-modal button, #cue-menu-modal .action-btn, #cue-menu-modal span, #cue-menu-modal div'))
+            .find(el => {
+                const lowerText = el.textContent.trim().toLowerCase();
+                return (lowerText === text.toLowerCase() || lowerText.includes(text.toLowerCase())) && el.textContent.length < 50;
             });
+        
+        if (match) {
+            // Find the closest high-level button/action wrapper for a clean container highlight
+            const buttonContainer = match.closest('button') || match.closest('.action-btn') || match.closest('[role="button"]');
+            return buttonContainer || match;
+        }
+        return null;
     };
 
     // Helper to determine if a dynamic modal container is fully visible
@@ -70,18 +76,18 @@
         if (el) el.classList.add('tut-highlight');
     };
 
-    // Onboarding Steps Array (17 Master Steps Covering All Core Functions)
+    // Onboarding Steps Array (19 Master Steps Covering All Core Functions)
     const tutSteps = [
         {
             title: "Import Your Music",
-            badge: "Step 1 of 17",
+            badge: "Step 1 of 19",
             text: "Let's build your cue list. Tap <strong>Add Cue</strong> to load an audio file from your device.",
             target: () => $_tut('add-cue-btn'),
             waitForAction: true
         },
         {
             title: "Access Cue Settings",
-            badge: "Step 2 of 17",
+            badge: "Step 2 of 19",
             text: "Great! Your track is loaded. Tap the <strong>Settings Gear (⚙)</strong> on the right of the cue card to open its options.",
             target: () => document.querySelector('.tile .edit-trigger'),
             alignTo: () => document.querySelector('.tile'),
@@ -89,21 +95,21 @@
         },
         {
             title: "Individual Volume Level",
-            badge: "Step 3 of 17",
+            badge: "Step 3 of 19",
             text: "Drag the <strong>Volume Slider</strong> to set a custom playback volume level. Tapping or sliding the range input will proceed.",
             target: () => $_tut('cue-volume-slider-row'),
             waitForAction: true
         },
         {
             title: "Voice Command Setup",
-            badge: "Step 4 of 17",
+            badge: "Step 4 of 19",
             text: "Tap on <strong>Voice Triggers</strong> to expand spoken trigger configurations.",
             target: () => $_tut('cue-voice-details'),
             waitForAction: true
         },
         {
             title: "Voice triggers & Global Mode",
-            badge: "Step 5 of 17",
+            badge: "Step 5 of 19",
             text: "Assign a voice trigger phrase. Tap the <strong>Global</strong> switch to listen even when this cue is not next in queue.",
             target: () => {
                 const cb = document.querySelector('#cue-voice-details input[type="checkbox"]');
@@ -117,21 +123,21 @@
         },
         {
             title: "Open Advanced Settings",
-            badge: "Step 6 of 17",
+            badge: "Step 6 of 19",
             text: "Tap <strong>Advanced Settings</strong> to expand timelines, ducking, and looping parameters.",
             target: () => $_tut('cue-advanced-details'),
             waitForAction: true
         },
         {
             title: "Timelines & Ducking",
-            badge: "Step 7 of 17",
+            badge: "Step 7 of 19",
             text: "Configure custom fade-in/out curves, infinite track looping, or background ducking. Click <strong>Next</strong> to proceed.",
             target: () => $_tut('cue-advanced-details'),
             waitForAction: false
         },
         {
             title: "Close Options Panel",
-            badge: "Step 8 of 17",
+            badge: "Step 8 of 19",
             text: "Now, let's return to the main dashboard. Tap the top-right <strong>Close (X)</strong> button to exit the panel.",
             target: () => document.querySelector('#settings-modal .icon-btn'),
             positionTarget: () => $_tut('cue-advanced-details'),
@@ -139,7 +145,7 @@
         },
         {
             title: "Cue Context Menu",
-            badge: "Step 9 of 17",
+            badge: "Step 9 of 19",
             text: "<strong>Long-press</strong> (press and hold) anywhere on the middle of the cue card to open the quick actions context menu.",
             target: () => document.querySelector('.tile'),
             alignTo: () => document.querySelector('.tile'),
@@ -147,53 +153,68 @@
         },
         {
             title: "Context Menu Rename",
-            badge: "Step 10 of 17",
+            badge: "Step 10 of 19",
             text: "Type in a new name and tap the <strong>Rename</strong> button or input to easily change this cue's title.",
             target: () => $_tut('rename-cue-input') || document.querySelector('#cue-menu-modal input'),
-            waitForAction: false, // Changed from true to false to let user continue with 'Next' button
+            waitForAction: false, // Changed from true to let user continue with 'Next' button
             preferPosition: "top" // Ensures the card stays above the input and doesn't block context buttons
         },
         {
             title: "Skip Cue Sequence",
-            badge: "Step 11 of 17",
+            badge: "Step 11 of 19",
             text: "Tap <strong>Skip Cue</strong> to bypass a track during live performances without deleting it.",
             target: () => findMenuBtnByText('skip') || $_tut('ctx-skip-btn'),
             waitForAction: true
         },
         {
             title: "Duplicate & Groups Cues",
-            badge: "Step 12 of 17",
+            badge: "Step 12 of 19",
             text: "Tap <strong>Duplicate</strong> to quickly copy cues, or <strong>Create Group</strong> to combine tracks.",
             target: () => findMenuBtnByText('duplicate') || $_tut('ctx-dup-btn'),
             waitForAction: true
         },
         {
             title: "Close Context Menu",
-            badge: "Step 13 of 17",
+            badge: "Step 13 of 19",
             text: "Let's return to the workspace. Tap the close cross on the top right.",
             target: () => document.querySelector('#cue-menu-modal .icon-btn'),
             positionTarget: () => findMenuBtnByText('duplicate') || $_tut('ctx-dup-btn'),
-            waitForAction: true
+            waitForAction: true,
+            preferPosition: "bottom" // Moves popover to the bottom to unblock the top-right close cross
+        },
+        {
+            title: "Reorder Cue Sequence",
+            badge: "Step 14 of 19",
+            text: "Need to change the play order? Touch and drag the <strong>Drag Handle (⠿)</strong> on the far left of any cue card to reorder them.",
+            target: () => document.querySelector('.tile .tile-handle') || document.querySelector('.tile [class*="handle"]') || document.querySelector('.tile [class*="drag"]') || document.querySelector('.tile'),
+            waitForAction: false
+        },
+        {
+            title: "Create Cue Groups",
+            badge: "Step 15 of 19",
+            text: "You can also combine tracks. Drag one cue card and drop it <strong>directly on top</strong> of another cue card to merge them into a folder group.",
+            target: () => document.querySelector('.tile'),
+            waitForAction: false
         },
         {
             title: "Manage Shows",
-            badge: "Step 14 of 17",
+            badge: "Step 16 of 19",
             text: "Tap the <strong>Show Title Header</strong> at the top left to manage projects.",
             target: () => $_tut('show-title-header'),
             waitForAction: true
         },
         {
             title: "Save, Rename & Import Backup",
-            badge: "Step 15 of 17",
+            badge: "Step 17 of 19",
             text: "Tap <strong>Import</strong> to restore backups, or long-press a show in the list to export or duplicate it. Click <strong>Next</strong> to proceed.",
             target: () => $_tut('show-import-btn'),
             alignTo: () => $_tut('projects-modal'),
             waitForAction: false,
-            highlight: false // Removed highlighting as this is not an interactive step
+            highlight: false // Kept highlighting disabled to keep interaction visual and optional
         },
         {
             title: "Close Show Manager",
-            badge: "Step 16 of 17",
+            badge: "Step 18 of 19",
             text: "Exit the show manager by tapping the <strong>Close (X)</strong> button.",
             target: () => document.querySelector('#projects-modal .icon-btn'),
             positionTarget: () => $_tut('show-import-btn'),
@@ -201,7 +222,7 @@
         },
         {
             title: "Onboarding Concluded",
-            badge: "Step 17 of 17",
+            badge: "Step 19 of 19",
             text: "Guide complete! You can replay this interactive guide at any time by tapping the <strong>Settings Gear (⚙)</strong> in the header and opening <strong>Advanced Settings</strong>. Tap <strong>Finish</strong> to close and start performing.",
             target: () => {
                 return $_tut('header-settings-btn') || 
@@ -692,12 +713,16 @@
                 if (menuClosedSustained && modalGracePassed) window.openTutorial(13);
             } else if (window.tutStep === 12) { // Step 13
                 if (menuClosedSustained && modalGracePassed) window.openTutorial(13); 
-            } else if (window.tutStep === 13) {
-                if (projectsOpen) window.openTutorial(14);
-            } else if (window.tutStep === 14) {
-                if (!projectsOpen && modalGracePassed) window.openTutorial(16);
-            } else if (window.tutStep === 15) {
-                if (!projectsOpen && modalGracePassed) window.openTutorial(16); 
+            } else if (window.tutStep === 13) { // Step 14
+                // Handled cleanly by Next button navigation
+            } else if (window.tutStep === 14) { // Step 15
+                // Handled cleanly by Next button navigation
+            } else if (window.tutStep === 15) { // Step 16 (formerly 14)
+                if (projectsOpen) window.openTutorial(16);
+            } else if (window.tutStep === 16) { // Step 17 (formerly 15)
+                if (!projectsOpen && modalGracePassed) window.openTutorial(18);
+            } else if (window.tutStep === 17) { // Step 18 (formerly 16)
+                if (!projectsOpen && modalGracePassed) window.openTutorial(18); 
             }
 
             // Runs after step checks; applyTutHighlight keeps pulsing active target
@@ -764,7 +789,7 @@
                 const closeBtn = document.querySelector('#cue-menu-modal .icon-btn') || document.querySelector('#cue-menu-modal [class*="close"]');
                 if (closeBtn && (e.target === closeBtn || closeBtn.contains(e.target))) {
                     triggerTutHaptic(10);
-                    window.openTutorial(13);
+                    window.openTutorial(13); // Advances cleanly to Step 14 (Reorder Cue Sequence)
                 }
             }
         }, true);
