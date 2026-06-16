@@ -110,7 +110,7 @@
                 </div>
                 <div class="trim-controls" style="margin-bottom:20px;">
                     <button onclick="nudgeGFade('out', -0.5)"><span class="material-symbols-rounded" style="font-size:16px">remove</span></button>
-                    <div class="curve-swiper" id="gf-curve-swiper-out" onclick="cycleGCurve('out')">
+                    <div class="curve-swiper" id="gf-curve-swiper-out" onclick="cycleCurve('out')">
                         <div class="cs-track" id="gf-cs-track-out" onscroll="handleGCurveScroll(event, 'out')">
                             <div class="cs-item" data-curve="linear">Linear</div>
                             <div class="cs-item" data-curve="logarithmic">Logarithmic</div>
@@ -485,10 +485,23 @@ const applyUISize = () => { document.body.style.zoom = (settings.uiSize || 100) 
 const applyHelpTipsVisibility = () => {
     const show = settings.showHelpTips !== false;
     document.querySelectorAll('.help-btn').forEach(btn => {
-        btn.style.display = show ? 'inline-flex' : 'none';
+        if (btn.id === 'notes-help-btn') {
+            const txt = $('notes-text');
+            const hasText = txt && txt.value && txt.value.trim() !== '';
+            btn.style.display = (show && !hasText) ? 'inline-flex' : 'none';
+        } else {
+            btn.style.display = show ? 'inline-flex' : 'none';
+        }
     });
     const helpTipsToggle = $('help-tips-toggle');
     if (helpTipsToggle) helpTipsToggle.checked = show;
+};
+const toggleNotesHelpBtn = (val) => {
+    const btn = $('notes-help-btn');
+    if (btn) {
+        const showTips = settings.showHelpTips !== false;
+        btn.style.display = (showTips && (!val || val.trim() === '')) ? 'inline-flex' : 'none';
+    }
 };
 const applySettings = () => { setTheme(settings.theme); setLang(settings.lang); ['progress','confirm-reset','auto-pause-mic','haptics','dragging','pocket','strong-pocket-haptics','nfc','help-tips'].forEach(k=>{let p=k.replace(/-([a-z])/g,g=>g[1].toUpperCase()); $(`${k}-toggle`).checked=settings[p==='progress'?'showProgress':p==='nfc'?'nfcEnabled':p==='haptics'?'enableHaptics':p==='dragging'?'enableDragging':p==='helpTips'?'showHelpTips':p];}); document.body.classList.toggle('show-progress',settings.showProgress); applyUISize(); $('ui-size-slider').value=settings.uiSize||100; $('ui-size-slider').style.setProperty('--v', ((settings.uiSize||100)-50)/100*100+'%'); if(settings.nfcEnabled) setTimeout(()=>toggleNFC(!0), 1000); initSortables(); applyHelpTipsVisibility(); };  
 const setTheme = t => { document.documentElement.setAttribute('data-theme', t==='auto'?(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):t); document.querySelectorAll('#theme-controls button').forEach(b=>b.classList.remove('active')); $(`btn-${t==='high-vis'?'vis':t}`).classList.add('active'); updSet('theme',t); };  
@@ -851,12 +864,13 @@ const openSet = (id,s=!1) => {
                 <span class="material-symbols-rounded">chevron_right</span>
             </div>`;
             
+        const showNotesHelp = (settings.showHelpTips !== false) && (!t.notes || t.notes.trim() === '');
         h+=`<details style="background:transparent; margin:0; border-radius:0; border-top:1px solid var(--glass-border);">
                 <summary onclick="haptic(10)">Director's Notes</summary>
                 <div class="details-content" style="padding:0 16px 16px;display:flex;flex-direction:column;gap:12px">
                     <div style="position: relative; width: 100%;">
-                        <textarea id="notes-text" placeholder="Type notes..." oninput="updTrk('notes',this.value)" style="width:100%;height:100px;background:var(--input-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:12px;padding:12px 40px 12px 12px;font-family:inherit;font-size:14px;resize:none;outline:none">${t.notes||''}</textarea>
-                        <button class="icon-btn help-btn" style="position: absolute; top: 12px; right: 12px; width:24px; height:24px; border-radius:8px; border-color:var(--text-muted); opacity:0.6; display:inline-flex; align-items:center; justify-content:center; padding:0; z-index: 10; background: var(--input-bg);" onclick="event.stopPropagation(); haptic(10); showExplanation('notes')">
+                        <textarea id="notes-text" placeholder="Type notes..." oninput="updTrk('notes',this.value); toggleNotesHelpBtn(this.value);" style="width:100%;height:100px;background:var(--input-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:12px;padding:12px;font-family:inherit;font-size:14px;resize:none;outline:none">${t.notes||''}</textarea>
+                        <button id="notes-help-btn" class="icon-btn help-btn" style="position: absolute; top: 12px; right: 12px; width:24px; height:24px; border-radius:8px; border-color:var(--text-muted); opacity:0.6; display:${showNotesHelp ? 'inline-flex' : 'none'}; align-items:center; justify-content:center; padding:0; z-index: 10; background: var(--input-bg);" onclick="event.stopPropagation(); haptic(10); showExplanation('notes')">
                             <span class="material-symbols-rounded" style="font-size:14px">help</span>
                         </button>
                     </div>
