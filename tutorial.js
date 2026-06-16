@@ -31,10 +31,14 @@
         else if (navigator.vibrate) navigator.vibrate(pattern);
     };
 
-    // Helper to dynamically match contextual menu elements by their text label
+    // Helper to dynamically match contextual menu elements by their text label without matching container wrappers
     const findMenuBtnByText = (text) => {
-        return Array.from(document.querySelectorAll('#cue-menu-modal button, #cue-menu-modal .action-btn, #cue-menu-modal div, #cue-menu-modal span'))
-            .find(btn => btn.textContent.trim().toLowerCase() === text.toLowerCase() || btn.textContent.trim().toLowerCase().includes(text.toLowerCase()));
+        return Array.from(document.querySelectorAll('#cue-menu-modal button, #cue-menu-modal .action-btn, #cue-menu-modal span'))
+            .find(btn => {
+                const lowerText = btn.textContent.trim().toLowerCase();
+                const isMatch = lowerText === text.toLowerCase() || lowerText.includes(text.toLowerCase());
+                return isMatch && btn.children.length <= 1;
+            });
     };
 
     // Helper to determine if a dynamic modal container is fully visible
@@ -211,13 +215,13 @@
         }
     ];
 
-    // Removes the pointing arrow when needed
+    // Cleanly removes pointing arrows
     const removeArrow = () => {
         const arrow = $_tut('tutorial-arrow');
         if (arrow) arrow.remove();
     };
 
-    // Modified to keep layout clean and arrow-free
+    // Modified to keep visual layout clean and arrow-free
     const updateArrow = (direction, arrowOffset) => {
         removeArrow();
     };
@@ -712,7 +716,7 @@
             }
         }, true);
 
-        // 6. Interactive Click Listeners to dynamically advance features on action execution
+        // 6. Interactive Click Listeners to dynamically advance features on action execution (using capture phase)
         document.addEventListener('click', (e) => {
             if (!window.tutActive) return;
 
@@ -727,31 +731,40 @@
                 }
             }
 
-            // Skip Cue Execution Check (Step 11 → 12 transition)
+            // Skip Cue Interception Check (Step 11 → 12 transition)
             else if (window.tutStep === 10) {
                 const skipBtn = findMenuBtnByText('skip') || $_tut('ctx-skip-btn');
                 const clickedSkip = (skipBtn && (e.target === skipBtn || skipBtn.contains(e.target))) || 
                                     (e.target.closest('button') && e.target.closest('button').textContent.toLowerCase().includes('skip'));
                 if (clickedSkip) {
-                    setTimeout(() => { if (window.tutStep === 10) window.openTutorial(11); }, 150);
+                    // Intercept click: stop native close action and transition cleanly
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    triggerTutHaptic(10);
+                    window.openTutorial(11);
                 }
             }
 
-            // Duplicate Execution Check (Step 12 → 13 transition)
+            // Duplicate Interception Check (Step 12 → 13 transition)
             else if (window.tutStep === 11) {
                 const dupBtn = findMenuBtnByText('duplicate') || $_tut('ctx-dup-btn');
                 const clickedDup = (dupBtn && (e.target === dupBtn || dupBtn.contains(e.target))) || 
                                    (e.target.closest('button') && e.target.closest('button').textContent.toLowerCase().includes('duplicate'));
                 if (clickedDup) {
-                    setTimeout(() => { if (window.tutStep === 11) window.openTutorial(12); }, 150);
+                    // Intercept click: stop native close action and transition cleanly
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    triggerTutHaptic(10);
+                    window.openTutorial(12);
                 }
             }
 
             // Close Context Menu Execution Check (Step 13 → 14 transition)
             else if (window.tutStep === 12) {
-                const closeBtn = document.querySelector('#cue-menu-modal .icon-btn');
+                const closeBtn = document.querySelector('#cue-menu-modal .icon-btn') || document.querySelector('#cue-menu-modal [class*="close"]');
                 if (closeBtn && (e.target === closeBtn || closeBtn.contains(e.target))) {
-                    setTimeout(() => { if (window.tutStep === 12) window.openTutorial(13); }, 150);
+                    triggerTutHaptic(10);
+                    window.openTutorial(13);
                 }
             }
         }, true);
