@@ -85,6 +85,7 @@
     </div>
     
     <div class="trim-widget-container" id="gf-swipe-container">
+        <!-- Fade In Card -->
         <div class="trim-card-wrapper">
             <div class="trim-card" style="padding:20px;">
                 <h3>Fade In Time</h3>
@@ -115,6 +116,7 @@
                 </div>
             </div>
         </div>
+        <!-- Fade Out Card -->
         <div class="trim-card-wrapper">
             <div class="trim-card" style="padding:20px;">
                 <h3>Fade Out Time</h3>
@@ -131,7 +133,7 @@
                             <div class="cs-item" data-curve="exponential">Exponential</div>
                         </div>
                     </div>
-                    <button onclick="nudgeGFade('out', 0.5)"><span class="material-symbols-rounded" style="font-size:16px">add</span></button>
+                    <button onclick="nudgeFade('out', 0.5)"><span class="material-symbols-rounded" style="font-size:16px">add</span></button>
                 </div>
                 <div style="background:rgba(128,128,128,0.1); border-radius:16px; padding:15px;">
                     <div class="mini-row" style="margin-bottom:15px;">
@@ -171,6 +173,7 @@
     <div style="text-align:center; margin-bottom:15px;"><button class="icon-btn" onclick="haptic(10);playTrimRegion()" style="width:44px; height:44px; border-radius:50%; background:var(--accent); color:#fff; border:none; box-shadow:0 5px 15px var(--accent-glow); margin: 0 auto;"><span class="material-symbols-rounded" id="trim-play-icon" style="font-size:24px">play_arrow</span></button></div>
     
     <div class="trim-widget-container" id="trim-swipe-container">
+        <!-- Start Trim Card -->
         <div class="trim-card-wrapper">
             <div class="trim-card fade-card" id="tc-start">
                 <div class="fc-indicator"><span class="material-symbols-rounded" style="font-size:20px">swap_vert</span></div>
@@ -201,6 +204,7 @@
                 </div>
             </div>
         </div>
+        <!-- End Trim Card -->
         <div class="trim-card-wrapper">
             <div class="trim-card fade-card" id="tc-end">
                 <div class="fc-indicator"><span class="material-symbols-rounded" style="font-size:20px">swap_vert</span></div>
@@ -333,8 +337,9 @@
         <p>Edward Brown (Anschrift wie oben)</p>
         <h3>Umsatzsteuer-ID:</h3>
         <p>Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz: Keine (Umsatzsteuerbefreit als Kleinunternehmer nach § 19 UStG).</p>
-        <h3>EU-Streitbeilegung:</h3>
-        <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr/" target="_blank" style="color:var(--accent);">https://ec.europa.eu/consumers/odr/</a>. Verbraucher können diese Plattform zur Beilegung von Streitigkeiten nutzen. Wir sind nicht verpflichtet oder bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+        <h3>Verbraucherstreitbeilegung / Consumer Dispute Resolution:</h3>
+        <p>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen (gemäß § 36 VSBG).</p>
+        <p>We are neither willing nor obligated to participate in dispute resolution proceedings before a consumer arbitration board (according to § 36 VSBG).</p>
         <hr style="border:none; border-top:1px solid var(--glass-border); margin:16px 0;">
         <h3>Information according to § 5 DDG (English Summary):</h3>
         <p>
@@ -357,7 +362,7 @@
     </div>
     <div style="max-height:300px; overflow-y:auto; line-height:1.6; font-size:13px; color:var(--text-main); margin-bottom:20px; padding-right:4px;">
         <h3 style="margin-top:0;">Datenschutzerklärung (DE):</h3>
-        <p><strong>1. Datenschutz auf einen Blick:</strong> Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend den gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.</p>
+        <p><strong>1. Datenschutz auf einen glance:</strong> Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend den gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.</p>
         <p><strong>2. Datenerfassung in dieser App:</strong> Diese Anwendung verarbeitet alle Audiodaten, NFC-Konfigurationen und Sprachbefehle ausschließlich lokal auf Ihrem Endgerät (IndexedDB). Es werden keinerlei personenbezogene Daten erhoben, an Cloud-Server übertragen oder an Dritte weitergegeben.</p>
         <p><strong>3. Verantwortlicher:</strong> Edward Brown, Oberdorf 4, 88637 Leibertingen, Germany. E-Mail: edwardbrown.magician@gmail.com</p>
         <p><strong>4. Ihre Rechte:</strong> Sie haben das Recht, jederzeit unentgeltlich Auskunft über Ihre gespeicherten personenbezogenen Daten zu erhalten. Da wir keine Daten erfassen, sind bei uns keine Daten gespeichert.</p>
@@ -952,7 +957,7 @@ const openSet = (id,s=!1) => {
                 <summary onclick="haptic(10)">Director's Notes</summary>
                 <div class="details-content" style="padding:0 16px 16px;display:flex;flex-direction:column;gap:12px">
                     <div style="position: relative; width: 100%;">
-                        <textarea id="notes-text" placeholder="Type notes..." oninput="updTrk('notes',this.value); toggleNotesHelpBtn(this.value);" style="width:100%;height:100px;background:var(--input-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:12px;padding:12px 32px 12px 12px;font-family:inherit;font-size:14px;resize:none;outline:none">${t.notes||''}</textarea>
+                        <textarea id="notes-text" placeholder="Type notes..." oninput="updTrk('notes',this.value); toggleNotesHelpBtn(this.value);" style="width:100%;height:100px;background:var(--input-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:12px;padding:12px;font-family:inherit;font-size:14px;resize:none;outline:none">${t.notes||''}</textarea>
                         <button id="notes-help-btn" class="help-btn" style="position: absolute; top: 10px; right: 10px; width:24px; height:24px; border:none; background:transparent; color:var(--text-muted); opacity:0.6; display:${showNotesHelp ? 'inline-flex' : 'none'}; align-items:center; justify-content:center; padding:0; z-index: 10; cursor:pointer;" onclick="event.stopPropagation(); haptic(10); showExplanation('notes')">
                             <span class="material-symbols-rounded" style="font-size:20px">help</span>
                         </button>
@@ -1019,12 +1024,10 @@ window.handleCurveScroll = (e, type) => {
     let swiper = $(`curve-swiper-${type}`);
     let idx = Math.round(track.scrollTop / track.clientHeight);
     let curves = ['linear', 'logarithmic', 'exponential'];
-    
     if(swiper) {
         swiper.classList.toggle('at-top', idx === 0);
         swiper.classList.toggle('at-bottom', idx === curves.length - 1);
     }
-
     clearTimeout(csTimers[type]);
     csTimers[type] = setTimeout(() => {
         if(curves[idx] && (type === 'in' ? tempFadeInCurve : tempFadeOutCurve) !== curves[idx]) {
