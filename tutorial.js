@@ -133,7 +133,8 @@
             badge: "Step 10 of 17",
             text: "Type in a new name and tap the <strong>Rename</strong> button or input to easily change this cue's title.",
             target: () => $_tut('rename-cue-input') || document.querySelector('#cue-menu-modal input'),
-            waitForAction: true
+            waitForAction: true,
+            preferPosition: "top" // Ensures the card stays above the input and doesn't block context buttons
         },
         {
             title: "Skip Cue Sequence",
@@ -261,13 +262,25 @@
         const spaceBelow = viewHeight - rect.bottom;
         const spaceAbove = rect.top;
 
-        if (spaceBelow > spaceAbove) {
-            top            = rect.bottom + 20; 
-            arrowDirection = 'top';
-        } else {
+        const step = tutSteps[window.tutStep];
+        const preferPosition = step ? step.preferPosition : null;
+
+        if (preferPosition === 'top') {
             const mockBarHeight = tutBar.offsetHeight || 160;
             top            = rect.top - mockBarHeight - 20; 
             arrowDirection = 'bottom';
+        } else if (preferPosition === 'bottom') {
+            top            = rect.bottom + 20; 
+            arrowDirection = 'top';
+        } else {
+            if (spaceBelow > spaceAbove) {
+                top            = rect.bottom + 20; 
+                arrowDirection = 'top';
+            } else {
+                const mockBarHeight = tutBar.offsetHeight || 160;
+                top            = rect.top - mockBarHeight - 20; 
+                arrowDirection = 'bottom';
+            }
         }
 
         let left = alignEl
@@ -374,7 +387,7 @@
 
         const titleEl = $_tut('tut-bar-title');
         if (titleEl) titleEl.innerText = step.title;
-        $_tut('tut-bar-step').innerText  = `Step ${window.tutStep + 1} of ${tutSteps.length}`;
+        $_tut('tut-bar-step').innerText  = `Interactive Guide`;
         $_tut('tut-bar-badge').innerText = step.badge;
         $_tut('tut-bar-text').innerHTML  = step.text;
 
@@ -519,8 +532,9 @@
             #tutorial-bar {
                 display: none;
                 flex-direction: column;
-                gap: 10px;
+                gap: 12px;
                 box-sizing: border-box;
+                padding: 20px !important;
                 z-index: 2147483647 !important;
                 max-height: 90vh;
                 overflow-y: auto;
@@ -576,7 +590,7 @@
               transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
               z-index: 2147483647 !important;
             }
-            /* Match highlights on switches or toggle containers with pill layout */
+            /* Match highlights on switches or toggle containers with pill layout and breathing gap */
             .switch.tut-highlight, 
             .switch-container.tut-highlight, 
             .toggle.tut-highlight, 
@@ -584,6 +598,8 @@
             [class*="switch"].tut-highlight, 
             [class*="toggle"].tut-highlight {
               border-radius: 24px !important;
+              padding: 6px !important;
+              margin: -6px !important;
             }
             body.tut-active dialog         { backdrop-filter: none !important; }
             body.tut-active dialog::backdrop { backdrop-filter: none !important; }
