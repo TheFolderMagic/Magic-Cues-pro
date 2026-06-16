@@ -164,7 +164,7 @@
             badge: "Step 10 of 18",
             text: "Type in a new name and tap the <strong>Rename</strong> button or input to easily change this cue's title.",
             target: () => $_tut('rename-cue-input') || document.querySelector('#cue-menu-modal input'),
-            waitForAction: false, // Changed from true to false to let user continue with 'Next' button
+            waitForAction: false, // Changed from true to let user continue with 'Next' button
             preferPosition: "top" // Ensures the card stays above the input and doesn't block context buttons
         },
         {
@@ -408,12 +408,30 @@
         $_tut('tut-bar-badge').innerText = step.badge;
         $_tut('tut-bar-text').innerHTML  = step.text;
 
+        const tutBar = $_tut('tutorial-bar');
+        if (tutBar) {
+            // Keep card hidden during micro-rendering to let layout coordinate values settle
+            tutBar.style.visibility = 'hidden';
+            tutBar.style.display = 'flex';
+        }
+
         applyTutHighlight(step.target);
+        
+        // Immediate placement pass
         window.adjustTutorialBarParent();
+
+        // Perform final settlement calculation and safely display
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                if (window.tutStep === stepIdx) {
+                    window.adjustTutorialBarParent();
+                    if (tutBar) tutBar.style.visibility = 'visible';
+                }
+            });
+        });
 
         $_tut('tut-bar-next').innerText      = (window.tutStep === tutSteps.length - 1) ? 'Finish' : 'Next';
         $_tut('tut-bar-next').style.display  = step.waitForAction ? 'none' : 'block';
-        $_tut('tutorial-bar').style.display  = 'flex';
     };
 
     window.nextTutStep = () => {
