@@ -35,6 +35,16 @@
             .find(btn => btn.textContent.trim().toLowerCase() === text.toLowerCase() || btn.textContent.trim().toLowerCase().includes(text.toLowerCase()));
     };
 
+    // Helper to determine if a dynamic modal container is fully visible
+    const isElementOpen = (id) => {
+        const el = $_tut(id);
+        if (!el) return false;
+        return el.hasAttribute('open') || 
+               el.classList.contains('open') || 
+               el.classList.contains('show') || 
+               (window.getComputedStyle(el).display !== 'none' && window.getComputedStyle(el).visibility !== 'hidden');
+    };
+
     // Only re-apply class when the target element actually changes
     const clearTutHighlights = () => {
         document.querySelectorAll('.tut-highlight').forEach(el => el.classList.remove('tut-highlight'));
@@ -96,7 +106,8 @@
                 if (switchEl) return switchEl;
                 return cb.closest('label') || cb.parentElement;
             },
-            waitForAction: true
+            waitForAction: true,
+            preferPosition: "bottom" // Exposes the text input field situated above the toggle switch
         },
         {
             title: "Open Advanced Settings",
@@ -169,8 +180,8 @@
             title: "Save, Rename & Import Backup",
             badge: "Step 15 of 17",
             text: "Tap <strong>Import</strong> to restore backups, or long-press a show in the list to export or duplicate it. Click <strong>Next</strong> to proceed.",
-            target: () => $_tut('projects-modal'),
-            highlight: false,
+            target: () => $_tut('show-import-btn'),
+            alignTo: () => $_tut('projects-modal'),
             waitForAction: false
         },
         {
@@ -282,6 +293,11 @@
                 arrowDirection = 'bottom';
             }
         }
+
+        // Viewport clamping safety net to prevent off-screen rendering
+        const minTop = 16;
+        const maxTop = viewHeight - (tutBar.offsetHeight || 160) - 16;
+        top = Math.max(minTop, Math.min(top, maxTop));
 
         let left = alignEl
             ? (alignRect.right) - barWidth
@@ -653,9 +669,9 @@
             const currentTracks = (typeof tracks !== 'undefined') ? tracks : [];
             runDynamicIdSetup();
 
-            const settingsOpen  = document.querySelector('dialog#settings-modal[open]');
-            const menuOpen      = document.querySelector('dialog#cue-menu-modal[open]');
-            const projectsOpen  = document.querySelector('dialog#projects-modal[open]');
+            const settingsOpen  = isElementOpen('settings-modal') || isElementOpen('app-settings');
+            const menuOpen      = isElementOpen('cue-menu-modal');
+            const projectsOpen  = isElementOpen('projects-modal');
             const voiceOpen     = $_tut('cue-voice-details')    && $_tut('cue-voice-details').open;
             const advOpen       = $_tut('cue-advanced-details') && $_tut('cue-advanced-details').open;
 
