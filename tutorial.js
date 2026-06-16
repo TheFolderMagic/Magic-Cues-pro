@@ -454,6 +454,62 @@
         }
     };
 
+    // Failsafe injection helper for dynamic modal menus
+    const addGuideSettingsLink = () => {
+        const appSettings = document.getElementById('app-settings') || document.querySelector('dialog[id*="settings"]');
+        if (!appSettings) return;
+
+        // Try to identify custom detail lists containing "Advanced" configurations
+        const detailsList = appSettings.querySelectorAll('details');
+        let advDetails = null;
+
+        detailsList.forEach(det => {
+            const summary = det.querySelector('summary');
+            if (summary && (summary.textContent.toLowerCase().includes('advanced') || summary.textContent.toLowerCase().includes('more'))) {
+                advDetails = det.querySelector('.details-content') || det.querySelector('.content') || det;
+            }
+        });
+
+        // Fallback structures if no dedicated structural content wrapper was matched
+        if (!advDetails) {
+            advDetails = appSettings.querySelector('details') || appSettings.querySelector('.modal-content') || appSettings;
+        }
+
+        if (advDetails && !$_tut('interactive-guide-trigger-row')) {
+            const guideRow = document.createElement('div');
+            guideRow.className = 'nested-nav-row';
+            guideRow.id        = 'interactive-guide-trigger-row';
+            guideRow.style.borderTop = '1px solid var(--glass-border)';
+            guideRow.style.padding   = '16px 0';
+            guideRow.style.cursor    = 'pointer';
+            guideRow.innerHTML = `
+                <span>Interactive Guide</span>
+                <span class="material-symbols-rounded" style="color:var(--accent)">play_circle</span>
+            `;
+            guideRow.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                triggerTutHaptic(10);
+                
+                const appSettingsCloseBtn = appSettings.querySelector('.modal-header .icon-btn') || appSettings.querySelector('.icon-btn') || appSettings.querySelector('[class*="close"]');
+                if (appSettingsCloseBtn) {
+                    appSettingsCloseBtn.click();
+                } else if (typeof appSettings.close === 'function') {
+                    appSettings.close();
+                }
+                
+                document.body.classList.remove('modal-open');
+                
+                // Clear state variables to guarantee a clean tutorial restart
+                localStorage.removeItem('mc_tutorial_completed');
+                localStorage.removeItem('mc_tutorial_step');
+                
+                setTimeout(() => window.openTutorial(0), 350);
+            });
+            advDetails.appendChild(guideRow);
+        }
+    };
+
     // Configures listeners and state observation loops
     const runOnboardingSetup = () => {
         // 1. Inject Styles
@@ -562,28 +618,15 @@
             }, true);
         }
 
-        // 3. Inject Dynamic "Interactive Guide" panel under Advanced settings dropdown
-        const addGuideSettingsLink = () => {
-            const advDetails = document.querySelector('#app-settings details .details-content');
-            if (advDetails && !$_tut('interactive-guide-trigger-row')) {
-                const guideRow = document.createElement('div');
-                guideRow.className = 'nested-nav-row';
-                guideRow.id        = 'interactive-guide-trigger-row';
-                guideRow.style.borderTop = '1px solid var(--glass-border)';
-                guideRow.style.padding   = '16px 0';
-                guideRow.innerHTML = `
-                    <span>Interactive Guide</span>
-                    <span class="material-symbols-rounded" style="color:var(--accent)">play_circle</span>
-                `;
-                guideRow.addEventListener('click', () => {
-                    triggerTutHaptic(10);
-                    const appSettingsCloseBtn = document.querySelector('#app-settings .modal-header .icon-btn');
-                    if (appSettingsCloseBtn) appSettingsCloseBtn.click();
-                    setTimeout(() => window.openTutorial(0), 350);
-                });
-                advDetails.appendChild(guideRow);
+        // 3. Failsafe body event interceptor for dynamic Settings button interactions
+        document.addEventListener('click', (e) => {
+            const settingsBtn = e.target.closest('#header-settings-btn') || e.target.closest('header .icon-btn') || e.target.closest('[id*="settings"]');
+            if (settingsBtn) {
+                setTimeout(addGuideSettingsLink, 100);
+                setTimeout(addGuideSettingsLink, 300);
+                setTimeout(addGuideSettingsLink, 600);
             }
-        };
+        }, true);
 
         // 4. Polling loop: monitors system states, maps dynamic IDs, repositions popover.
         window.tutActive = false;
@@ -702,19 +745,29 @@
             }
         }, true);
 
-        // 7. Mutation Observer to inject the app-settings guide link on open
+        // 7. Global Mutation Observer to intercept dynamic mounting or open states on any dialog
         const settingsObserver = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'open') {
                     const dialog = mutation.target;
-                    if (dialog.id === 'app-settings' && dialog.hasAttribute('open')) {
+                    if (dialog && dialog.tagName === 'DIALOG' && (dialog.id === 'app-settings' || dialog.id === 'settings-modal' || dialog.id.includes('settings')) && dialog.hasAttribute('open')) {
+                        addGuideSettingsLink();
+                    }
+                }
+                if (mutation.type === 'childList') {
+                    const appSettings = document.getElementById('app-settings') || document.querySelector('dialog[id*="settings"]');
+                    if (appSettings && appSettings.hasAttribute('open')) {
                         addGuideSettingsLink();
                     }
                 }
             });
         });
-        const appSettingsDialog = $_tut('app-settings');
-        if (appSettingsDialog) settingsObserver.observe(appSettingsDialog, { attributes: true });
+        settingsObserver.observe(document.body, { 
+            attributes: true, 
+            childList: true, 
+            subtree: true, 
+            attributeFilter: ['open'] 
+        });
 
         // 8. Decoupled tutorial completion check via local storage
         const isCompleted = localStorage.getItem('mc_tutorial_completed') === 'true';
