@@ -299,6 +299,8 @@
 <script>  
 const $ = id => document.getElementById(id);  
 let tracks=[], curIdx=0, locked=!1, actId=null, activeCues=new Map(), activePads=new Map(), paused=!1, wakeLock=null;  
+window.activeCues = activeCues;
+window.activePads = activePads;
 let db, projectsList=[], curProjId='default', editProjId=null;  
 let defSet = {
     showProgress:!0, theme:'auto', lang:'en-US', uiSize:100, confirmReset:!1, autoPauseMic:!0, 
@@ -316,6 +318,8 @@ let hoverTmr=null, curHov=null, isGrp=!1, dragY=0, dragX=0;
 const updPos = e => { if(e.touches?.[0]) {dragY=e.touches[0].clientY; dragX=e.touches[0].clientX;} else {dragY=e.clientY; dragX=e.clientX;} if(curHov) { let r = curHov.getBoundingClientRect(); if(dragY < r.top || dragY > r.bottom || dragX < r.left || dragX > r.right) { curHov.classList.remove('group-hover-highlight'); curHov = null; isGrp = !1; clearTimeout(hoverTmr); } } }; document.addEventListener('pointermove', updPos, {passive:!0}); document.addEventListener('touchmove', updPos, {passive:!0});
 
 let isSideAct=!1, actSideId=null, sideTrks=[], sideIdx=0, actSideCues=new Map(), actSidePads=new Map(), sidePaused=!1, isSetSide=!1; 
+window.actSideCues = actSideCues;
+window.actSidePads = actSidePads;
 const haptic = p => { 
     if (settings.enableHaptics) {
         if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Haptics) {
@@ -823,6 +827,7 @@ const openTimingModal = (id, s) => {
         `;
     }
     $('timing-content').innerHTML = h;
+    applyHelpTipsVisibility();
     if (!$('timing-modal').open) openModal('timing-modal');
 };
 
@@ -847,16 +852,14 @@ const openSet = (id,s=!1) => {
             </div>`;
             
         h+=`<details style="background:transparent; margin:0; border-radius:0; border-top:1px solid var(--glass-border);">
-                <summary onclick="haptic(10)" style="display:flex; align-items:center; justify-content:space-between; width:100%;">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span>Director's Notes</span>
-                        <button class="icon-btn help-btn" style="width:24px;height:24px;border-radius:8px; border-color:var(--text-muted); opacity:0.6; display:inline-flex; align-items:center; justify-content:center; padding:0;" onclick="event.stopPropagation();haptic(10);showExplanation('notes')">
+                <summary onclick="haptic(10)">Director's Notes</summary>
+                <div class="details-content" style="padding:0 16px 16px;display:flex;flex-direction:column;gap:12px">
+                    <div style="position: relative; width: 100%;">
+                        <textarea id="notes-text" placeholder="Type notes..." oninput="updTrk('notes',this.value)" style="width:100%;height:100px;background:var(--input-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:12px;padding:12px 40px 12px 12px;font-family:inherit;font-size:14px;resize:none;outline:none">${t.notes||''}</textarea>
+                        <button class="icon-btn help-btn" style="position: absolute; top: 12px; right: 12px; width:24px; height:24px; border-radius:8px; border-color:var(--text-muted); opacity:0.6; display:inline-flex; align-items:center; justify-content:center; padding:0; z-index: 10; background: var(--input-bg);" onclick="event.stopPropagation(); haptic(10); showExplanation('notes')">
                             <span class="material-symbols-rounded" style="font-size:14px">help</span>
                         </button>
                     </div>
-                </summary>
-                <div class="details-content" style="padding:0 16px 16px;display:flex;flex-direction:column;gap:12px">
-                    <textarea id="notes-text" placeholder="Type notes..." oninput="updTrk('notes',this.value)" style="width:100%;height:100px;background:var(--input-bg);color:var(--text-main);border:1px solid var(--glass-border);border-radius:12px;padding:12px;font-family:inherit;font-size:14px;resize:none;outline:none">${t.notes||''}</textarea>
                     <div class="segmented-control" style="margin-top:0"><button class="${t.notesTrigger==='start'||!t.notesTrigger?'active':''}" onclick="haptic(10);updNotesTrig(this,'start')" style="font-size:14px">On Start</button><button class="${t.notesTrigger==='end'?'active':''}" onclick="haptic(10);updNotesTrig(this,'end')" style="font-size:14px">Near End</button><button class="${t.notesTrigger==='after'?'active':''}" onclick="haptic(10);updNotesTrig(this,'after')" style="font-size:14px">On Finish</button></div>
                     <div class="setting-row" style="padding:12px; margin:0; min-height:auto;"><label style="font-size:14px;color:var(--text-main);font-weight:500">Duration <span style="color:var(--text-muted);font-weight:400">(0=Full)</span></label><div style="display:flex;align-items:center;gap:6px"><input type="number" step="0.5" min="0" value="${t.notesDuration||0}" onchange="haptic(10);updTrk('notesDuration',this.value)" style="width:60px;font-size:14px;padding:6px;text-align:center"><span style="font-size:13px;color:var(--text-muted);font-weight:700">s</span></div></div>
                     <div class="setting-row" style="padding:12px; margin:0; min-height:auto;"><label style="font-size:14px;color:var(--text-main);font-weight:500">Split by Line</label><input type="checkbox" class="custom-toggle" ${t.notesSplit?'checked':''} onchange="haptic(10);updTrk('notesSplit',this.checked)"></div>
@@ -880,6 +883,7 @@ const openSet = (id,s=!1) => {
             </div>`;
     } 
     $('modal-content').innerHTML=h; 
+    applyHelpTipsVisibility();
     if(!$('settings-modal').open) openModal('settings-modal'); 
 };
 
@@ -1378,7 +1382,7 @@ const rAud = (t,L,s,pA=null) => {
             hideShowNotes(); 
         } else if (acts.has(t.id)) {
             let oldA = acts.get(t.id);
-            let oldTrk = (s?sideTrks:tracks).find(x=>x.id===t.id);
+            let oldTrk = (s?sideTrks:tracks).find(x=>t.id===x.id);
             stopAudioWithFade(oldA, oldTrk, 'skip');
         }
     } 
