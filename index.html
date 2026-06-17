@@ -1137,7 +1137,7 @@ const updVisFade = () => {
         fInV.style.cssText='position:absolute; bottom:0; height:100%; pointer-events:none; z-index:4;'; 
         $('waveform').appendChild(fInV);
     } 
-    fInV.innerHTML=`<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:100%;"><path d="${inFill}" fill="var(--accent)" opacity="0.15"/><path d="${inPath}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
+    fInV.innerHTML=`<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width:100%;height:100%;"><path d="${outFill}" fill="var(--accent)" opacity="0.15"/><path d="${outPath}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
     
     let outPath = tempFadeOutCurve === 'exponential' ? 'M 0,0 Q 20,100 100,100' :
                   tempFadeOutCurve === 'logarithmic' ? 'M 0,0 Q 80,0 100,100' : 'M 0,0 L 100,100';
@@ -1474,7 +1474,7 @@ const rAud = (t,L,s,pA=null) => {
 
     if (t.stopsBg) {
         [activeCues, activePads, actSideCues, actSidePads].forEach(m => m.forEach((bgA, bgId) => {
-            let bgTrk = [...tracks, ...sideTrks].find(x=>x.id===bgId);
+            let bgTrk = [...tracks, ...sideTrks].find(x=>x.id===id);
             if (bgTrk && bgTrk.isBackground) {
                 stopAudioWithFade(bgA, bgTrk, 'bg_stop');
                 m.delete(bgId);
@@ -1610,7 +1610,7 @@ const pPad = (t,s) => {
     
     if (t.stopsBg) {
         [activeCues, activePads, actSideCues, actSidePads].forEach(m => m.forEach((bgA, bgId) => {
-            let bgTrk = [...tracks, ...sideTrks].find(x=>x.id===bgId);
+            let bgTrk = [...tracks, ...sideTrks].find(x=>x.id===id);
             if (bgTrk && bgTrk.isBackground) {
                 stopAudioWithFade(bgA, bgTrk, 'bg_stop');
                 m.delete(bgId);
