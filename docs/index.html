@@ -364,7 +364,7 @@
         <p><strong>2. Datenerfassung in dieser App:</strong> Diese Anwendung verarbeitet alle Audiodaten, NFC-Konfigurationen und Sprachbefehle ausschließlich lokal auf Ihrem Endgerät (IndexedDB). Es werden keinerlei personenbezogene Daten erhoben, an Cloud-Server übertragen oder an Dritte weitergegeben.</p>
         <p><strong>3. Verantwortlicher:</strong> Edward Brown, Oberdorf 4, 88637 Leibertingen, Germany. E-Mail: edwardbrown.magician@gmail.com</p>
         <p><strong>4. Ihre Rechte:</strong> Sie haben das Recht, jederzeit unentgeltlich Auskunft über Ihre gespeicherten personenbezogenen Daten zu erhalten. Da wir keine Daten erfassen, sind bei uns keine Daten gespeichert.</p>
-        <p><strong>5. Beschwerderecht bei der zuständigen Aufsichtsbehörde:</strong> Zudem haben Sie das Recht, sich bei einer Datenschutzaufsichtsbehörde zu beschверen (Art. 77 DSGVO). Die für uns zuständige Landesdatenschutzbehörde ist der Landesbeauftragte für den Datenschutz und die Informationsfreiheit Baden-Württemberg (Postfach 10 29 32, 70025 Stuttgart, E-Mail: poststelle@lfdi.bwl.de, Internet: https://www.baden-wuerttemberg.datenschutz.de).</p>
+        <p><strong>5. Beschwerderecht bei der zuständigen Aufsichtsbehörde:</strong> Zudem haben Sie das Recht, sich bei einer Datenschutzaufsichtsbehörde zu beschweren (Art. 77 DSGVO). Die für uns zuständige Landesdatenschutzbehörde ist der Landesbeauftragte für den Datenschutz und die Informationsfreiheit Baden-Württemberg (Postfach 10 29 32, 70025 Stuttgart, E-Mail: poststelle@lfdi.bwl.de, Internet: https://www.baden-wuerttemberg.datenschutz.de).</p>
         <p><strong>6. Kontaktaufnahme:</strong> Wenn Sie uns per E-Mail kontaktieren, werden Ihre Angaben (z. B. E-Mail-Adresse, Name) zur Bearbeitung der Anfrage gemäß Art. 6 Abs. 1 lit. f DSGVO verarbeitet und nach abschließender Klärung gelöscht.</p>
         <p><strong>7. Hosting (Website):</strong> Diese Datenschutzerklärung wird über GitHub Pages bereitgestellt. Beim Aufruf der Seite erfasst der Server standardmäßig Verbindungsdaten (z. B. IP-Adresse), um die Sicherheit und Bereitstellung der Website zu gewährleisten (Art. 6 Abs. 1 lit. f DSGVO).</p>
         <hr style="border:none; border-top:1px solid var(--glass-border); margin:16px 0;">
@@ -1407,11 +1407,20 @@ const doDelayCountdown = (delay, textEl, isSide, cb) => { let r=Math.ceil(delay)
 
 const isActivelyPlaying = () => {
     let active = false;
-    [activeCues, activePads, actSideCues, actSidePads].forEach(m => {
-        m.forEach(a => {
-            if (a && !a.paused && !a.ended && a.currentTime > 0) active = true;
+    if (!paused) {
+        [activeCues, activePads].forEach(m => {
+            m.forEach(a => {
+                if (a && !a.paused && !a.ended) active = true;
+            });
         });
-    });
+    }
+    if (!sidePaused) {
+        [actSideCues, actSidePads].forEach(m => {
+            m.forEach(a => {
+                if (a && !a.paused && !a.ended) active = true;
+            });
+        });
+    }
     return active;
 };
 
@@ -1461,7 +1470,7 @@ const playNextCue = (L=!1, manual=!1) => {
 };  
 const playSideloadNextCue = (L=!1, manual=!1) => { 
     if(manual) hideShowNotes();
-    let q=sideTrks.filter(x=>x.type==='queue'); while(sideIdx<q.length&&q[sideIdx].skip)sideIdx++; if(sideIdx>=q.length)return closeSideload(); 
+    let q=sideTrks.filter(x=>x.type==='queue'); while(sideIdx<q.length&&sideIdx.skip)sideIdx++; if(sideIdx>=q.length)return closeSideload(); 
     if(!L)haptic(25); let t=q[sideIdx++]; clearInterval(sideloadDelayInt); let pAud = preUnlockAudio(t.blobUrl); 
     t.delay>0&&!L? doDelayCountdown(t.delay, 'sideload-play-text', !0, ()=>rAud(t,L,!0, pAud)) : rAud(t,L,!0, pAud); renderSide(); 
 };
@@ -1585,7 +1594,7 @@ const rAud = (t,L,s,pA=null) => {
             }
         } 
     }; 
-    a.play().catch(()=>{}); $(s?'sideload-play-text':'play-text').innerText=t.name; s||mngMic(); if(locked&&settings.pocketMode&&settings.strongPocketHaptics)navigator.vibrate?.([150,100,250]); evalDucking();
+    a.play().catch(()=>{}); $(s?'sideload-play-text':'play-text').innerText=t.name; mngMic(); if(locked&&settings.pocketMode&&settings.strongPocketHaptics)navigator.vibrate?.([150,100,250]); evalDucking();
     a.onended=()=>{ 
         let fn=a.onended; if(!fn)return; 
         a.onended=null; 
@@ -1634,7 +1643,7 @@ const pPad = (t,s) => {
         } 
     }; 
     s?(sidePaused=!1,$('sideload-pause-icon').innerText='pause'):(paused=!1,$('pause-icon').innerText='pause'); 
-    a.play().catch(()=>{}); s||mngMic(); if(locked&&settings.pocketMode&&settings.strongPocketHaptics)navigator.vibrate?.([150,100,250]); evalDucking(); 
+    a.play().catch(()=>{}); mngMic(); if(locked&&settings.pocketMode&&settings.strongPocketHaptics)navigator.vibrate?.([150,100,250]); evalDucking(); 
 };
 const playPad = t => pPad(t,!1); const playSidePad = t => pPad(t,!0);
 
@@ -1716,6 +1725,7 @@ const toggleSideloadPause = () => {
         }
     })); 
     $('sideload-pause-icon').innerText=sidePaused?'play_arrow':'pause'; 
+    mngMic();
     if(!sidePaused) evalDucking();
 };
 const triggerSideloadReset = () => settings.confirmReset?openModal('sideload-reset-modal'):executeSideloadReset();
@@ -1749,6 +1759,7 @@ const closeSideload = () => {
         $('sideload-pause-icon').innerText = sidePaused ? 'play_arrow' : 'pause';
         renderSide();
         evalDucking();
+        mngMic();
         return;
     }
 
@@ -1766,6 +1777,7 @@ const closeSideload = () => {
         }else $('play-text').innerText=curIdx<tracks.filter(x=>x.type==='queue').length?'Next Cue':'End of Show'; 
     } 
     evalDucking(); 
+    mngMic();
 };
 
 const isPly = () => activeCues.size||activePads.size||actSideCues.size||actSidePads.size;  
