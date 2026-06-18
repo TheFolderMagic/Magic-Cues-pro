@@ -23,11 +23,11 @@ jobs:
 
       - name: Prepare Web Assets Directory
         run: |
-          mkdir -p www
-          cp index.html www/ || true
-          cp tutorial.js www/ || true
-          cp manifest.json www/ || true
-          cp -r assets www/ || true
+          mkdir -p docs
+          cp index.html docs/ || true
+          cp tutorial.js docs/ || true
+          cp manifest.json docs/ || true
+          cp -r assets docs/ || true
 
       - name: Set up Android Java Compiler
         uses: actions/setup-java@v4
