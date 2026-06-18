@@ -68,14 +68,35 @@ jobs:
       - name: Inject Web Files Into Android Package
         run: npx cap sync android
 
-      - name: Compile Native Debug APK
+      - name: Decode Keystore File
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/release.keystore
+
+      - name: Compile and Sign Production App (Bundle & APK)
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          # Build and Sign AAB (For Samsung Store upload)
+          ./gradlew bundleRelease \
+            -Pandroid.injected.signing.store.file=release.keystore \
+            -Pandroid.injected.signing.store.password="${{ secrets.RELEASE_SIGNING_STORE_PASSWORD }}" \
+            -Pandroid.injected.signing.key.alias="${{ secrets.RELEASE_SIGNING_ALIAS }}" \
+            -Pandroid.injected.signing.key.password="${{ secrets.RELEASE_SIGNING_KEY_PASSWORD }}"
+          # Build and Sign APK (For testing on your phone)
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file=release.keystore \
+            -Pandroid.injected.signing.store.password="${{ secrets.RELEASE_SIGNING_STORE_PASSWORD }}" \
+            -Pandroid.injected.signing.key.alias="${{ secrets.RELEASE_SIGNING_ALIAS }}" \
+            -Pandroid.injected.signing.key.password="${{ secrets.RELEASE_SIGNING_KEY_PASSWORD }}"
 
-      - name: Deliver Finished APK Package
+      - name: Deliver Production App Bundle (AAB)
         uses: actions/upload-artifact@v4
         with:
-          name: Magician-App-Build-${{ github.run_number }}
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: QFlow-Release-AAB-${{ github.run_number }}
+          path: android/app/build/outputs/bundle/release/app-release.aab
+
+      - name: Deliver Production APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: QFlow-Release-APK-${{ github.run_number }}
+          path: android/app/build/outputs/apk/release/app-release.apk
