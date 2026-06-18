@@ -70,7 +70,7 @@ jobs:
 
       - name: Decode Keystore File
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/release.keystore
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/release.keystore
 
       - name: Compile and Sign Production App (Bundle & APK)
         run: |
@@ -78,13 +78,13 @@ jobs:
           chmod +x gradlew
           # Build and Sign AAB (For Samsung Store upload)
           ./gradlew bundleRelease \
-            -Pandroid.injected.signing.store.file=release.keystore \
+            -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/android/release.keystore \
             -Pandroid.injected.signing.store.password="${{ secrets.RELEASE_SIGNING_STORE_PASSWORD }}" \
             -Pandroid.injected.signing.key.alias="${{ secrets.RELEASE_SIGNING_ALIAS }}" \
             -Pandroid.injected.signing.key.password="${{ secrets.RELEASE_SIGNING_KEY_PASSWORD }}"
           # Build and Sign APK (For testing on your phone)
           ./gradlew assembleRelease \
-            -Pandroid.injected.signing.store.file=release.keystore \
+            -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/android/release.keystore \
             -Pandroid.injected.signing.store.password="${{ secrets.RELEASE_SIGNING_STORE_PASSWORD }}" \
             -Pandroid.injected.signing.key.alias="${{ secrets.RELEASE_SIGNING_ALIAS }}" \
             -Pandroid.injected.signing.key.password="${{ secrets.RELEASE_SIGNING_KEY_PASSWORD }}"
