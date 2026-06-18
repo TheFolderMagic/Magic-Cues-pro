@@ -38,6 +38,11 @@ jobs:
       - name: Initialize Android System Wrapper
         run: npx cap add android
 
+      - name: Generate Custom App Icons
+        run: |
+          npm install @capacitor/assets
+          npx capacitor-assets generate --android --icon
+
       - name: Inject NFC Native Bridge
         run: |
           PKG=$(node -e "console.log(require('./capacitor.config.json').appId)")
