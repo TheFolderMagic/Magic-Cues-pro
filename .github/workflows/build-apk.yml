@@ -41,7 +41,7 @@ jobs:
       - name: Generate Custom App Icons
         run: |
           npm install @capacitor/assets
-          npx capacitor-assets generate --android --icon
+          npx @capacitor/assets generate --android
 
       - name: Inject NFC Native Bridge
         run: |
