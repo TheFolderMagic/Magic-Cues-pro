@@ -3,8 +3,12 @@ package __PACKAGE__;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.webkit.WebView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -41,6 +45,9 @@ public class MainActivity extends BridgeActivity {
         } catch (Exception e) {
             Log.e("MagicCues", "NFC setup failed: " + e.getMessage());
         }
+
+        // Apply sticky immersive fullscreen configuration on initial start
+        setImmersiveMode();
     }
 
     @Override
@@ -49,6 +56,7 @@ public class MainActivity extends BridgeActivity {
         if (nfcBridge != null) {
             nfcBridge.enableForegroundDispatch();
         }
+        setImmersiveMode();
     }
 
     @Override
@@ -64,6 +72,37 @@ public class MainActivity extends BridgeActivity {
         super.onNewIntent(intent);
         if (nfcBridge != null) {
             nfcBridge.handleIntent(intent);
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        // Automatically hide bars again when user focus returns to the app
+        if (hasFocus) {
+            setImmersiveMode();
+        }
+    }
+
+    private void setImmersiveMode() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowInsetsController controller = getWindow().getInsetsController();
+            if (controller != null) {
+                // Hide both the Status Bar and Navigation Bar
+                controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+                // Transient behavior: swipes from edges reveal the bars temporarily, then auto-hide them
+                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            }
+        } else {
+            // Backward-compatible fullscreen and navigation layout flags
+            getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+            );
         }
     }
 }
