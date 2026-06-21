@@ -755,6 +755,22 @@ const playTrackByPath = async (path) => {
         }
     }
 };
+const stopAllStandardCues = (exceptId = null) => {
+    [activeCues, activePads, actSideCues, actSidePads].forEach(m => {
+        let toDelete = [];
+        m.forEach((a, id) => {
+            if (id === exceptId) return;
+            let trk = [...tracks, ...sideTrks].find(x => x.id === id);
+            if (!trk || !trk.isBackground) {
+                stopAudioWithFade(a, trk, 'skip');
+                if (a._showingNote) { a._showingNote = false; }
+                toDelete.push(id);
+            }
+        });
+        toDelete.forEach(id => m.delete(id));
+    });
+    hideShowNotes();
+};
 
 const initDB = () => { let r=indexedDB.open('MCPDB',4); r.onupgradeneeded=e=>!e.target.result.objectStoreNames.contains('store')&&e.target.result.createObjectStore('store'); r.onsuccess=e=>{ db=e.target.result; let st=db.transaction('store','readwrite').objectStore('store'); st.get('projectList').onsuccess=res=>{ projectsList=res.target.result||[{id:'default',name:'Main Show'}]; if(!res.target.result) st.put(projectsList,'projectList'); curProjId=localStorage.getItem('mc_curProj')||projectsList[0].id; $('header-title-text').innerText=(projectsList.find(x=>x.id===curProjId)||projectsList[0]).name; st.get('proj_'+curProjId).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:t.file?URL.createObjectURL(t.file):undefined})):[]; render(); }; }; }; };  
 const save = () => db&&db.transaction('store','readwrite').objectStore('store').put(tracks.map(t=>({...t,blobUrl:undefined})), 'proj_'+curProjId);  
@@ -1539,19 +1555,8 @@ const rAud = (t,L,s,pA=null) => {
     
     if(!L){ 
         if (!t.isBackground) {
-            let toDelete = [];
-            acts.forEach((a,id)=>{
-                if (id === t.id) return;
-                let trk = (s?sideTrks:tracks).find(x=>x.id===id);
-                if (!trk?.isBackground) {
-                    stopAudioWithFade(a, trk, 'skip'); 
-                    wasInterrupted = true;
-                    if (a._showingNote) { a._showingNote = false; }
-                    toDelete.push(id);
-                }
-            }); 
-            toDelete.forEach(id => acts.delete(id));
-            hideShowNotes(); 
+            stopAllStandardCues(t.id);
+            wasInterrupted = true;
         } else if (acts.has(t.id)) {
             let oldA = acts.get(t.id);
             let oldTrk = (s?sideTrks:tracks).find(x=>t.id===x.id);
@@ -1703,6 +1708,9 @@ const pPad = (t,s) => {
         stopAudioWithFade(o, t, 'skip');
         acts.delete(t.id); evalDucking(); s?renderSide():(render(),mngMic()); return; 
     } 
+    if (!t.isBackground) {
+        stopAllStandardCues(t.id);
+    }
     let a=new Audio(t.blobUrl); setupAudioNode(a); a.isRealPlay = true; a.currentTime=t.trimStart||0; a.volume=t.volume??1; acts.set(t.id,a); s?renderSide():render(); 
     a.ontimeupdate=()=>{ 
         let d=t.trimEnd||a.duration; let p=$(s?'side-prog-'+t.id:'prog-'+t.id); if(p)p.style.width=Math.max(0,Math.min(100,(a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100))+'%'; 
@@ -1781,7 +1789,7 @@ const toggleSideloadPause = () => {
                 cInType = trk.fadeInCurve || 'linear';
             } else if (parseFloat(settings.globalFadeIn) > 0 && settings.gfInPause !== false) {
                 fInTime = parseFloat(settings.globalFadeIn);
-                cInType = settings.globalFadeInCurve || 'linear';
+                cInType = trInCurve || 'linear';
             }
 
             clearTimeout(a._pauseTm);
