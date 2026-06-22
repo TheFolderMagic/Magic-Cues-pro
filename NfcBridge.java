@@ -94,10 +94,11 @@ public class NfcBridge {
     }
 
     @JavascriptInterface
-    public void appendFileChunk(final String base64Chunk) {
+    public void appendFileChunk(final String textChunk) {
         if (mExportStream == null) return;
         try {
-            byte[] chunkBytes = Base64.decode(base64Chunk, Base64.DEFAULT);
+            // Write standard UTF-8 text bytes directly to disk (no base64 decode processing needed)
+            byte[] chunkBytes = textChunk.getBytes(StandardCharsets.UTF_8);
             mExportStream.write(chunkBytes);
         } catch (Exception e) {
             e.printStackTrace();
@@ -308,4 +309,4 @@ public class NfcBridge {
             });
         }
     }
-        }
+                }
