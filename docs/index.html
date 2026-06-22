@@ -805,31 +805,87 @@ const mkTrk = (f,d) => ({id:'id'+Date.now()+Math.random().toString(36).slice(2),
 const hFiles = async (i,l,r,s) => { for(let f of Array.from(i.files)){ if(f.name.endsWith('.magic')||f.name.endsWith('.json')) l.push(mkTrk(f,JSON.parse(await f.text()))); else{ let b=new Blob([await f.arrayBuffer()],{type:f.type}), t=mkTrk(f,null); t.blobUrl=URL.createObjectURL(b); t.file=b; l.push(t); } } r(); s(); i.value=''; };
 const handleFiles = i => hFiles(i,tracks,render,save); const handleSideloadFiles = i => hFiles(i,sideTrks,renderSide,saveSide);
 
-const exportShow = async () => { 
-    let p=projectsList.find(x=>x.id===editProjId); if(!p)return; 
-    db.transaction('store').objectStore('store').get('proj_'+p.id).onsuccess=async r=>{ 
-        let ex=[]; 
-        $('edit-show-name').value="Exporting..."; 
-        for(let t of(r.target.result||[])){ 
-            if(t.isExternalShow){ 
-                let se=[]; 
-                for(let st of t.showData){ 
-                    if(st.file) se.push({...st,fileData:await new Promise(res=>{let fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(st.file);}),file:undefined}); 
-                    else se.push({...st}); 
-                } 
-                ex.push({...t,showData:se}); 
-            }else if(t.file) ex.push({...t,fileData:await new Promise(res=>{let fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(t.file);}),file:undefined}); 
-            else ex.push({...t}); 
-        } 
-        let a=document.createElement('a'); 
-        a.href=URL.createObjectURL(new Blob([JSON.stringify(ex)],{type:'application/json'})); 
-        a.download=p.name+'.magic'; 
-        document.body.appendChild(a);
-        a.click(); 
-        document.body.removeChild(a);
-        $('edit-show-name').value=p.name; 
-    }; 
+const exportShow = async () => {
+  let p = projectsList.find(x => x.id === editProjId);
+  if (!p) return;
+
+  // Read the show data from IndexedDB
+  const tx = db.transaction('store', 'readonly');
+  const store = tx.objectStore('store');
+  const data = await new Promise((resolve, reject) => {
+    const req = store.get('proj_' + p.id);
+    req.onsuccess = () => resolve(req.target.result || []);
+    req.onerror = () => reject(req.error);
+  });
+
+  if (!data.length) {
+    showAlert('Notice', 'No cues to export.');
+    return;
+  }
+
+  $('edit-show-name').value = 'Exporting...';
+
+  // Convert tracks to export format (blobs → base64)
+  let ex = [];
+  for (let t of data) {
+    if (t.isExternalShow) {
+      let se = [];
+      for (let st of t.showData) {
+        if (st.file) {
+          let b64 = await blobToBase64(st.file);
+          se.push({ ...st, fileData: b64, file: undefined });
+        } else {
+          se.push({ ...st });
+        }
+      }
+      ex.push({ ...t, showData: se });
+    } else if (t.file) {
+      let b64 = await blobToBase64(t.file);
+      ex.push({ ...t, fileData: b64, file: undefined });
+    } else {
+      ex.push({ ...t });
+    }
+  }
+
+  const jsonString = JSON.stringify(ex);
+  const fileName = p.name + '.magic';
+
+  try {
+    // Save to Downloads folder
+    const result = await Capacitor.Plugins.Filesystem.writeFile({
+      path: fileName,
+      data: jsonString,
+      directory: Capacitor.Plugins.Filesystem.Directory.Downloads,
+      recursive: true
+    });
+
+    // Optional: Share the file immediately
+    if (Capacitor.Plugins.Share) {
+      await Capacitor.Plugins.Share.share({
+        title: p.name,
+        text: 'Exported show file',
+        url: result.uri,
+        dialogTitle: 'Share your show'
+      });
+    } else {
+      showAlert('Success', `Saved to Downloads as ${fileName}`);
+    }
+  } catch (err) {
+    showAlert('Export Failed', err.message || err);
+  }
+
+  $('edit-show-name').value = p.name;
 };
+
+// Helper: convert a Blob to base64 string
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
 const importShow = async i => { let f=i.files[0]; if(!f)return; let d=JSON.parse(await f.text()), id=Date.now().toString(), name=f.name.replace(/\.[^/.]+$/,""); projectsList.push({id,name}); let nt=[]; for(let st of d){ if(st.isExternalShow){ let sub=[]; for(let sst of st.showData){ if(sst.fileData)sub.push({...sst,file:await(await fetch(sst.fileData)).blob(),fileData:undefined}); else sub.push({...sst}); } nt.push({...st,showData:sub}); }else if(st.fileData) nt.push({...st,file:await(await fetch(st.fileData)).blob(),fileData:undefined}); else nt.push({...st}); } let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('store').put(nt,'proj_'+id); tx.oncomplete = () => { i.value=''; closeModal('projects-modal'); swPrj(id); }; };
 
 let pTm, dLng=!1; const sPrs=id=>{dLng=!1; pTm=setTimeout(()=>{haptic(30); dLng=!0; editProjId=id; $('edit-show-name').value=projectsList.find(x=>x.id===id).name; openModal('edit-show-modal');},600);}; const cPrs=()=>clearTimeout(pTm); const clPrj=id=>{cPrs(); if(!dLng){haptic(15);swPrj(id);}};
