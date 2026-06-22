@@ -78,20 +78,38 @@ public class NfcBridge {
             @Override
             public void run() {
                 try {
-                    // Decode base64 payload into raw binary bytes
+                    // Convert Base64 payload back to raw binary bytes
                     byte[] fileBytes = Base64.decode(base64Data, Base64.DEFAULT);
 
-                    // Locate Android's public Downloads directory
-                    File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                    final File file = new File(downloadsDir, filename);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        // Android 10+ (API 29+): Write using the MediaStore API to bypass scoped storage restrictions
+                        android.content.ContentValues values = new android.content.ContentValues();
+                        values.put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, filename);
+                        values.put(android.provider.MediaStore.MediaColumns.MIME_TYPE, "application/json");
+                        values.put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
 
-                    // Write binary stream directly to disk
-                    FileOutputStream os = new FileOutputStream(file, false);
-                    os.write(fileBytes);
-                    os.flush();
-                    os.close();
+                        android.content.ContentResolver resolver = activity.getContentResolver();
+                        android.net.Uri uri = resolver.insert(android.provider.MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
 
-                    // Confirm download success on Android UI Thread
+                        if (uri != null) {
+                            java.io.OutputStream os = resolver.openOutputStream(uri);
+                            if (os != null) {
+                                os.write(fileBytes);
+                                os.flush();
+                                os.close();
+                            }
+                        }
+                    } else {
+                        // Android 9 and older: Standard legacy java.io.File path write
+                        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                        File file = new File(downloadsDir, filename);
+                        FileOutputStream os = new FileOutputStream(file, false);
+                        os.write(fileBytes);
+                        os.flush();
+                        os.close();
+                    }
+
+                    // Toast success feedback on main Android UI thread
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -100,7 +118,7 @@ public class NfcBridge {
                     });
                 } catch (final Exception e) {
                     e.printStackTrace();
-                    // Catch write failures and notify user
+                    // Toast error feedback on main Android UI thread
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
