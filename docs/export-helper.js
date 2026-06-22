@@ -29,57 +29,110 @@ window.exportShow = async () => {
   }
 
   document.getElementById('edit-show-name').value = 'Exporting...';
-
-  // Convert tracks to export format (blobs → base64)
-  let ex = [];
-  for (let t of data) {
-    if (t.isExternalShow) {
-      let se = [];
-      for (let st of t.showData) {
-        if (st.file) {
-          let b64 = await blobToBase64(st.file);
-          se.push({ ...st, fileData: b64, file: undefined });
-        } else {
-          se.push({ ...st });
-        }
-      }
-      ex.push({ ...t, showData: se });
-    } else if (t.file) {
-      let b64 = await blobToBase64(t.file);
-      ex.push({ ...t, fileData: b64, file: undefined });
-    } else {
-      ex.push({ ...t });
-    }
-  }
-
-  const jsonString = JSON.stringify(ex);
   const fileName = p.name + '.magic';
+
+  // Helper function to send a string in tiny, safe chunks to prevent memory overhead
+  const sendInChunks = (str) => {
+    const CHUNK_SIZE = 256 * 1024; // 256 KB chunks
+    for (let i = 0; i < str.length; i += CHUNK_SIZE) {
+      let chunk = str.substring(i, i + CHUNK_SIZE);
+      window.Android.appendFileChunk(chunk);
+    }
+  };
 
   // Check if running in custom Android App with Javascript Interface (window.Android)
   if (window.Android && typeof window.Android.startFileWrite === 'function') {
     try {
-      const CHUNK_SIZE = 512 * 1024; // 512 KB chunks to prevent WebView heap memory issues
       window.Android.startFileWrite(fileName);
       
-      // Stream raw text chunks directly without double base64 encoding
-      for (let i = 0; i < jsonString.length; i += CHUNK_SIZE) {
-        let chunk = jsonString.substring(i, i + CHUNK_SIZE);
-        window.Android.appendFileChunk(chunk);
+      // Open JSON array structure
+      window.Android.appendFileChunk("[");
+
+      for (let i = 0; i < data.length; i++) {
+        let t = data[i];
+        let t_export = {};
+
+        // Process a single track
+        if (t.isExternalShow) {
+          let se = [];
+          for (let st of t.showData) {
+            if (st.file) {
+              let b64 = await blobToBase64(st.file);
+              se.push({ ...st, fileData: b64, file: undefined });
+            } else {
+              se.push({ ...st });
+            }
+          }
+          t_export = { ...t, showData: se };
+        } else if (t.file) {
+          let b64 = await blobToBase64(t.file);
+          t_export = { ...t, fileData: b64, file: undefined };
+        } else {
+          t_export = { ...t };
+        }
+
+        // Convert only this single track to JSON string
+        let cueStr = JSON.stringify(t_export);
+        
+        // Add comma separator if not the first item
+        if (i > 0) {
+          window.Android.appendFileChunk(",");
+        }
+
+        // Send this track's JSON chunk by chunk
+        sendInChunks(cueStr);
+
+        // Explicitly clear memory of this track immediately for garbage collection
+        t_export = null;
+        cueStr = null;
       }
-      
+
+      // Close JSON array structure
+      window.Android.appendFileChunk("]");
       window.Android.endFileWrite();
+      
       showAlert("Exported", "Show exported directly to Downloads folder!");
     } catch (e) {
       showAlert("Error", "Native export failed: " + e.message);
     }
   } else {
-    // Fallback for standard web browsers
-    let a = document.createElement('a'); 
-    a.href = URL.createObjectURL(new Blob([jsonString], {type: 'application/json'})); 
-    a.download = fileName; 
-    document.body.appendChild(a);
-    a.click(); 
-    document.body.removeChild(a);
+    // Fallback for standard web browsers (also built as a memory-efficient stream)
+    try {
+      let chunks = ["["];
+      for (let i = 0; i < data.length; i++) {
+        let t = data[i];
+        let t_export = {};
+        if (t.isExternalShow) {
+          let se = [];
+          for (let st of t.showData) {
+            if (st.file) {
+              let b64 = await blobToBase64(st.file);
+              se.push({ ...st, fileData: b64, file: undefined });
+            } else {
+              se.push({ ...st });
+            }
+          }
+          t_export = { ...t, showData: se };
+        } else if (t.file) {
+          let b64 = await blobToBase64(t.file);
+          t_export = { ...t, fileData: b64, file: undefined };
+        } else {
+          t_export = { ...t };
+        }
+        if (i > 0) chunks.push(",");
+        chunks.push(JSON.stringify(t_export));
+      }
+      chunks.push("]");
+      
+      let a = document.createElement('a'); 
+      a.href = URL.createObjectURL(new Blob(chunks, {type: 'application/json'})); 
+      a.download = fileName; 
+      document.body.appendChild(a);
+      a.click(); 
+      document.body.removeChild(a);
+    } catch (e) {
+      showAlert("Error", "Browser export failed: " + e.message);
+    }
   }
 
   document.getElementById('edit-show-name').value = p.name;
