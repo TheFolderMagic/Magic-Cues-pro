@@ -9,8 +9,13 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Build;
+import android.os.Environment;
+import android.util.Base64;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
+import android.widget.Toast;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -65,6 +70,46 @@ public class NfcBridge {
     public void cancelWriteNFC() {
         this.mode = "none";
         this.pendingWrite = null;
+    }
+
+    @JavascriptInterface
+    public void saveBase64File(final String base64Data, final String filename) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Decode base64 payload into raw binary bytes
+                    byte[] fileBytes = Base64.decode(base64Data, Base64.DEFAULT);
+
+                    // Locate Android's public Downloads directory
+                    File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                    final File file = new File(downloadsDir, filename);
+
+                    // Write binary stream directly to disk
+                    FileOutputStream os = new FileOutputStream(file, false);
+                    os.write(fileBytes);
+                    os.flush();
+                    os.close();
+
+                    // Confirm download success on Android UI Thread
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(activity, "File saved to Downloads: " + filename, Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } catch (final Exception e) {
+                    e.printStackTrace();
+                    // Catch write failures and notify user
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(activity, "Export failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     public void enableForegroundDispatch() {
