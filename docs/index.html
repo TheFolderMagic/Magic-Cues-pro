@@ -805,6 +805,31 @@ const mkTrk = (f,d) => ({id:'id'+Date.now()+Math.random().toString(36).slice(2),
 const hFiles = async (i,l,r,s) => { for(let f of Array.from(i.files)){ if(f.name.endsWith('.magic')||f.name.endsWith('.json')) l.push(mkTrk(f,JSON.parse(await f.text()))); else{ let b=new Blob([await f.arrayBuffer()],{type:f.type}), t=mkTrk(f,null); t.blobUrl=URL.createObjectURL(b); t.file=b; l.push(t); } } r(); s(); i.value=''; };
 const handleFiles = i => hFiles(i,tracks,render,save); const handleSideloadFiles = i => hFiles(i,sideTrks,renderSide,saveSide);
 
+const exportShow = async () => { 
+    let p=projectsList.find(x=>x.id===editProjId); if(!p)return; 
+    db.transaction('store').objectStore('store').get('proj_'+p.id).onsuccess=async r=>{ 
+        let ex=[]; 
+        $('edit-show-name').value="Exporting..."; 
+        for(let t of(r.target.result||[])){ 
+            if(t.isExternalShow){ 
+                let se=[]; 
+                for(let st of t.showData){ 
+                    if(st.file) se.push({...st,fileData:await new Promise(res=>{let fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(st.file);}),file:undefined}); 
+                    else se.push({...st}); 
+                } 
+                ex.push({...t,showData:se}); 
+            }else if(t.file) ex.push({...t,fileData:await new Promise(res=>{let fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(t.file);}),file:undefined}); 
+            else ex.push({...t}); 
+        } 
+        let a=document.createElement('a'); 
+        a.href=URL.createObjectURL(new Blob([JSON.stringify(ex)],{type:'application/json'})); 
+        a.download=p.name+'.magic'; 
+        document.body.appendChild(a);
+        a.click(); 
+        document.body.removeChild(a);
+        $('edit-show-name').value=p.name; 
+    }; 
+};
 const importShow = async i => { let f=i.files[0]; if(!f)return; let d=JSON.parse(await f.text()), id=Date.now().toString(), name=f.name.replace(/\.[^/.]+$/,""); projectsList.push({id,name}); let nt=[]; for(let st of d){ if(st.isExternalShow){ let sub=[]; for(let sst of st.showData){ if(sst.fileData)sub.push({...sst,file:await(await fetch(sst.fileData)).blob(),fileData:undefined}); else sub.push({...sst}); } nt.push({...st,showData:sub}); }else if(st.fileData) nt.push({...st,file:await(await fetch(st.fileData)).blob(),fileData:undefined}); else nt.push({...st}); } let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('store').put(nt,'proj_'+id); tx.oncomplete = () => { i.value=''; closeModal('projects-modal'); swPrj(id); }; };
 
 let pTm, dLng=!1; const sPrs=id=>{dLng=!1; pTm=setTimeout(()=>{haptic(30); dLng=!0; editProjId=id; $('edit-show-name').value=projectsList.find(x=>x.id===id).name; openModal('edit-show-modal');},600);}; const cPrs=()=>clearTimeout(pTm); const clPrj=id=>{cPrs(); if(!dLng){haptic(15);swPrj(id);}};
@@ -1633,6 +1658,51 @@ const rAud = (t,L,s,pA=null) => {
     a.ontimeupdate=()=>{ 
         let d=t.trimEnd||a.duration||0; if(!d)return; 
         let p=$(s?'side-prog-'+t.id:'prog-'+t.id); if(p)p.style.width=Math.max(0,Math.min(100,(a.currentTime-(t.trimStart||0))/(d-(t.trimStart||0))*100))+'%'; 
+        
+        if(t.notes && t.notesTrigger !== 'after') {
+            let cTime = a.currentTime - (t.trimStart || 0);
+            let actualDur = d - (t.trimStart || 0);
+            let nDur = parseFloat(t.notesDuration) || 0;
+            let sStart = 0, sEnd = actualDur;
+
+            if(t.notesTrigger === 'end') {
+                let len = nDur > 0 ? nDur : 5;
+                sStart = Math.max(0, actualDur - len);
+                sEnd = actualDur;
+            } else { 
+                sStart = 0;
+                sEnd = nDur > 0 ? Math.min(nDur, actualDur) : actualDur;
+            }
+
+            if (cTime >= sStart && cTime <= sEnd) {
+                let container = $('show-notes-container');
+                let textEl = $('show-notes-text');
+                let sentences = t.notesSplit ? (t.notes||'').split('\n').map(x=>x.trim()).filter(x=>x) : [t.notes];
+                if(!sentences.length) sentences = [t.notes||''];
+                
+                let idx = 0;
+                if(t.notesSplit && sentences.length > 1) {
+                    let diff = sEnd - sStart;
+                    let pct = diff > 0 ? (cTime - sStart) / diff : 0;
+                    if(pct < 0) pct = 0;
+                    if(pct >= 1) pct = 0.9999;
+                    idx = Math.floor(pct * sentences.length);
+                }
+                
+                if (!container.classList.contains('has-notes') || textEl.innerText !== sentences[idx]) {
+                    container.classList.add('has-notes');
+                    container.dataset.owner = t.id;
+                    textEl.style.animation = 'none';
+                    void textEl.offsetWidth;
+                    textEl.innerText = sentences[idx];
+                    textEl.style.animation = 'fadeIn 0.3s ease';
+                }
+                a._showingNote = true;
+            } else if (a._showingNote) {
+                if ($('show-notes-container').dataset.owner === t.id) hideShowNotes();
+                a._showingNote = false;
+            }
+        }
         
         if(t.autoFollow&&ov>0&&!af&&a.currentTime>=d-ov){af=!0;s?playSideloadNextCue(!0):playNextCue(!0);} 
         if(t.fadeOut>0&&!out&&a.currentTime>=d-t.fadeOut){out=!0;clearInterval(a.fadeInt);let p=1;a.fadeInt=setInterval(()=>{p-=0.05/t.fadeOut;if(p<=0){p=0;clearInterval(a.fadeInt);} acts.has(t.id)&&(a.volume=vol*getCurveVal(p, t.fadeOutCurve||'linear'));},50);} 
