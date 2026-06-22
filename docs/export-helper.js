@@ -10,15 +10,16 @@ function blobToBase64(blob) {
 
 // Global exportShow function that index.html will call
 window.exportShow = async () => {
-  let p = window.projectsList.find(x => x.id === window.editProjId);
+  // Accessed directly as standard declarative global variables (no window. prefix)
+  let p = projectsList.find(x => x.id === editProjId);
   if (!p) return;
 
   // Read the show data from IndexedDB
-  const tx = window.db.transaction('store', 'readonly');
+  const tx = db.transaction('store', 'readonly');
   const store = tx.objectStore('store');
   const data = await new Promise((resolve, reject) => {
     const req = store.get('proj_' + p.id);
-    req.onsuccess = () => resolve(req.target.result || []);
+    req.onsuccess = () => resolve(req.result || []);
     req.onerror = () => reject(req.error);
   });
 
@@ -60,7 +61,6 @@ window.exportShow = async () => {
       // Convert JSON to Base64 safely (handling UTF-8 characters)
       let base64Data = btoa(unescape(encodeURIComponent(jsonString)));
       window.Android.saveBase64File(base64Data, fileName);
-      showAlert("Exported", "Show exported directly to Downloads folder!");
     } catch (e) {
       showAlert("Error", "Native export failed: " + e.message);
     }
