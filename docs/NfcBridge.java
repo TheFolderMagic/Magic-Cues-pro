@@ -16,6 +16,8 @@ import android.webkit.WebView;
 import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,6 +29,10 @@ public class NfcBridge {
     private String mode = "none";
     private String pendingWrite = null;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    // Buffered stream variables for chunked exporting
+    private FileOutputStream mExportStream = null;
+    private File mExportFile = null;
 
     public NfcBridge(Activity activity, WebView webView) {
         this.activity = activity;
@@ -73,61 +79,111 @@ public class NfcBridge {
     }
 
     @JavascriptInterface
-    public void saveBase64File(final String base64Data, final String filename) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // Convert Base64 payload back to raw binary bytes
-                    byte[] fileBytes = Base64.decode(base64Data, Base64.DEFAULT);
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        // Android 10+ (API 29+): Write using the MediaStore API to bypass scoped storage restrictions
-                        android.content.ContentValues values = new android.content.ContentValues();
-                        values.put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, filename);
-                        values.put(android.provider.MediaStore.MediaColumns.MIME_TYPE, "application/json");
-                        values.put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
-
-                        android.content.ContentResolver resolver = activity.getContentResolver();
-                        android.net.Uri uri = resolver.insert(android.provider.MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
-
-                        if (uri != null) {
-                            java.io.OutputStream os = resolver.openOutputStream(uri);
-                            if (os != null) {
-                                os.write(fileBytes);
-                                os.flush();
-                                os.close();
-                            }
-                        }
-                    } else {
-                        // Android 9 and older: Standard legacy java.io.File path write
-                        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                        File file = new File(downloadsDir, filename);
-                        FileOutputStream os = new FileOutputStream(file, false);
-                        os.write(fileBytes);
-                        os.flush();
-                        os.close();
-                    }
-
-                    // Toast success feedback on main Android UI thread
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(activity, "File saved to Downloads: " + filename, Toast.LENGTH_LONG).show();
-                        }
-                    });
-                } catch (final Exception e) {
-                    e.printStackTrace();
-                    // Toast error feedback on main Android UI thread
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(activity, "Export failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
+    public void startFileWrite(final String filename) {
+        try {
+            if (mExportStream != null) {
+                mExportStream.close();
+                mExportStream = null;
             }
-        });
+            // Create a temp file inside the app's sandboxed cache directory (requires no permissions)
+            mExportFile = new File(activity.getCacheDir(), filename);
+            mExportStream = new FileOutputStream(mExportFile, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @JavascriptInterface
+    public void appendFileChunk(final String textChunk) {
+        if (mExportStream == null) return;
+        try {
+            // Write standard UTF-8 text bytes directly to disk (no base64 decode processing needed)
+            byte[] chunkBytes = textChunk.getBytes(StandardCharsets.UTF_8);
+            mExportStream.write(chunkBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @JavascriptInterface
+    public void endFileWrite() {
+        if (mExportStream == null || mExportFile == null) return;
+        try {
+            mExportStream.flush();
+            mExportStream.close();
+            mExportStream = null;
+
+            final String filename = mExportFile.getName();
+
+            // Offload the final storage move task to the background executor thread
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            // Android 10+: Compliant MediaStore content insertion
+                            android.content.ContentValues values = new android.content.ContentValues();
+                            values.put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, filename);
+                            values.put(android.provider.MediaStore.MediaColumns.MIME_TYPE, "application/json");
+                            values.put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+
+                            android.content.ContentResolver resolver = activity.getContentResolver();
+                            android.net.Uri uri = resolver.insert(android.provider.MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+
+                            if (uri != null) {
+                                OutputStream os = resolver.openOutputStream(uri);
+                                if (os != null) {
+                                    FileInputStream fis = new FileInputStream(mExportFile);
+                                    byte[] buffer = new byte[8192];
+                                    int read;
+                                    while ((read = fis.read(buffer)) != -1) {
+                                        os.write(buffer, 0, read);
+                                    }
+                                    fis.close();
+                                    os.flush();
+                                    os.close();
+                                }
+                            }
+                        } else {
+                            // Android 9 and older: Legacy disk write fallback
+                            File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                            File destFile = new File(downloadsDir, filename);
+                            FileInputStream fis = new FileInputStream(mExportFile);
+                            FileOutputStream fos = new FileOutputStream(destFile, false);
+                            byte[] buffer = new byte[8192];
+                            int read;
+                            while ((read = fis.read(buffer)) != -1) {
+                                fos.write(buffer, 0, read);
+                            }
+                            fis.close();
+                            fos.flush();
+                            fos.close();
+                        }
+
+                        // Clean up temporary cache file
+                        mExportFile.delete();
+                        mExportFile = null;
+
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(activity, "File saved to Downloads: " + filename, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } catch (final Exception e) {
+                        e.printStackTrace();
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(activity, "Export failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void enableForegroundDispatch() {
