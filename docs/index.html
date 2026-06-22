@@ -367,19 +367,13 @@ const haptic = p => {
     } 
 };  
 const showAlert = (t,m) => { $('alert-title').innerText=t; $('alert-msg').innerText=m; openModal('custom-alert-modal'); };  
-const openModal = id => { 
-    if (locked && id !== 'pocket-confirm-modal' && id !== 'custom-alert-modal') return;
-    if(id==='app-settings') buildNfcMenu(); 
-    document.body.classList.add('modal-open'); 
-    $(id).showModal(); 
-};  
 const closeModal = id => { 
     const dlg = $(id);
     if (dlg) {
         if (dlg.hasAttribute('open') || dlg.open) {
             dlg.close();
         }
-        document.querySelectorAll('details').forEach(det => det.removeAttribute('open'));
+        dlg.querySelectorAll('details').forEach(det => det.removeAttribute('open'));
     }
     if(!document.querySelectorAll('dialog[open]').length) document.body.classList.remove('modal-open'); 
 };  
@@ -525,7 +519,7 @@ const displayShowNote = (tObj, trackDuration) => {
 };
 
 const chkGrpDemote = () => { if(isSideAct && actSideId && sideTrks.length<=1){ let pi=tracks.findIndex(x=>x.id===actSideId); if(pi>-1){ let p=tracks[pi]; if(p.isCueGroup){ if(sideTrks.length===1){ let r=sideTrks[0]; r.type=p.type; tracks.splice(pi,1,r); }else tracks.splice(pi,1); save(); closeSideload(); render(); return !0; } } } return !1; };
-const buildNfcMenu = () => { let h=`<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_NEXT', 'Next Cue')"><span class="material-symbols-rounded">nfc</span> Program 'Next Cue'</button><button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PLAYPAUSE', 'Play/Pause')"><span class="material-symbols-rounded">nfc</span> Program 'Toggle Mic'</button>`; tracks.filter(t=>t.type==='pad').forEach(p=>h+=`<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PAD_${p.id}', '${p.name.replace(/'/g,"\\'")}')"><span class="material-symbols-rounded">nfc</span> Program '${p.name}'</button>`); $('nfc-dynamic-list').innerHTML=h; };  
+const buildNfcMenu = () => { let h=`<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_NEXT', 'Next Cue')"><span class="material-symbols-rounded">nfc</span> Program 'Next Cue'</button><button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PLAYPAUSE', 'Play/Pause')"><span class="material-symbols-rounded">nfc</span> Program 'Play/Pause'</button>`; tracks.filter(t=>t.type==='pad').forEach(p=>h+=`<button class="action-btn" style="margin-bottom:8px" onclick="haptic(10); programNfcTag('CUE_PAD_${p.id}', '${p.name.replace(/'/g,"\\'")}')"><span class="material-symbols-rounded">nfc</span> Program '${p.name}'</button>`); $('nfc-dynamic-list').innerHTML=h; };  
 const setLang = l => { settings.lang=l; updSet('lang',l); document.querySelectorAll('#lang-controls button').forEach(b=>b.classList.remove('active')); $(l==='en-US'?'lang-en':'lang-de').classList.add('active'); if(rec) rec.lang=l; };  
 const updSet = (k,v) => { settings[k]=v; localStorage.setItem('mc_settings', JSON.stringify(settings)); };  
 const applyUISize = () => { document.body.style.zoom = (settings.uiSize || 100) + '%'; };
@@ -805,14 +799,66 @@ const mkTrk = (f,d) => ({id:'id'+Date.now()+Math.random().toString(36).slice(2),
 const hFiles = async (i,l,r,s) => { for(let f of Array.from(i.files)){ if(f.name.endsWith('.magic')||f.name.endsWith('.json')) l.push(mkTrk(f,JSON.parse(await f.text()))); else{ let b=new Blob([await f.arrayBuffer()],{type:f.type}), t=mkTrk(f,null); t.blobUrl=URL.createObjectURL(b); t.file=b; l.push(t); } } r(); s(); i.value=''; };
 const handleFiles = i => hFiles(i,tracks,render,save); const handleSideloadFiles = i => hFiles(i,sideTrks,renderSide,saveSide);
 
-const exportShow = async () => { let p=projectsList.find(x=>x.id===editProjId); if(!p)return; db.transaction('store').objectStore('store').get('proj_'+p.id).onsuccess=async r=>{ let ex=[]; $('edit-show-name').value="Exporting..."; for(let t of(r.target.result||[])){ if(t.isExternalShow){ let se=[]; for(let st of t.showData){ if(st.file) se.push({...st,fileData:await new Promise(res=>{let fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(st.file);}),file:undefined}); else se.push({...st}); } ex.push({...t,showData:se}); }else if(t.file) ex.push({...t,fileData:await new Promise(res=>{let fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(t.file);}),file:undefined}); else ex.push({...t}); } let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(ex)],{type:'application/json'})); a.download=p.name+'.magic'; a.click(); $('edit-show-name').value=p.name; }; };
+const exportShow = async () => { 
+    let p=projectsList.find(x=>x.id===editProjId); if(!p)return; 
+    db.transaction('store').objectStore('store').get('proj_'+p.id).onsuccess=async r=>{ 
+        let ex=[]; 
+        $('edit-show-name').value="Exporting..."; 
+        for(let t of(r.target.result||[])){ 
+            if(t.isExternalShow){ 
+                let se=[]; 
+                for(let st of t.showData){ 
+                    if(st.file) se.push({...st,fileData:await new Promise(res=>{let fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(st.file);}),file:undefined}); 
+                    else se.push({...st}); 
+                } 
+                ex.push({...t,showData:se}); 
+            }else if(t.file) ex.push({...t,fileData:await new Promise(res=>{let fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(t.file);}),file:undefined}); 
+            else ex.push({...t}); 
+        } 
+        let a=document.createElement('a'); 
+        a.href=URL.createObjectURL(new Blob([JSON.stringify(ex)],{type:'application/json'})); 
+        a.download=p.name+'.magic'; 
+        document.body.appendChild(a);
+        a.click(); 
+        document.body.removeChild(a);
+        $('edit-show-name').value=p.name; 
+    }; 
+};
 const importShow = async i => { let f=i.files[0]; if(!f)return; let d=JSON.parse(await f.text()), id=Date.now().toString(), name=f.name.replace(/\.[^/.]+$/,""); projectsList.push({id,name}); let nt=[]; for(let st of d){ if(st.isExternalShow){ let sub=[]; for(let sst of st.showData){ if(sst.fileData)sub.push({...sst,file:await(await fetch(sst.fileData)).blob(),fileData:undefined}); else sub.push({...sst}); } nt.push({...st,showData:sub}); }else if(st.fileData) nt.push({...st,file:await(await fetch(st.fileData)).blob(),fileData:undefined}); else nt.push({...st}); } let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('store').put(nt,'proj_'+id); tx.oncomplete = () => { i.value=''; closeModal('projects-modal'); swPrj(id); }; };
 
 let pTm, dLng=!1; const sPrs=id=>{dLng=!1; pTm=setTimeout(()=>{haptic(30); dLng=!0; editProjId=id; $('edit-show-name').value=projectsList.find(x=>x.id===id).name; openModal('edit-show-modal');},600);}; const cPrs=()=>clearTimeout(pTm); const clPrj=id=>{cPrs(); if(!dLng){haptic(15);swPrj(id);}};
 const openProjects = () => { $('projects-list-container').innerHTML=projectsList.map(p=>`<div class="project-item ${p.id===curProjId?'active':''}" oncontextmenu="return false;" onpointerdown="sPrs('${p.id}')" onpointerup="cPrs()" onpointerleave="cPrs()" onclick="clPrj('${p.id}')"><span style="font-weight:700">${p.name}</span>${p.id===curProjId?'<span class="material-symbols-rounded">check_circle</span>':''}</div>`).join(''); openModal('projects-modal'); };  
 const createNewProject = () => { let n=$('new-show-name').value.trim(); if(!n)return; let id=Date.now().toString(); projectsList.push({id,name:n}); db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList'); closeModal('new-show-modal'); $('new-show-name').value=''; swPrj(id); };  
 const saveShowEdit = () => { let n=$('edit-show-name').value.trim(); if(n&&editProjId){ let p=projectsList.find(x=>x.id===editProjId); if(p)p.name=n; db.transaction('store','readwrite').objectStore('store').put(projectsList,'projectList'); if(editProjId===curProjId) $('header-title-text').innerText=n; } closeModal('edit-show-modal'); openProjects(); };  
-const duplicateShow = () => { let p=projectsList.find(x=>x.id===editProjId); if(!p)return; let id=Date.now().toString(); projectsList.push({id,name:p.name+" (Copy)"}); let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('get','proj_'+editProjId).onsuccess=r=>{ let cp=JSON.parse(JSON.stringify(r.target.result||[])); cp.forEach(t=>{t.id='id'+Date.now()+Math.random().toString(36).slice(2); let o=(r.target.result||[]).find(x=>x.name===t.name); if(o&&o.file)t.file=o.file;}); db.transaction('store','readwrite').objectStore('store').put(cp,'proj_'+id); closeModal('edit-show-modal'); openProjects(); }; };
+const duplicateShow = () => { 
+    let p=projectsList.find(x=>x.id===editProjId); if(!p)return; 
+    let id=Date.now().toString(); 
+    projectsList.push({id,name:p.name+" (Copy)"}); 
+    let tx=db.transaction('store','readwrite'); 
+    tx.objectStore('store').put(projectsList,'projectList'); 
+    tx.objectStore('store').get('proj_'+editProjId).onsuccess=r=>{ 
+        let cp=JSON.parse(JSON.stringify(r.target.result||[])); 
+        const deepCloneShowData = (srcList, destList) => {
+            destList.forEach((t, idx) => {
+                t.id='id'+Date.now()+Math.random().toString(36).slice(2);
+                let orig = srcList[idx];
+                if (orig && orig.file) t.file = orig.file;
+                if (orig && orig.showData && t.showData) {
+                    deepCloneShowData(orig.showData, t.showData);
+                }
+            });
+        };
+        let originalList = r.target.result || [];
+        deepCloneShowData(originalList, cp);
+        
+        let tx2 = db.transaction('store','readwrite');
+        tx2.objectStore('store').put(cp,'proj_'+id); 
+        tx2.oncomplete = () => {
+            closeModal('edit-show-modal'); 
+            openProjects();
+        };
+    }; 
+};
 const deleteShow = () => { if(projectsList.length<=1)return showAlert("Notice","Cannot delete last show."); projectsList=projectsList.filter(x=>x.id!==editProjId); let tx=db.transaction('store','readwrite'); tx.objectStore('store').put(projectsList,'projectList'); tx.objectStore('store').delete('proj_'+editProjId); closeModal('edit-show-modal'); curProjId===editProjId?swPrj(projectsList[0].id):openProjects(); };  
 const swPrj = id => { if(curProjId===id)return; executeReset(); tracks.forEach(t=>t.blobUrl&&URL.revokeObjectURL(t.blobUrl)); curProjId=id; localStorage.setItem('mc_curProj',id); $('header-title-text').innerText=projectsList.find(x=>x.id===id).name; closeModal('projects-modal'); db.transaction('store').objectStore('store').get('proj_'+id).onsuccess=r=>{ tracks=r.target.result?r.target.result.map(t=>({...t,blobUrl:t.file?URL.createObjectURL(t.file):undefined})):[]; render(); }; };  
 
@@ -1527,12 +1573,14 @@ const playCue = id => { haptic(20); let i=tracks.filter(x=>x.type==='queue').fin
 const playNextCue = (L=!1, manual=!1) => { 
     if(manual) hideShowNotes();
     if(isSideAct)return playSideloadNextCue(L, manual); 
+    if(paused) { toggleGlobalPause(); return; }
     let q=tracks.filter(x=>x.type==='queue'); while(curIdx<q.length&&q[curIdx].skip)curIdx++; if(curIdx>=q.length)return $('play-text').innerText='End of Show'; 
     if(!L)haptic(25); let t=q[curIdx++]; clearInterval(mainDelayInt); let pAud = preUnlockAudio(t.blobUrl); 
     t.delay>0&&!L? doDelayCountdown(t.delay, 'play-text', !1, ()=>rAud(t,L,!1, pAud)) : rAud(t,L,!1, pAud); render(); 
 };  
 const playSideloadNextCue = (L=!1, manual=!1) => { 
     if(manual) hideShowNotes();
+    if(sidePaused) { toggleSideloadPause(); return; }
     let q=sideTrks.filter(x=>x.type==='queue'); while(sideIdx<q.length&&sideIdx.skip)sideIdx++; if(sideIdx>=q.length)return closeSideload(); 
     if(!L)haptic(25); let t=q[sideIdx++]; clearInterval(sideloadDelayInt); let pAud = preUnlockAudio(t.blobUrl); 
     t.delay>0&&!L? doDelayCountdown(t.delay, 'sideload-play-text', !0, ()=>rAud(t,L,!0, pAud)) : rAud(t,L,!0, pAud); renderSide(); 
