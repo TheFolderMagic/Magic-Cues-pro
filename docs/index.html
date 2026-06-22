@@ -755,6 +755,55 @@ const playTrackByPath = async (path) => {
         }
     }
 };
+const triggerFileDownload = async (jsonData, filename) => {
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Filesystem) {
+        try {
+            const base64Data = btoa(unescape(encodeURIComponent(jsonData)));
+            await window.Capacitor.Plugins.Filesystem.writeFile({
+                path: filename,
+                data: base64Data,
+                directory: 'DOCUMENTS',
+                recursive: true
+            });
+            showAlert("Exported", `Show exported successfully to your device's Documents folder as "${filename}".`);
+            return;
+        } catch (e) {
+            console.warn("Capacitor Filesystem export failed, trying Web Share / Fallbacks...", e);
+        }
+    }
+    try {
+        const blob = new Blob([jsonData], { type: 'application/json' });
+        const file = new File([blob], filename, { type: 'application/json' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+                files: [file],
+                title: filename,
+                text: 'Qflow Show Export'
+            });
+            return;
+        }
+    } catch (e) {
+        console.warn("Web Share API failed, trying data URI...", e);
+    }
+    try {
+        const base64Data = btoa(unescape(encodeURIComponent(jsonData)));
+        const dataUri = 'data:application/octet-stream;base64,' + base64Data;
+        const a = document.createElement('a');
+        a.href = dataUri;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    } catch (e) {
+        console.warn("Data URI anchor click failed.", e);
+    }
+    try {
+        await navigator.clipboard.writeText(jsonData);
+        showAlert("Exported & Copied", "Export triggered. Qflow show data has also been copied to your clipboard so you can paste and save it.");
+    } catch (err) {
+        showAlert("Export Failed", "Could not trigger download. Please run in a standard web browser to export.");
+    }
+};
 const stopAllStandardCues = (exceptId = null) => {
     [activeCues, activePads, actSideCues, actSidePads].forEach(m => {
         let toDelete = [];
@@ -821,12 +870,9 @@ const exportShow = async () => {
             }else if(t.file) ex.push({...t,fileData:await new Promise(res=>{let fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(t.file);}),file:undefined}); 
             else ex.push({...t}); 
         } 
-        let a=document.createElement('a'); 
-        a.href=URL.createObjectURL(new Blob([JSON.stringify(ex)],{type:'application/json'})); 
-        a.download=p.name+'.magic'; 
-        document.body.appendChild(a);
-        a.click(); 
-        document.body.removeChild(a);
+        let jsonData = JSON.stringify(ex);
+        let filename = p.name + '.magic';
+        await triggerFileDownload(jsonData, filename);
         $('edit-show-name').value=p.name; 
     }; 
 };
@@ -2128,7 +2174,7 @@ const initSortables = () => {
                 let tId=tEl.id.replace('tile-','').replace('side-',''), fS=e.from.id.includes('sideload'), fL=fS?sideTrks:tracks, tS=tEl.id.startsWith('side-'), tL=tS?sideTrks:tracks, dI=fL.findIndex(x=>x.id===dId), tI=tL.findIndex(x=>x.id===tId);
                 if(dI>-1&&tI>-1){ e.item.remove(); let dT=fL.splice(dI,1)[0]; if(fL===tL&&dI<tI)tI--; let tT=tL[tI]; haptic([50,50,50]);
                     if(tT.isCueGroup||tT.isExternalShow) { !tT.showData&&(tT.showData=[]); tT.showData.push(dT); }
-                    else tL.splice(tI,1,{id:'id'+Date.now(),name:'Cue Group '+(tL.filter(x=>x.isCueGroup).length+1),type:tT.type,delay:0,fadeIn:0,fadeOut:0,volume:1,autoFollow:!1,overlap:0,postDelay:0,triggerPhrase:'',globalVoice:!1,isExternalShow:!0,isCueGroup:!0,autoStartShow:!1,skip:!1,showData:[tT,dT]});
+                    else tL.splice(tI,1,{id:'id'+Date.now(),name:'Cue Group '+(tL.filter(x=>x.isCueGroup).length+1),type:tT.type,delay:0,fadeIn:0,fadeOut:0,volume:1,autoFollow:!1,overlap:0,postDelay:0,triggerPhrase:'',globalVoice:!1,isExternalShow:!0,isCueGroup:!0,autoStartShow:!1,skip:!1,showData:[tT]});
                     tS?saveSide():save(); fS!==tS&&(fS?saveSide():save()); render(); renderSide(); return; 
                 }
             }
