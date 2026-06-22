@@ -367,6 +367,12 @@ const haptic = p => {
     } 
 };  
 const showAlert = (t,m) => { $('alert-title').innerText=t; $('alert-msg').innerText=m; openModal('custom-alert-modal'); };  
+const openModal = id => { 
+    if (locked && id !== 'pocket-confirm-modal' && id !== 'custom-alert-modal') return;
+    if(id==='app-settings') buildNfcMenu(); 
+    document.body.classList.add('modal-open'); 
+    $(id).showModal(); 
+};  
 const closeModal = id => { 
     const dlg = $(id);
     if (dlg) {
@@ -1583,7 +1589,7 @@ const playSideloadNextCue = (L=!1, manual=!1) => {
     if(sidePaused) { toggleSideloadPause(); return; }
     let q=sideTrks.filter(x=>x.type==='queue'); while(sideIdx<q.length&&sideIdx.skip)sideIdx++; if(sideIdx>=q.length)return closeSideload(); 
     if(!L)haptic(25); let t=q[sideIdx++]; clearInterval(sideloadDelayInt); let pAud = preUnlockAudio(t.blobUrl); 
-    t.delay>0&&!L? doDelayCountdown(t.delay, 'sideload-play-text', !0, ()=>rAud(t,L,!0, pAud)) : rAud(t,L,!0, pAud); renderSide(); 
+    t.delay>0&&!L? doDelayCountdown(t.delay, 'sideload-play-text', !0, ()=>rAud(t,L|0,!0, pAud)) : rAud(t,L, !0, pAud); renderSide(); 
 };
 
 const rAud = (t,L,s,pA=null) => { 
@@ -1837,7 +1843,7 @@ const toggleSideloadPause = () => {
                 cInType = trk.fadeInCurve || 'linear';
             } else if (parseFloat(settings.globalFadeIn) > 0 && settings.gfInPause !== false) {
                 fInTime = parseFloat(settings.globalFadeIn);
-                cInType = trInCurve || 'linear';
+                cInType = settings.globalFadeInCurve || 'linear';
             }
 
             clearTimeout(a._pauseTm);
@@ -1948,7 +1954,7 @@ const toggleGlobalPause = () => {
                 cInType = trk.fadeInCurve || 'linear';
             } else if (parseFloat(settings.globalFadeIn) > 0 && settings.gfInPause !== false) {
                 fInTime = parseFloat(settings.globalFadeIn);
-                cInType = trInCurve || 'linear';
+                cInType = settings.globalFadeInCurve || 'linear';
             }
 
             clearTimeout(a._pauseTm);
