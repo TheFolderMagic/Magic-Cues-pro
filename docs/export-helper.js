@@ -10,7 +10,6 @@ function blobToBase64(blob) {
 
 // Global exportShow function that index.html will call
 window.exportShow = async () => {
-  // Accessed directly as standard declarative global variables (no window. prefix)
   let p = projectsList.find(x => x.id === editProjId);
   if (!p) return;
 
@@ -56,11 +55,21 @@ window.exportShow = async () => {
   const fileName = p.name + '.magic';
 
   // Check if running in custom Android App with Javascript Interface (window.Android)
-  if (window.Android && typeof window.Android.saveBase64File === 'function') {
+  if (window.Android && typeof window.Android.startFileWrite === 'function') {
     try {
       // Convert JSON to Base64 safely (handling UTF-8 characters)
       let base64Data = btoa(unescape(encodeURIComponent(jsonString)));
-      window.Android.saveBase64File(base64Data, fileName);
+      
+      const CHUNK_SIZE = 512 * 1024; // 512 KB chunks to prevent WebView heap memory issues
+      window.Android.startFileWrite(fileName);
+      
+      for (let i = 0; i < base64Data.length; i += CHUNK_SIZE) {
+        let chunk = base64Data.substring(i, i + CHUNK_SIZE);
+        window.Android.appendFileChunk(chunk);
+      }
+      
+      window.Android.endFileWrite();
+      showAlert("Exported", "Show exported directly to Downloads folder!");
     } catch (e) {
       showAlert("Error", "Native export failed: " + e.message);
     }
