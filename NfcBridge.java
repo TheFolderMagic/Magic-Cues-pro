@@ -9,8 +9,13 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Build;
+import android.os.Environment;
+import android.util.Base64;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
+import android.widget.Toast;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -65,6 +70,64 @@ public class NfcBridge {
     public void cancelWriteNFC() {
         this.mode = "none";
         this.pendingWrite = null;
+    }
+
+    @JavascriptInterface
+    public void saveBase64File(final String base64Data, final String filename) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Convert Base64 payload back to raw binary bytes
+                    byte[] fileBytes = Base64.decode(base64Data, Base64.DEFAULT);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        // Android 10+ (API 29+): Write using the MediaStore API to bypass scoped storage restrictions
+                        android.content.ContentValues values = new android.content.ContentValues();
+                        values.put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, filename);
+                        values.put(android.provider.MediaStore.MediaColumns.MIME_TYPE, "application/json");
+                        values.put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+
+                        android.content.ContentResolver resolver = activity.getContentResolver();
+                        android.net.Uri uri = resolver.insert(android.provider.MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+
+                        if (uri != null) {
+                            java.io.OutputStream os = resolver.openOutputStream(uri);
+                            if (os != null) {
+                                os.write(fileBytes);
+                                os.flush();
+                                os.close();
+                            }
+                        }
+                    } else {
+                        // Android 9 and older: Standard legacy java.io.File path write
+                        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                        File file = new File(downloadsDir, filename);
+                        FileOutputStream os = new FileOutputStream(file, false);
+                        os.write(fileBytes);
+                        os.flush();
+                        os.close();
+                    }
+
+                    // Toast success feedback on main Android UI thread
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(activity, "File saved to Downloads: " + filename, Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } catch (final Exception e) {
+                    e.printStackTrace();
+                    // Toast error feedback on main Android UI thread
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(activity, "Export failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     public void enableForegroundDispatch() {
