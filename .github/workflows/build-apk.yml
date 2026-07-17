@@ -1,4 +1,5 @@
 name: Build Android APK
+
 on:
   push:
     branches: [ main, master ]
@@ -27,6 +28,17 @@ jobs:
           cp index.html docs/ || true
           cp tutorial.js docs/ || true
           cp manifest.json docs/ || true
+          cp Sortable.min.js docs/ || true
+          cp wavesurfer.min.js docs/ || true
+          cp regions.min.js docs/ || true
+          cp export-helper.js docs/ || true
+          cp legal.html docs/ || true
+          cp Inter-Regular.woff2 docs/ || true
+          cp Inter-Regular.ttf docs/ || true
+          cp Inter-Bold.woff2 docs/ || true
+          cp Inter-Bold.ttf docs/ || true
+          cp MaterialSymbolsRounded.woff2 docs/ || true
+          cp MaterialSymbolsRounded.ttf docs/ || true
           cp -r assets docs/ || true
 
       - name: Set up Android Java Compiler
@@ -37,6 +49,30 @@ jobs:
 
       - name: Initialize Android System Wrapper
         run: npx cap add android
+
+      - name: Force Target SDK to 35 (Android 15) and Auto-Increment Versioning
+        run: |
+          node -e '
+          const fs = require("fs");
+          const varPath = "android/variables.gradle";
+          if (fs.existsSync(varPath)) {
+            let content = fs.readFileSync(varPath, "utf8");
+            content = content.replace(/compileSdkVersion\s*=\s*\d+/, "compileSdkVersion = 35");
+            content = content.replace(/targetSdkVersion\s*=\s*\d+/, "targetSdkVersion = 35");
+            fs.writeFileSync(varPath, content, "utf8");
+            console.log("Forced variables.gradle to Target SDK 35");
+          }
+          const appGradlePath = "android/app/build.gradle";
+          if (fs.existsSync(appGradlePath)) {
+            let content = fs.readFileSync(appGradlePath, "utf8");
+            content = content.replace(/compileSdkVersion\s*\d+/, "compileSdkVersion 35");
+            content = content.replace(/targetSdkVersion\s*\d+/, "targetSdkVersion 35");
+            content = content.replace(/versionCode\s*\d+/, "versionCode ${{ github.run_number }}");
+            content = content.replace(/versionName\s*"[^"]*"/, "versionName \"1.0.${{ github.run_number }}\"");
+            fs.writeFileSync(appGradlePath, content, "utf8");
+            console.log("Forced app/build.gradle to Target SDK 35 and Version Code ${{ github.run_number }}");
+          }
+          '
 
       - name: Generate Custom App Icons
         run: |
@@ -81,7 +117,7 @@ jobs:
         run: |
           cd android
           chmod +x gradlew
-          # Build and Sign AAB (For Samsung Store upload)
+          # Build and Sign AAB (For Play Store upload)
           ./gradlew bundleRelease \
             -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/android/release.keystore \
             -Pandroid.injected.signing.store.password="${{ secrets.RELEASE_SIGNING_STORE_PASSWORD }}" \
@@ -99,9 +135,11 @@ jobs:
         with:
           name: QFlow-Release-AAB-${{ github.run_number }}
           path: android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 7
 
       - name: Deliver Production APK
         uses: actions/upload-artifact@v4
         with:
           name: QFlow-Release-APK-${{ github.run_number }}
           path: android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 7
